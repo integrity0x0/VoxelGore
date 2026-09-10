@@ -1,0 +1,10 @@
+{
+  "id": "sand",
+  "textures": {
+    "all": "materials/sand.png"
+  },
+  "debris": {
+    "count": 256,
+    "size": [0.05, 0.05]
+  }
+}

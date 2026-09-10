@@ -1,0 +1,7 @@
+{
+  "texture": "explosion.png",
+  "orientation": "vertical",
+  "frameSize": [ 32, 32 ],
+  "frameDuration": 0.4,
+  "rows": 4
+}

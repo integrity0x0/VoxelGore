@@ -1,0 +1,98 @@
+<game>
+	<container
+        pos="0, 20"
+        size="976, 120"
+        anchor="center, bottom"
+        color="0.0, 0.0, 0.0, 0.0">
+
+		<container
+            pos="-427, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.1.preview"
+            on-press="onSlot1Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-305, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.2.preview"
+            on-press="onSlot2Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-183, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.3.preview"
+            on-press="onSlot3Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-61, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.4.preview"
+            on-press="onSlot4Press"
+            held-scale="1.5"
+            held-color="0.0, 0.0, 0.0, 0.45"/>
+
+		<container
+            pos="61, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.5.preview"
+            on-press="onSlot5Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="183, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.6.preview"
+            on-press="onSlot6Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="305, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.7.preview"
+            on-press="onSlot7Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="427, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.8.preview"
+            on-press="onSlot8Press"
+            held-scale="1.5"/>
+
+	</container>
+</game>

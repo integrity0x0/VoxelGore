@@ -1,0 +1,8 @@
+{
+  "spriteSheet": {
+    "frameSize": [ 64, 64 ],
+    "orientation": "vertical",
+    "texture": "materials/clouds.png"
+  },
+  "duration": 3.0
+}

@@ -1,0 +1,11 @@
+{
+  "id": "ice",
+  "renderGroup": "ice",
+  "renderLayer": "translucent",
+  "friction": 1.5,
+  "textures": {
+    "all": "materials/ice.png"
+  },
+  "passingLight": true,
+  "debris": {}
+}

@@ -1,0 +1,5 @@
+{
+  "id": "stone",
+  "textures": "materials/stone.png",
+  "debris": {}
+}

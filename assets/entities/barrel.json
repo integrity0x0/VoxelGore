@@ -1,0 +1,13 @@
+{
+  "id": "barrel",
+  "render": {
+    "type": "model",
+    "resource": "../models/barrel.obj"
+  },
+  "hitbox": {
+    "size": [ 2.0, 2.5, 2.0 ]
+  },
+  "health": {
+    "max": 100.0
+  }
+}

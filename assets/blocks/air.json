@@ -1,0 +1,7 @@
+{
+  "id": "air",
+  "passingLight": true,
+  "textures": "materials/undefined.png",
+  "renderGroup": "air",
+  "friction": 6.0
+}

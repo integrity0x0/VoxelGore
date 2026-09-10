@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
+    <None Include=".gitignore" />
+    <None Include="assets\blocks\air.json" />
+    <None Include="assets\blocks\ice.json" />
+    <None Include="assets\entities\barrel.json" />
+    <None Include="assets\entities\integrity.json" />
+    <None Include="shaders\model.frag" />
+    <None Include="shaders\model.vert" />
+    <None Include="src\gfx\block\faceVertices.inl" />
+    <None Include="src\gfx\render\chunk\facePositions.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\gfx\texture\Skybox.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardBatch.cpp" />
+    <ClCompile Include="src\game\entity\EntityDefinitionRegistry.cpp" />
+    <ClCompile Include="src\game\entity\EntityFactory.cpp" />
+    <ClCompile Include="src\game\entity\EntityParser.cpp" />
+    <ClCompile Include="src\game\World.cpp" />
+    <ClCompile Include="src\gfx\entity\EntityRenderData.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardPipelines.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardRenderBucket.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\ModelRenderer.cpp" />
+    <ClCompile Include="src\core\CameraShake.cpp" />
+    <ClCompile Include="src\core\InputGlfw.cpp" />
+    <ClCompile Include="src\core\InputState.cpp" />
+    <ClCompile Include="src\core\Window.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\game\LibControl.cpp" />
+    <ClCompile Include="src\game\lighting\LightChannelProcessor.cpp" />
+    <ClCompile Include="src\game\lighting\Lighting.cpp" />
+    <ClCompile Include="src\game\physics\CollisionResolver.cpp" />
+    <ClCompile Include="src\game\voxel\Block.cpp" />
+    <ClCompile Include="src\game\voxel\BlockDebrisParser.cpp" />
+    <ClCompile Include="src\game\voxel\BlockManager.cpp" />
+    <ClCompile Include="src\game\voxel\BlockParser.cpp" />
+    <ClCompile Include="src\game\voxel\Chunk.cpp" />
+    <ClCompile Include="src\game\voxel\ChunkManager.cpp" />
+    <ClCompile Include="src\gfx\block\Animation.cpp" />
+    <ClCompile Include="src\gfx\block\AnimationParser.cpp" />
+    <ClCompile Include="src\gfx\block\PreviewRenderer.cpp" />
+    <ClCompile Include="src\gfx\block\RenderData.cpp" />
+    <ClCompile Include="src\gfx\block\RenderGroupRegistry.cpp" />
+    <ClCompile Include="src\gfx\block\SurfaceRegistry.cpp" />
+    <ClCompile Include="src\gfx\block\UvBuffer.cpp" />
+    <ClCompile Include="src\gfx\entity\EntityRenderSystem.cpp" />
+    <ClCompile Include="src\gfx\mesh\IndexedMesh.cpp" />
+    <ClCompile Include="src\gfx\texture\MaterialManager.cpp" />
+    <ClCompile Include="src\gfx\mesh\Mesh.cpp" />
+    <ClCompile Include="src\gfx\mesh\Model.cpp" />
+    <ClCompile Include="src\gfx\mesh\ModelCache.cpp" />
+    <ClCompile Include="src\gfx\mesh\ModelLoader.cpp" />
+    <ClCompile Include="src\gfx\mesh\TranslucentMesh.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ChunkMeshBuilder.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ChunkRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ChunkRenderPipelines.cpp" />
+    <ClCompile Include="src\gfx\render\GameDataBinding.cpp" />
+    <ClCompile Include="src\gfx\render\ModelPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\particle\BlockDebrisEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\particle\ParticleEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\particle\ParticleEngine.cpp" />
+    <ClCompile Include="src\gfx\texture\Atlas.cpp" />
+    <ClCompile Include="src\gfx\texture\ImageRegionAllocator.cpp" />
+    <ClCompile Include="src\gfx\texture\SpriteSheet.cpp" />
+    <ClCompile Include="src\gfx\texture\SpriteSheetParser.cpp" />
+    <ClCompile Include="src\gfx\texture\TextureCache.cpp" />
+    <ClCompile Include="src\gfx\texture\TextureLoader.cpp" />
+    <ClCompile Include="src\gfx\texture\TextureManager.cpp" />
+    <ClCompile Include="src\gfx\ui\Container.cpp" />
+    <ClCompile Include="src\gfx\ui\DescriptorSetRegistry.cpp" />
+    <ClCompile Include="src\gfx\ui\LibGui.cpp" />
+    <ClCompile Include="src\gfx\ui\Node.cpp" />
+    <ClCompile Include="src\gfx\ui\NodeBinding.cpp" />
+    <ClCompile Include="src\gfx\ui\NodeParser.cpp" />
+    <ClCompile Include="src\gfx\ui\Page.cpp" />
+    <ClCompile Include="src\gfx\ui\Renderer.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\script\LuaScript.cpp" />
+    <ClCompile Include="src\script\LuaState.cpp" />
+    <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
+    <ClCompile Include="src\vkcore\common\SystemError.cpp" />
+    <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
+    <ClCompile Include="src\vkcore\debug\DebugMessenger.cpp" />
+    <ClCompile Include="src\vkcore\devices\Device.cpp" />
+    <ClCompile Include="src\vkcore\devices\DeviceCreator.cpp" />
+    <ClCompile Include="src\vkcore\devices\PhysicalDevice.cpp" />
+    <ClCompile Include="src\vkcore\instances\Instance.cpp" />
+    <ClCompile Include="src\vkcore\instances\LibraryLoader.cpp" />
+    <ClCompile Include="src\vkcore\pipeline\Framebuffer.cpp" />
+    <ClCompile Include="src\vkcore\pipeline\GraphicsPipelineCreator.cpp" />
+    <ClCompile Include="src\vkcore\pipeline\PipelineLayout.cpp" />
+    <ClCompile Include="src\vkcore\pipeline\RenderPass.cpp" />
+    <ClCompile Include="src\vkcore\present\Surface.cpp" />
+    <ClCompile Include="src\vkcore\present\Swapchain.cpp" />
+    <ClCompile Include="src\vkcore\resource\Buffer.cpp" />
+    <ClCompile Include="src\vkcore\resource\BufferAllocator.cpp" />
+    <ClCompile Include="src\vkcore\resource\BufferBlock.cpp" />
+    <ClCompile Include="src\vkcore\resource\DescriptorAllocator.cpp" />
+    <ClCompile Include="src\vkcore\resource\DescriptorPool.cpp" />
+    <ClCompile Include="src\vkcore\resource\DescriptorSetLayout.cpp" />
+    <ClCompile Include="src\vkcore\resource\DeviceMemory.cpp" />
+    <ClCompile Include="src\vkcore\resource\FreeListAllocator.cpp" />
+    <ClCompile Include="src\vkcore\resource\Image.cpp" />
+    <ClCompile Include="src\vkcore\resource\imageUtils.cpp" />
+    <ClCompile Include="src\vkcore\resource\ImageView.cpp" />
+    <ClCompile Include="src\vkcore\resource\MemoryAllocator.cpp" />
+    <ClCompile Include="src\vkcore\resource\MemoryBlock.cpp" />
+    <ClCompile Include="src\vkcore\resource\memoryUtils.cpp" />
+    <ClCompile Include="src\vkcore\resource\SampledTexture.cpp" />
+    <ClCompile Include="src\vkcore\resource\Sampler.cpp" />
+    <ClCompile Include="src\vkcore\resource\Texture.cpp" />
+    <ClCompile Include="src\vkcore\resource\TransferContext.cpp" />
+    <ClCompile Include="src\vkcore\sync\Fence.cpp" />
+    <ClCompile Include="src\vkcore\sync\Semaphore.cpp" />
+    <ClCompile Include="third_party\tinyxml2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
+    <ClInclude Include="src\gfx\texture\Skybox.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardBatch.h" />
+    <ClInclude Include="src\game\entity\EntityDefinitionRegistry.h" />
+    <ClInclude Include="src\game\entity\EntityFactory.h" />
+    <ClInclude Include="src\game\entity\EntityParser.h" />
+    <ClInclude Include="src\game\entity\HealthComponent.h" />
+    <ClInclude Include="src\game\entity\HealthSystem.h" />
+    <ClInclude Include="src\game\entity\ModelComponent.h" />
+    <ClInclude Include="src\game\entity\RenderComponent.h" />
+    <ClInclude Include="src\game\World.h" />
+    <ClInclude Include="src\gfx\entity\EntityRenderData.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardInstance.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardPipelines.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardRenderBucket.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardRenderer.h" />
+    <ClInclude Include="src\gfx\render\ModelInstanceData.h" />
+    <ClInclude Include="src\gfx\render\ModelRenderer.h" />
+    <ClInclude Include="src\core\Camera.h" />
+    <ClInclude Include="src\core\CameraShake.h" />
+    <ClInclude Include="src\core\InputGlfw.h" />
+    <ClInclude Include="src\core\InputState.h" />
+    <ClInclude Include="src\core\PathPrefixes.h" />
+    <ClInclude Include="src\core\Window.h" />
+    <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\game\ControlState.h" />
+    <ClInclude Include="src\game\entity\ComponentRegistry.h" />
+    <ClInclude Include="src\game\entity\ComponentStorage.h" />
+    <ClInclude Include="src\game\physics\HitboxComponent.h" />
+    <ClInclude Include="src\game\entity\Entity.h" />
+    <ClInclude Include="src\game\entity\EntityManager.h" />
+    <ClInclude Include="src\game\entity\IComponentStorage.h" />
+    <ClInclude Include="src\game\physics\PhysicsSystem.h" />
+    <ClInclude Include="src\game\LibControl.h" />
+    <ClInclude Include="src\game\lighting\LightChannelProcessor.h" />
+    <ClInclude Include="src\game\lighting\Lighting.h" />
+    <ClInclude Include="src\game\lighting\LightMap.h" />
+    <ClInclude Include="src\game\physics\CollisionResolver.h" />
+    <ClInclude Include="src\game\physics\Hitbox.h" />
+    <ClInclude Include="src\game\voxel\Block.h" />
+    <ClInclude Include="src\game\voxel\BlockDebrisConfig.h" />
+    <ClInclude Include="src\game\voxel\BlockDebrisParser.h" />
+    <ClInclude Include="src\game\voxel\BlockManager.h" />
+    <ClInclude Include="src\game\voxel\BlockParser.h" />
+    <ClInclude Include="src\game\voxel\Chunk.h" />
+    <ClInclude Include="src\game\voxel\ChunkManager.h" />
+    <ClInclude Include="src\game\voxel\Voxel.h" />
+    <ClInclude Include="src\gfx\block\Animation.h" />
+    <ClInclude Include="src\gfx\block\AnimationParser.h" />
+    <ClInclude Include="src\gfx\block\PreviewRenderer.h" />
+    <ClInclude Include="src\gfx\block\RenderData.h" />
+    <ClInclude Include="src\gfx\block\RenderGroupRegistry.h" />
+    <ClInclude Include="src\gfx\block\Surface.h" />
+    <ClInclude Include="src\gfx\block\SurfaceRegistry.h" />
+    <ClInclude Include="src\gfx\block\UvBuffer.h" />
+    <ClInclude Include="src\gfx\entity\EntityRenderSystem.h" />
+    <ClInclude Include="src\gfx\mesh\IndexedMesh.h" />
+    <ClInclude Include="src\gfx\texture\MaterialManager.h" />
+    <ClInclude Include="src\gfx\mesh\Mesh.h" />
+    <ClInclude Include="src\gfx\mesh\Model.h" />
+    <ClInclude Include="src\gfx\mesh\ModelCache.h" />
+    <ClInclude Include="src\gfx\mesh\ModelLoader.h" />
+    <ClInclude Include="src\gfx\mesh\TranslucentMesh.h" />
+    <ClInclude Include="src\gfx\render\chunk\ChunkMeshBuilder.h" />
+    <ClInclude Include="src\gfx\render\chunk\ChunkMeshes.h" />
+    <ClInclude Include="src\gfx\render\chunk\ChunkRenderer.h" />
+    <ClInclude Include="src\gfx\render\chunk\ChunkRenderPipelines.h" />
+    <ClInclude Include="src\gfx\render\GameDataBinding.h" />
+    <ClInclude Include="src\gfx\render\ModelPipeline.h" />
+    <ClInclude Include="src\gfx\render\particle\BlockDebrisEmitter.h" />
+    <ClInclude Include="src\gfx\render\particle\ExplosionEmitter.h" />
+    <ClInclude Include="src\gfx\render\particle\Particle.h" />
+    <ClInclude Include="src\gfx\render\particle\ParticleEmitter.h" />
+    <ClInclude Include="src\gfx\render\particle\ParticleEngine.h" />
+    <ClInclude Include="src\gfx\render\particle\ParticleInstance.h" />
+    <ClInclude Include="src\gfx\render\RenderLayers.h" />
+    <ClInclude Include="src\gfx\render\UniformGameData.h" />
+    <ClInclude Include="src\gfx\texture\Atlas.h" />
+    <ClInclude Include="src\gfx\texture\ImageRegionAllocator.h" />
+    <ClInclude Include="src\gfx\texture\SpriteSheet.h" />
+    <ClInclude Include="src\gfx\texture\SpriteSheetParser.h" />
+    <ClInclude Include="src\gfx\texture\TextureCache.h" />
+    <ClInclude Include="src\gfx\texture\TextureLoader.h" />
+    <ClInclude Include="src\gfx\texture\TextureManager.h" />
+    <ClInclude Include="src\gfx\ui\Container.h" />
+    <ClInclude Include="src\gfx\ui\DescriptorSetRegistry.h" />
+    <ClInclude Include="src\gfx\ui\LibGui.h" />
+    <ClInclude Include="src\gfx\ui\Node.h" />
+    <ClInclude Include="src\gfx\ui\NodeBinding.h" />
+    <ClInclude Include="src\gfx\ui\NodeParser.h" />
+    <ClInclude Include="src\gfx\ui\Page.h" />
+    <ClInclude Include="src\gfx\ui\Panel.h" />
+    <ClInclude Include="src\gfx\ui\Renderer.h" />
+    <ClInclude Include="src\gfx\ui\InputRouter.h" />
+    <ClInclude Include="src\gfx\ui\TriggerDispatcher.h" />
+    <ClInclude Include="src\gfx\ui\Ui.h" />
+    <ClInclude Include="src\gfx\UvRegion.h" />
+    <ClInclude Include="src\script\LuaScript.h" />
+    <ClInclude Include="src\script\LuaState.h" />
+    <ClInclude Include="src\util\hashers.h" />
+    <ClInclude Include="src\util\pathUtils.h" />
+    <ClInclude Include="src\vkcore\commands\CommandBuffer.h" />
+    <ClInclude Include="src\vkcore\commands\CommandPool.h" />
+    <ClInclude Include="src\vkcore\common\SystemError.h" />
+    <ClInclude Include="src\vkcore\common\UniqueHandles.h" />
+    <ClInclude Include="src\vkcore\common\vulkanFunctions.h" />
+    <ClInclude Include="src\vkcore\debug\DebugMessenger.h" />
+    <ClInclude Include="src\vkcore\devices\Device.h" />
+    <ClInclude Include="src\vkcore\devices\DeviceCreator.h" />
+    <ClInclude Include="src\vkcore\devices\DeviceQueue.h" />
+    <ClInclude Include="src\vkcore\devices\PhysicalDevice.h" />
+    <ClInclude Include="src\vkcore\devices\QueueFamilyIndices.h" />
+    <ClInclude Include="src\vkcore\instances\Instance.h" />
+    <ClInclude Include="src\vkcore\instances\LibraryLoader.h" />
+    <ClInclude Include="src\vkcore\pipeline\Framebuffer.h" />
+    <ClInclude Include="src\vkcore\pipeline\GraphicsPipelineCreator.h" />
+    <ClInclude Include="src\vkcore\pipeline\Pipeline.h" />
+    <ClInclude Include="src\vkcore\pipeline\PipelineLayout.h" />
+    <ClInclude Include="src\vkcore\pipeline\RenderPass.h" />
+    <ClInclude Include="src\vkcore\pipeline\SubpassDescription.h" />
+    <ClInclude Include="src\vkcore\present\Surface.h" />
+    <ClInclude Include="src\vkcore\present\Swapchain.h" />
+    <ClInclude Include="src\vkcore\present\SwapchainCapabilities.h" />
+    <ClInclude Include="src\vkcore\resource\Buffer.h" />
+    <ClInclude Include="src\vkcore\resource\BufferAllocator.h" />
+    <ClInclude Include="src\vkcore\resource\BufferBlock.h" />
+    <ClInclude Include="src\vkcore\resource\DescriptorAllocator.h" />
+    <ClInclude Include="src\vkcore\resource\DescriptorPool.h" />
+    <ClInclude Include="src\vkcore\resource\DescriptorSet.h" />
+    <ClInclude Include="src\vkcore\resource\DescriptorSetLayout.h" />
+    <ClInclude Include="src\vkcore\resource\DeviceMemory.h" />
+    <ClInclude Include="src\vkcore\resource\FreeListAllocator.h" />
+    <ClInclude Include="src\vkcore\resource\Image.h" />
+    <ClInclude Include="src\vkcore\resource\imageUtils.h" />
+    <ClInclude Include="src\vkcore\resource\ImageView.h" />
+    <ClInclude Include="src\vkcore\resource\MemoryAllocator.h" />
+    <ClInclude Include="src\vkcore\resource\MemoryBindHelper.h" />
+    <ClInclude Include="src\vkcore\resource\MemoryBlock.h" />
+    <ClInclude Include="src\vkcore\resource\memoryUtils.h" />
+    <ClInclude Include="src\vkcore\resource\SampledTexture.h" />
+    <ClInclude Include="src\vkcore\resource\Sampler.h" />
+    <ClInclude Include="src\vkcore\resource\Texture.h" />
+    <ClInclude Include="src\vkcore\resource\TransferContext.h" />
+    <ClInclude Include="src\vkcore\sync\Fence.h" />
+    <ClInclude Include="src\vkcore\sync\Semaphore.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{d086f03b-8d0c-4e05-84f0-bfd93cbd08a1}</ProjectGuid>
+    <RootNamespace>VoxelGore</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>include;$(IncludePath)</IncludePath>
+    <LibraryPath>libs/win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>include;$(IncludePath)</IncludePath>
+    <LibraryPath>libs/win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

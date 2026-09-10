@@ -1,0 +1,187 @@
+<game>
+	<container
+        pos="16, -16"
+        size="600, 600"
+        anchor="left, bottom"
+        color="0.0, 0.0, 0.0, 0.0"
+        visible="false">
+
+		<container
+            pos="0, 20"
+            size="180, 180"
+            anchor="center, top"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-held="onMoveForwardHeld"
+            on-release="onMoveForwardRelease"/>
+
+		<container
+            pos="0, -20"
+            size="180, 180"
+            anchor="center, bottom"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-held="onMoveBackHeld"
+            on-release="onMoveBackRelease"/>
+
+		<container
+            pos="20, 0"
+            size="180, 180"
+            anchor="left, center"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-held="onMoveLeftHeld"
+            on-release="onMoveLeftRelease"/>
+
+		<container
+            pos="-20, 0"
+            size="180, 180"
+            anchor="right, center"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-held="onMoveRightHeld"
+            on-release="onMoveRightRelease"/>
+
+		<container
+            pos="30, -30"
+            size="175, 175"
+            anchor="left, top"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-press="onBreakPress"
+            on-release="onBreakRelease"/>
+
+		<container
+            pos="-30, -30"
+            size="175, 175"
+            anchor="right, top"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-press="onInteractPress"
+            on-release="onInteractRelease"/>
+
+	</container>
+
+	<container
+        pos="16, -16"
+        size="600, 600"
+        anchor="right, bottom"
+        color="0.0, 0.0, 0.0, 0.0"
+        interactive="false"
+        visible="false">
+
+		<container
+            pos="0, 0"
+            size="175, 175"
+            anchor="center, center"
+            color="0.0, 0.0, 0.0, 0.45"
+            held-color="180.0, 180.0, 180.0, 0.85"
+            held-scale="0.9"
+            on-press="onJumpPress"
+            on-release="onJumpRelease"/>
+
+	</container>
+
+	<container
+        pos="0, 20"
+        size="976, 120"
+        anchor="center, bottom"
+        color="0.0, 0.0, 0.0, 0.0">
+
+		<container
+            pos="-427, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.1.preview"
+            on-press="onSlot1Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-305, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.2.preview"
+            on-press="onSlot2Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-183, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.3.preview"
+            on-press="onSlot3Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="-61, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.4.preview"
+            on-press="onSlot4Press"
+            held-scale="1.5"
+            held-color="0.0, 0.0, 0.0, 0.45"/>
+
+		<container
+            pos="61, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.5.preview"
+            on-press="onSlot5Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="183, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.6.preview"
+            on-press="onSlot6Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="305, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.7.preview"
+            on-press="onSlot7Press"
+            held-scale="1.5"/>
+
+		<container
+            pos="427, 0"
+            size="100, 100"
+            anchor="center, center"
+            bg-color="0.0, 0.0, 0.0, 0.45"
+            padding="0"
+            color="255.0, 255.0, 255.0, 1.0"
+            image="@blocks.8.preview"
+            on-press="onSlot8Press"
+            held-scale="1.5"/>
+
+	</container>
+</game>

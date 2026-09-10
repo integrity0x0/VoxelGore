@@ -1,0 +1,10 @@
+{
+  "id": "glass_lime",
+  "textures": {
+    "all": "materials/glass_lime.png"
+  },
+  "renderLayer": "translucent",
+  "renderGroup": "glass_lime",
+  "passingLight": true,
+  "debris": {}
+}

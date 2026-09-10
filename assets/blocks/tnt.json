@@ -1,0 +1,9 @@
+{
+  "id": "tnt",
+  "textures": {
+    "sides": "materials/tnt_side.png",
+    "bottom": "materials/tnt_bottom.png",
+    "top": "materials/tnt_top.png"
+  },
+  "debris":  {}
+}

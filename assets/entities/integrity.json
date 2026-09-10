@@ -1,0 +1,13 @@
+{
+  "id": "integrity",
+  "render": {
+    "type": "billboard",
+    "resource": "../images/integrity.png",
+    "layer": "translucent",
+    "size": [ 2.0, 4.0 ],
+    "ignoreLighting": true
+  },
+  "hitbox": {
+    "size": [ 1.0, 4.0, 1.0 ]
+  }
+}
