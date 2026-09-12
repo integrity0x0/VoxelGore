@@ -2,11 +2,11 @@
 
 namespace gfx::ui {
 
-void Container::render(Renderer& renderer) const {
-  Node::render(renderer);
+void Container::Render(Renderer& renderer) const {
+  Node::Render(renderer);
 
   for (const auto& child : children_) {
-    child->render(renderer);
+    child->Render(renderer);
   }
 }
 

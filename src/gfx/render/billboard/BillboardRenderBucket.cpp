@@ -46,7 +46,7 @@ BillboardRenderBucket::BillboardRenderBucket(const vkcore::Device& device,
   imageInfo.sampler = atlas.texture().sampler().handle();
   write.pImageInfo = &imageInfo;
 
-  device.dispatchTable().vkUpdateDescriptorSets(device.handle(), 1u, &write, 0u, nullptr);
+  device.dispatchTable().vkUpdateDescriptorSets(device.handle(), 1u, &write, 0, nullptr);
 }
 
 void BillboardRenderBucket::Submit(const BillboardInstance& billboard, RenderLayer renderLayer,

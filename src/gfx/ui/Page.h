@@ -22,7 +22,7 @@ class Page {
        const script::LuaState& luaState, std::string_view xmlPath);
   const std::vector<std::shared_ptr<Node>>& getNodes() const { return nodes_; }
   void Update(glm::vec2 screenSize);
-  void render(Renderer& renderer);
+  void Render(Renderer& renderer);
 
  private:
   std::string xmlPath_;

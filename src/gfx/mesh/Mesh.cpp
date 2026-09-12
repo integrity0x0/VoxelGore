@@ -42,9 +42,9 @@ Mesh::Mesh(const vkcore::Device& device, vkcore::BufferSlice&& buffer, uint32_t 
 void Mesh::Draw(VkCommandBuffer cmd) const {
   const auto& dt = device_->dispatchTable();
   if (indexBuffer_)
-    dt.vkCmdDrawIndexed(cmd, indexCount_, 1u, 0u, 0u, 0u);
+    dt.vkCmdDrawIndexed(cmd, indexCount_, 1u, 0, 0, 0);
   else
-    dt.vkCmdDraw(cmd, static_cast<uint32_t>(vertexCount_), 1u, 0u, 0u);
+    dt.vkCmdDraw(cmd, static_cast<uint32_t>(vertexCount_), 1u, 0, 0);
 }
 
 }  // namespace gfx

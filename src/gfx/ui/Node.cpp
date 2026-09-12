@@ -131,7 +131,7 @@ void Node::renderBg(Renderer& renderer) const {
   renderer.addQuad(bg.pos, bg.size, bgImage_.value_or(TextureRegion{}), bgColor_);
 }
 
-void Node::render(Renderer& renderer) const {
+void Node::Render(Renderer& renderer) const {
   if (!visible_) return;
 
   renderBg(renderer);

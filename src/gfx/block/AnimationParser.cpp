@@ -49,12 +49,12 @@ nlohmann::json loadJson(std::string_view path) {
 }
 
 UvRegion resolveFrame(const std::string& path, Atlas& atlas) {
-  const AtlasRegion* region = atlas.get(path);
+  const AtlasRegion* region = atlas.Require(path);
   if (!region) {
-    if (!atlas.load(path)) {
+    if (!atlas.Load(path)) {
       throw std::runtime_error("AnimationParser: failed to load texture: " + path);
     }
-    region = atlas.get(path);
+    region = atlas.Require(path);
     if (!region) {
       throw std::runtime_error("AnimationParser: texture loaded but region missing: " + path);
     }

@@ -11,6 +11,7 @@ namespace gfx::block {
 
 class AnimationParser {
  public:
+  AnimationParser() = delete;
   [[nodiscard]] static Animation parse(const std::string& jsonPath, Atlas& atlas);
 };
 

@@ -54,7 +54,7 @@ class ChunkMeshBuilder {
              indexCount_ + quadCount * kIndicesPerQuad <= indexCapacity_;
     }
 
-    bool empty() const { return vertexCount_ == 0u; }
+    bool empty() const { return vertexCount_ == 0; }
 
     uint32_t PushQuad(const std::array<Vertex, 4>& vertices,
                       const std::array<uint32_t, 6>& localIndices) {
@@ -62,10 +62,10 @@ class ChunkMeshBuilder {
 
       const uint32_t baseVertex = vertexCount_;
 
-      for (size_t i = 0u; i < kVerticesPerQuad; ++i) {
+      for (size_t i = 0; i < kVerticesPerQuad; ++i) {
         vertexData_[vertexOffset_ + vertexCount_++] = vertices[i];
       }
-      for (size_t i = 0u; i < kIndicesPerQuad; ++i) {
+      for (size_t i = 0; i < kIndicesPerQuad; ++i) {
         indexData_[indexOffset_ + indexCount_++] = baseVertex + localIndices[i];
       }
 
@@ -75,15 +75,15 @@ class ChunkMeshBuilder {
     void CommitChunk() {
       vertexOffset_ += vertexCount_;
       indexOffset_ += indexCount_;
-      vertexCount_ = 0u;
-      indexCount_ = 0u;
+      vertexCount_ = 0;
+      indexCount_ = 0;
     }
 
     void Reset() {
-      vertexOffset_ = 0u;
-      indexOffset_ = 0u;
-      vertexCount_ = 0u;
-      indexCount_ = 0u;
+      vertexOffset_ = 0;
+      indexOffset_ = 0;
+      vertexCount_ = 0;
+      indexCount_ = 0;
     }
 
     uint32_t vertexCount() const { return vertexCount_; }

@@ -8,7 +8,7 @@ namespace vkcore {
 class DescriptorSetLayout {
  public:
   DescriptorSetLayout(const Device& device, std::span<const VkDescriptorSetLayoutBinding> bindings,
-                      void* pNext = nullptr, VkDescriptorBindingFlags flags = 0u)
+                      void* pNext = nullptr, VkDescriptorBindingFlags flags = 0)
       : device_(&device) {
     VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCI = {
         VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};

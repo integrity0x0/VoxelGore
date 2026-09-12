@@ -7,7 +7,7 @@ RenderData::RenderData(const gm::BlockManager& blockManager, const vkcore::Devic
                        vkcore::MemoryAllocator& memoryAllocator, uint32_t framesInFlight)
     : blockManager_(&blockManager),
       transferCtxt_(&transferCtxt),
-      atlas_(device, transferCtxt, memoryAllocator, glm::ivec2(2048), 6u, 2u),
+      atlas_(device, transferCtxt, memoryAllocator, glm::ivec2(2048), 6, 2, 128),
       surfaceRegistry_(atlas_) {
   uvBuffers_.reserve(framesInFlight);
 
@@ -17,10 +17,10 @@ RenderData::RenderData(const gm::BlockManager& blockManager, const vkcore::Devic
 
   blockInfos_.resize(blockManager.blockCount());
 
-  build();
+  Build();
 }
 
-void RenderData::build() {
+void RenderData::Build() {
   for (uint32_t blockId = 0; blockId < blockInfos_.size(); blockId++) {
     auto& info = blockInfos_[blockId];
 
@@ -31,7 +31,7 @@ void RenderData::build() {
     }
 
     for (uint32_t face = 0; face < kFaceCount; face++) {
-      info.surfaces[face] = surfaceRegistry_.resolve(block->getSurface(face), uvBuffers_);
+      info.surfaces[face] = surfaceRegistry_.Resolve(block->getSurface(face), uvBuffers_);
     }
 
     info.renderGroup = renderGroupRegistry_.registerGroup(block->renderGroup());
@@ -43,7 +43,7 @@ void RenderData::Update(float dt, uint32_t currentFrameInFlight) {
     return;
   }
 
-  surfaceRegistry_.updateAnimations(dt, uvBuffers_[currentFrameInFlight]);
+  surfaceRegistry_.UpdateAnimations(dt, uvBuffers_[currentFrameInFlight]);
 }
 
 SurfaceId RenderData::surfaceId(uint32_t blockId, gm::Block::Face face) {

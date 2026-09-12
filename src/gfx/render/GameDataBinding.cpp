@@ -7,7 +7,7 @@ namespace gfx {
 vkcore::DescriptorSetLayout GameDataBinding::BuildDescriptorSetLayout(
     const vkcore::Device& device) {
   VkDescriptorSetLayoutBinding binding = {};
-  binding.binding = 0u;
+  binding.binding = 0;
   binding.descriptorCount = 1u;
   binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;

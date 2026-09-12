@@ -28,7 +28,7 @@ class BillboardBatch {
 
   void Render(VkCommandBuffer cmd, const glm::vec3& cameraPos, uint32_t currentFrame);
 
-  [[nodiscard]] bool IsEmpty() const { return billboardCount_ == 0u; }
+  [[nodiscard]] bool IsEmpty() const { return billboardCount_ == 0; }
 
  private:
   static constexpr VkDeviceSize kBufferSize = 8 * 1024 * 1024ull;

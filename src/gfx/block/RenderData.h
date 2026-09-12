@@ -22,8 +22,8 @@ class RenderData {
 
   void Update(float dt, uint32_t currentFrameInFlight);
 
-  [[nodiscard]] const UvRegion& extractRegion(uint32_t blockId, gm::Block::Face face) {
-    return surfaceRegistry_.extractRegion(
+  [[nodiscard]] const UvRegion& ExtractRegion(uint32_t blockId, gm::Block::Face face) {
+    return surfaceRegistry_.ExtractRegion(
         blockInfos_[blockId].surfaces[static_cast<uint32_t>(face)]);
   }
 
@@ -44,7 +44,7 @@ class RenderData {
   [[nodiscard]] const std::vector<UvBuffer>& uvBuffers() const { return uvBuffers_; }
 
  private:
-  void build();
+  void Build();
 
  private:
   struct BlockRenderInfo {

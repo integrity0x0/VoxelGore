@@ -22,7 +22,7 @@ void EntityRenderData::Update(gm::Entity entity, const gm::RenderComponent& comp
       break;
 
     case gm::RenderComponent::Type::Billboard:
-      info.billboardRegion = generalAtlas_->get(component.resource);
+      info.billboardRegion = generalAtlas_->Require(component.resource);
       break;
   }
 }

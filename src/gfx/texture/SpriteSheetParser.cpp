@@ -61,8 +61,7 @@ std::optional<SpriteSheetParser::CommonData> SpriteSheetParser::loadCommon(
   const std::string textureRel = j.at("texture").get<std::string>();
   const std::string texturePath = util::NormalizePath(jsonDir + textureRel);
 
-  atlas.load(texturePath);
-  const AtlasRegion* region = atlas.get(texturePath);
+  const AtlasRegion* region = atlas.Load(texturePath);
   if (!region) {
     return std::nullopt;
   }
@@ -101,7 +100,7 @@ std::optional<SpriteSheet> SpriteSheetParser::parse(const nlohmann::json& j,
   auto common = loadCommon(j, jsonPath, atlas);
   if (!common) return std::nullopt;
 
-  return SpriteSheet(*common->region, common->frameSize, common->orientation, 0u);
+  return SpriteSheet(*common->region, common->frameSize, common->orientation, 0);
 }
 
 std::optional<SpriteSheet> SpriteSheetParser::parse(std::string_view jsonPath, Atlas& atlas) {

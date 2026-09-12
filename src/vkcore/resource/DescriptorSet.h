@@ -8,11 +8,12 @@ class DescriptorSet {
  public:
   VkDescriptorSet handle() const { return descriptorSet_.get(); }
 
-  void Bind(VkCommandBuffer cmd, VkPipelineLayout layout,
-            VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS) {
+  void Bind(VkCommandBuffer cmd, VkPipelineLayout layout, uint32_t bindingIndex = 0,
+            VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS) const {
     VkDescriptorSet descriptorSets[] = {descriptorSet_.get()};
 
-    device_->dispatchTable().vkCmdBindDescriptorSets(cmd, bindPoint, layout, 0, 1, descriptorSets,
+    device_->dispatchTable().vkCmdBindDescriptorSets(cmd, bindPoint, layout, bindingIndex, 1,
+                                                     descriptorSets,
                                                      0, nullptr);
   }
 

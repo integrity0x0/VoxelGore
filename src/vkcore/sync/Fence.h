@@ -6,7 +6,7 @@ namespace vkcore {
 
 class Fence {
  public:
-  explicit Fence(const Device& device, VkFenceCreateFlags flags = 0u);
+  explicit Fence(const Device& device, VkFenceCreateFlags flags = 0);
 
   VkFence handle() const noexcept { return fence_.get(); }
 

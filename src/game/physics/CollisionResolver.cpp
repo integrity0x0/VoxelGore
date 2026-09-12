@@ -249,8 +249,8 @@ float CollisionResolver::SampleFrictionAtFeet(const Hitbox& hitbox) {
     friction = std::max(friction, block->friction());
   }
 
-  if (!foundSurface && blockManager_->block(0u)) {
-    return blockManager_->block(0u)->friction();
+  if (!foundSurface && blockManager_->block(0)) {
+    return blockManager_->block(0)->friction();
   }
 
   return friction;
@@ -307,7 +307,7 @@ std::optional<RayCastHit> CollisionResolver::Raycast(const glm::vec3& origin, co
       bestT = res.t;
       bestNormal = res.normal;
       bestVoxel = glm::ivec3(0);
-      bestEntity = Entity(entities[i], 0u);
+      bestEntity = Entity(entities[i], 0);
       anyHit = true;
     }
   }

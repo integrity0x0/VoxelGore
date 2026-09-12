@@ -21,7 +21,7 @@ class GameDataBinding {
   void Bind(VkCommandBuffer cmd, uint32_t frameIndex) const {
     VkDescriptorSet set = frames_[frameIndex].descriptorSet.handle();
     device_->dispatchTable().vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_.handle(),
-                                                     kFirstSetIndex, 1u, &set, 0u, nullptr);
+                                                     kFirstSetIndex, 1u, &set, 0, nullptr);
   }
 
   [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const {
@@ -33,7 +33,7 @@ class GameDataBinding {
   [[nodiscard]] vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device,
                                                            uint32_t framesCount);
  private:
-  static constexpr uint32_t kFirstSetIndex = 0u;
+  static constexpr uint32_t kFirstSetIndex = 0;
   static constexpr VkBufferUsageFlags kBuffersUsage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
   static constexpr VkMemoryPropertyFlags kMemoryProperties =
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;

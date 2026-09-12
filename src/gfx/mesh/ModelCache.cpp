@@ -25,7 +25,7 @@ ModelId ModelCache::Require(std::string_view path) {
   auto model = ModelLoader::Load(static_cast<ModelId>(models_.size()), *device_, *transferCtxt_,
                                  *bufferAllocator_, materialCache_, path);
 
-  if (!model) return kInvalidModel;
+  if (!model) return kInvalidModelId;
 
   const ModelId id = static_cast<ModelId>(models_.size());
 

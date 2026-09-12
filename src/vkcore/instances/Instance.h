@@ -11,7 +11,7 @@ class Instance {
  public:
   Instance(const LibraryLoader& loader, std::vector<std::string> extensions,
            std::vector<std::string> layers, const VkApplicationInfo& appInfo,
-           VkInstanceCreateFlags instanceCreateFlags = 0u);
+           VkInstanceCreateFlags instanceCreateFlags = 0);
   ~Instance() = default;
 
   template <typename T>
@@ -37,7 +37,7 @@ class Instance {
   UniqueInstance instance = {};
   std::vector<std::string> enabledExtensions = {};
   std::vector<std::string> enabledLayers = {};
-  uint32_t apiVersion = 0u;
+  uint32_t apiVersion = 0;
   InstanceDispatchTable dispatchTable = {};
 };
 }  // namespace vkcore

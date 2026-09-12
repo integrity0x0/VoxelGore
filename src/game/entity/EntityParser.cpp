@@ -109,34 +109,34 @@ std::optional<EntityParser::Definition> EntityParser::Parse(std::string_view pat
         separator == std::string_view::npos ? std::string_view{} : path.substr(0, separator + 1);
 
     if (json->contains("render")) {
-      const auto& render = json->at("render");
+      const auto& Render = json->at("render");
 
-      const auto type = ParseRenderType(render.at("type").get<std::string_view>());
+      const auto type = ParseRenderType(Render.at("type").get<std::string_view>());
 
       if (!type) {
         return std::nullopt;
       }
 
-      const auto renderLayer = ParseRenderMode(render.value("layer", "solid"));
+      const auto renderLayer = ParseRenderMode(Render.value("layer", "solid"));
 
       if (!renderLayer) {
         return std::nullopt;
       }
 
       const std::string resourcePath =
-          std::string(jsonDir) + render.at("resource").get<std::string>();
+          std::string(jsonDir) + Render.at("resource").get<std::string>();
 
       Definition::Render renderDefinition{
           .type = *type,
           .layer = *renderLayer,
           .resource = util::NormalizePath(resourcePath),
           .billboardSize = glm::vec2{1.0f},
-          .ignoreLighting = render.value("ignoreLighting", false),
-          .ignoreHurtColor = render.value("ignoreHurtColor", false),
+          .ignoreLighting = Render.value("ignoreLighting", false),
+          .ignoreHurtColor = Render.value("ignoreHurtColor", false),
       };
 
-      if (render.contains("size")) {
-        const auto& size = render.at("size");
+      if (Render.contains("size")) {
+        const auto& size = Render.at("size");
 
         renderDefinition.billboardSize = glm::vec2{
             size.at(0).get<float>(),

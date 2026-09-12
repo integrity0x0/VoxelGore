@@ -32,14 +32,14 @@ class Buffer {
 
   [[nodiscard]] const MemorySlice& memorySlice() const { return memorySlice_; }
 
-  void BindVertex(VkCommandBuffer cmd, VkDeviceSize offset = 0ull,
-                  uint32_t firstBinding = 0u) const {
+  void BindVertex(VkCommandBuffer cmd, VkDeviceSize offset = 0ll,
+                  uint32_t firstBinding = 0) const {
     VkDeviceSize offsets[] = {offset};
     VkBuffer buffers[] = {buffer_.get()};
     device_->dispatchTable().vkCmdBindVertexBuffers(cmd, firstBinding, 1u, buffers, offsets);
   }
 
-  void BindIndex(VkCommandBuffer cmd, VkDeviceSize offset = 0ull,
+  void BindIndex(VkCommandBuffer cmd, VkDeviceSize offset = 0ll,
                  VkIndexType indexType = VK_INDEX_TYPE_UINT32) const {
     device_->dispatchTable().vkCmdBindIndexBuffer(cmd, buffer_.get(), offset, indexType);
   }

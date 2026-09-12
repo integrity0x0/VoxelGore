@@ -15,8 +15,8 @@ class Lighting {
         g(chunkManager, blockManager, LightChannel::G),
         b(chunkManager, blockManager, LightChannel::B) {}
 
-  void lightUp();
-  void onVoxelSetted(const glm::ivec3& pos, const Voxel& voxel);
+  void LightUp();
+  void OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel);
 
  private:
   ChunkManager* chunkManager;

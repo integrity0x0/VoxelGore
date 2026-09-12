@@ -92,7 +92,7 @@ void BillboardBatch::Render(VkCommandBuffer cmd, const glm::vec3& cameraPosition
     instances_.clear();
     sortBuffer_.clear();
   }
-  billboardCount_ = 0u;
+  billboardCount_ = 0;
 }
 
 }  // namespace gfx

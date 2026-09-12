@@ -25,10 +25,27 @@
     <None Include="assets\blocks\ice.json" />
     <None Include="assets\entities\barrel.json" />
     <None Include="assets\entities\integrity.json" />
+    <None Include="shaders\blockPreview.frag" />
+    <None Include="shaders\blockPreview.vert" />
+    <None Include="shaders\crosshair.frag" />
+    <None Include="shaders\crosshair.vert" />
+    <None Include="shaders\main.frag" />
+    <None Include="shaders\main.vert" />
+    <None Include="shaders\main_atlas_debug.vert" />
+    <None Include="shaders\main_cutout.frag" />
+    <None Include="shaders\model.frag.spv" />
+    <None Include="shaders\particle.frag" />
+    <None Include="shaders\particle.vert" />
+    <None Include="shaders\particle_cutout.frag" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
     <None Include="shaders\model.frag" />
     <None Include="shaders\model.vert" />
+    <None Include="shaders\ui.frag" />
+    <None Include="shaders\ui.vert" />
     <None Include="src\gfx\block\faceVertices.inl" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
+    <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
@@ -101,6 +118,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
+    <ClCompile Include="src\util\files.cpp" />
     <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
     <ClCompile Include="src\vkcore\common\SystemError.cpp" />
     <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
@@ -139,8 +157,10 @@
     <ClCompile Include="third_party\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="shaders\UniformGameData.glsl" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
     <ClInclude Include="src\gfx\texture\Skybox.h" />
     <ClInclude Include="src\gfx\render\billboard\BillboardBatch.h" />
     <ClInclude Include="src\game\entity\EntityDefinitionRegistry.h" />
@@ -239,6 +259,7 @@
     <ClInclude Include="src\gfx\UvRegion.h" />
     <ClInclude Include="src\script\LuaScript.h" />
     <ClInclude Include="src\script\LuaState.h" />
+    <ClInclude Include="src\util\files.h" />
     <ClInclude Include="src\util\hashers.h" />
     <ClInclude Include="src\util\pathUtils.h" />
     <ClInclude Include="src\vkcore\commands\CommandBuffer.h" />

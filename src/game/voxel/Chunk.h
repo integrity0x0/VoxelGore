@@ -42,7 +42,7 @@ class Chunk {
   [[nodiscard]] LightMap& lightMap() { return lightMap_; }
   [[nodiscard]] const LightMap& lightMap() const { return lightMap_; }
 
-  [[nodiscard]] bool IsEmpty() const { return nonEmptyCount_ == 0ull; }
+  [[nodiscard]] bool IsEmpty() const { return nonEmptyCount_ == 0ll; }
 
  private:
   size_t ArrayIndex(const glm::ivec3& localPos) const {
@@ -51,7 +51,7 @@ class Chunk {
   std::unique_ptr<Voxel[]> voxels_;
   glm::ivec3 pos_;
   LightMap lightMap_;
-  size_t nonEmptyCount_ = 0ull;
+  size_t nonEmptyCount_ = 0ll;
 };
 
 }  // namespace gm

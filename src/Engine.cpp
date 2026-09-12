@@ -141,8 +141,8 @@ void Engine::createLogicalDevice() {
 }
 
 void Engine::createAllocators() {
-  memoryAllocator = std::make_unique<vkcore::MemoryAllocator>(*device);
-  bufferAllocator = std::make_unique<vkcore::BufferAllocator>(*device, *memoryAllocator);
+  memoryAllocator_ = std::make_unique<vkcore::MemoryAllocator>(*device);
+  bufferAllocator_ = std::make_unique<vkcore::BufferAllocator>(*device, *memoryAllocator_);
 }
 
 void Engine::createSwapchain() {
@@ -219,7 +219,7 @@ void Engine::createDepthResources() {
   imageCI.samples = VK_SAMPLE_COUNT_1_BIT;
   imageCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  vkcore::Image depthImage(*device, imageCI, *memoryAllocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+  vkcore::Image depthImage(*device, imageCI, *memoryAllocator_, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
   VkImageViewCreateInfo viewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
   viewCI.image = depthImage.handle();
@@ -278,7 +278,7 @@ void Engine::createCommandPool() {
 
 void Engine::createTransferCtxt() {
   transferCtxt = std::make_unique<vkcore::TransferContext>(*device, getGraphicsQueue(),
-                                                           *commandPool, *bufferAllocator);
+                                                           *commandPool, *bufferAllocator_);
 }
 
 void Engine::createCommandBuffers() {
@@ -366,7 +366,7 @@ void Engine::restoreSurface() {
 
 bool Engine::IsRenderable() const { return surface != nullptr; }
 
-void Engine::beginRenderPass(uint32_t imageIndex, float r, float g, float b) {
+void Engine::BeginRenderPass(uint32_t imageIndex, float r, float g, float b) {
   VkRect2D renderArea = {};
   renderArea.offset = {0, 0};
   renderArea.extent = swapchain->extent();

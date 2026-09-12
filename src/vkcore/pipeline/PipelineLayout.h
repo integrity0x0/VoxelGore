@@ -15,7 +15,7 @@ class PipelineLayout {
   PipelineLayout(const Device& device,
                  std::span<const DescriptorSetLayout* const> descriptorSetLayouts = {},
                  std::span<const VkPushConstantRange> pcRanges = {}, void* pNext = nullptr,
-                 VkPipelineLayoutCreateFlags flags = 0u);
+                 VkPipelineLayoutCreateFlags flags = 0);
 
   VkPipelineLayout handle() const { return pipelineLayout.get(); }
 
@@ -32,7 +32,7 @@ class PipelineLayout {
   template <typename T>
   void PushConstants(VkCommandBuffer commandBuffer, VkShaderStageFlags stageFlags,
                      const T& data) const {
-    PushConstants(commandBuffer, stageFlags, 0u,
+    PushConstants(commandBuffer, stageFlags, 0,
                   std::span<const std::byte>(reinterpret_cast<const std::byte*>(&data), sizeof(T)));
   }
 

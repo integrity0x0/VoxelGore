@@ -20,7 +20,7 @@ class SpriteSheet {
     const SpriteSheet* anim_;
     float currentTime_ = 0.0f;
     float duration_;
-    uint32_t currentFrame_ = 0u;
+    uint32_t currentFrame_ = 0;
   };
 
   enum class Orientation { Vertical, Horizontal };

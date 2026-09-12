@@ -13,7 +13,7 @@ ModelPipeline::ModelPipeline(const vkcore::Device& device, const vkcore::RenderP
 
 vkcore::DescriptorSetLayout ModelPipeline::BuildDescriptorSetLayout(const vkcore::Device& device) {
   VkDescriptorSetLayoutBinding bindingImage = {};
-  bindingImage.binding = 0u;
+  bindingImage.binding = 0;
   bindingImage.descriptorCount = 1u;
   bindingImage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
   bindingImage.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;

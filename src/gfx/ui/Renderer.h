@@ -34,7 +34,7 @@ class Renderer {
   void end();
 
  private:
-  static constexpr VkDeviceSize bufferCapacity = 64'000'000ull;
+  static constexpr VkDeviceSize bufferCapacity = 64'000'000ll;
   static constexpr std::string_view kWhiteTextureKey = "ui.white";
 
   void flushBatch();

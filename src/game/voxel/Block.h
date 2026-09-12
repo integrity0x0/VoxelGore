@@ -46,7 +46,10 @@ class Block {
   void setDebrisConfig(const std::optional<BlockDebrisConfig> debrisConfig) {
     debrisConfig_ = debrisConfig;
   }
-  const std::optional<BlockDebrisConfig>& debrisConfig() const { return debrisConfig_; }
+
+  [[nodiscard]] const std::optional<BlockDebrisConfig>& debrisConfig() const {
+    return debrisConfig_;
+  }
 
   [[nodiscard]] const std::string& renderGroup() const { return renderGroup_; }
 

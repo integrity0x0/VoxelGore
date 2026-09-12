@@ -14,27 +14,27 @@ class Animation {
 
   void start();
   void stop();
-  bool isPlaying() const { return playing_; }
+  [[nodiscard]] bool isPlaying() const { return playing_; }
 
-  const UvRegion& Update(float dt);
+  [[nodiscard]] const UvRegion& Update(float dt);
 
   void setCurrentFrame(uint32_t frameIndex);
-  uint32_t currentFrame() const { return currentFrame_; }
+  [[nodiscard]] uint32_t currentFrame() const { return currentFrame_; }
 
   void setTime(float timeSec);
   float time() const { return accumulator_; }
 
-  const UvRegion& getCurrentRegion() const { return spriteSheet_.frameAt(currentFrame_); }
+  [[nodiscard]] const UvRegion& getCurrentRegion() const { return spriteSheet_.frameAt(currentFrame_); }
 
   void setFrameDuration(float frameDurationSec) { frameDuration_ = frameDurationSec; }
 
-  float frameDuration() const { return frameDuration_; }
+  [[nodiscard]] float frameDuration() const { return frameDuration_; }
 
  private:
   SpriteSheet spriteSheet_;
   float frameDuration_;
   float accumulator_ = 0.0f;
-  uint32_t currentFrame_ = 0u;
+  uint32_t currentFrame_ = 0;
   bool playing_ = true;
 };
 

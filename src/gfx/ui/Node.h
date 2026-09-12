@@ -128,7 +128,7 @@ class Node {
 
   // Rendering
   virtual void renderBg(Renderer& renderer) const;
-  virtual void render(Renderer& renderer) const;
+  virtual void Render(Renderer& renderer) const;
 
   // Lua callbacks
   const std::string& getOnPressLua() const { return onPressLua_; }

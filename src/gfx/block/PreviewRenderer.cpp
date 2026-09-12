@@ -116,7 +116,7 @@ vkcore::Buffer PreviewRenderer::BuildVertexBuffer(uint32_t blockId) {
   for (uint32_t face = 0; face < 6; face++) {
     gfx::block::SurfaceId surfaceId =
         blockRenderData_->surfaceId(blockId, static_cast<gm::Block::Face>(face));
-    const gfx::UvRegion& uvRegion = blockRenderData_->surfaceRegistry().extractRegion(surfaceId);
+    const gfx::UvRegion& uvRegion = blockRenderData_->surfaceRegistry().ExtractRegion(surfaceId);
     glm::vec2 uvMin = uvRegion.min;
     glm::vec2 uvScale = uvRegion.max - uvRegion.min;
 

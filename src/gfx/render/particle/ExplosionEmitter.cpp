@@ -72,7 +72,7 @@ void ExplosionEmitter::emitBurst(const ActiveEmitter& em) {
     p.variantId = static_cast<uint32_t>(variantId);
     p.ignoreLighting = true;
 
-    const UvRegion& uv = sheet.frameAt(0u);
+    const UvRegion& uv = sheet.frameAt(0);
     p.uvMinMax = glm::vec4(uv.min.x, uv.min.y, uv.max.x, uv.max.y);
 
     particles_.push_back(p);

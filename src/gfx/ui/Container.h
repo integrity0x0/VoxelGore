@@ -15,7 +15,7 @@ class Container : public Node {
 
   const std::vector<std::shared_ptr<Node>>& getChildren() const override { return children_; }
 
-  void render(Renderer& renderer) const override;
+  void Render(Renderer& renderer) const override;
 
  private:
   std::vector<std::shared_ptr<Node>> children_;

@@ -4,7 +4,7 @@
 
 namespace gm {
 
-void Lighting::lightUp() {
+void Lighting::LightUp() {
   constexpr int L = static_cast<int>(Chunk::kLength);
 
   const int worldWidth = chunkManager->width() * L;
@@ -25,13 +25,13 @@ void Lighting::lightUp() {
         bool isPassingLight = block && block->isPassingLight();
 
         glm::ivec3 emission = (block) ? block->getEmission() : glm::ivec3(0);
-        r.spread(pos, emission.r);
-        g.spread(pos, emission.g);
-        b.spread(pos, emission.b);
+        r.Spread(pos, emission.r);
+        g.Spread(pos, emission.g);
+        b.Spread(pos, emission.b);
 
         if (!sunBlocked && isPassingLight) {
           chunkManager->setLight(pos, LightChannel::S, 15);
-          s.spread(pos, 15);
+          s.Spread(pos, 15);
         }
 
         if (!isPassingLight) {
@@ -47,8 +47,8 @@ void Lighting::lightUp() {
   }
 }
 
-void Lighting::onVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
-  constexpr uint32_t SUN_LIGHT = 15;
+void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
+  static constexpr uint32_t kSunLight = 15;
 
   static const glm::ivec3 kOffsets[6] = {
       {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
@@ -56,79 +56,62 @@ void Lighting::onVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
 
   auto block = blockManager->block(voxel.id);
   bool isPassingLight = block && block->isPassingLight();
-  glm::ivec3 emission = (block) ? block->getEmission() : glm::ivec3(0);
+  glm::ivec3 emission = block ? block->getEmission() : glm::ivec3(0);
 
   if (isPassingLight) {
-    r.remove(pos);
-    g.remove(pos);
-    b.remove(pos);
-    s.remove(pos);
+    if (chunkManager->getLight(pos + glm::ivec3(0, 1, 0), LightChannel::S) == kSunLight) {
+      for (int32_t i = pos.y; i >= 0; --i) {
+        glm::ivec3 p = {pos.x, i, pos.z};
 
-    r.spread(pos, emission.r);
-    g.spread(pos, emission.g);
-    b.spread(pos, emission.b);
-
-    if (chunkManager->getLight(pos + glm::ivec3(0, 1, 0), LightChannel::S) == SUN_LIGHT) {
-      glm::ivec3 p = pos;
-      while (true) {
         auto v = chunkManager->getVoxel(p);
         if (!v.has_value()) break;
 
         auto b = blockManager->block(v->id);
         if (!b || !b->isPassingLight()) break;
 
-        s.spread(p, SUN_LIGHT);
-        --p.y;
+        s.Spread(p, kSunLight);
       }
     }
-
-    for (const auto& off : kOffsets) {
-      glm::ivec3 n = pos + off;
-      auto v = chunkManager->getVoxel(n);
-      if (v.has_value()) {
-        auto neighborBlock = blockManager->block(v->id);
-        if (neighborBlock) {
-          glm::ivec3 neighborEmission = neighborBlock->getEmission();
-          if (neighborEmission.r > 0) r.spread(n, neighborEmission.r);
-          if (neighborEmission.g > 0) g.spread(n, neighborEmission.g);
-          if (neighborEmission.b > 0) b.spread(n, neighborEmission.b);
-        }
-      }
-    }
-
-    s.Update();
-    r.Update();
-    g.Update();
-    b.Update();
-
   } else {
-    r.remove(pos);
-    g.remove(pos);
-    b.remove(pos);
-    s.remove(pos);
+    s.Remove(pos);
+    for (int32_t i = pos.y - 1; i >= 0; --i) {
+      glm::ivec3 p = {pos.x, i, pos.z};
 
-    r.spread(pos, emission.r);
-    g.spread(pos, emission.g);
-    b.spread(pos, emission.b);
-
-    glm::ivec3 p = pos;
-    --p.y;
-    while (true) {
       auto v = chunkManager->getVoxel(p);
       if (!v.has_value()) break;
 
       auto b = blockManager->block(v->id);
       if (!b || !b->isPassingLight()) break;
 
-      s.remove(p);
-      --p.y;
+      s.Remove(p);
     }
-
     s.Update();
-    r.Update();
-    g.Update();
-    b.Update();
   }
-}
 
+  r.Remove(pos);
+  g.Remove(pos);
+  b.Remove(pos);
+
+  r.Update();
+  g.Update();
+  b.Update();
+
+  for (const auto& off : kOffsets) {
+    glm::ivec3 neighborPos = pos + off;
+
+    r.Spread(neighborPos);
+    g.Spread(neighborPos);
+    b.Spread(neighborPos);
+    s.Spread(neighborPos);
+  }
+
+  if (emission.r) r.Spread(pos, emission.r);
+  if (emission.g) g.Spread(pos, emission.g);
+  if (emission.b) b.Spread(pos, emission.b);
+
+  r.Update();
+  g.Update();
+  b.Update();
+  s.Update();
+}
 }  // namespace gm

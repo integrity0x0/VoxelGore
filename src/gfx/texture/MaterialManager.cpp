@@ -40,7 +40,7 @@ const MaterialManager::Material* MaterialManager::Require(std::string_view key) 
 
   write.pImageInfo = &imageInfo;
 
-  device_->dispatchTable().vkUpdateDescriptorSets(device_->handle(), 1u, &write, 0u, nullptr);
+  device_->dispatchTable().vkUpdateDescriptorSets(device_->handle(), 1u, &write, 0, nullptr);
 
   auto material = std::make_unique<Material>(texture, std::move(descriptorSet));
 

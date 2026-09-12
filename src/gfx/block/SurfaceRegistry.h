@@ -15,20 +15,20 @@ using SurfaceId = uint32_t;
 
 class SurfaceRegistry {
  public:
-  static constexpr SurfaceId kInvalidSurface = 0u;
+  static constexpr SurfaceId kInvalidSurface = 0;
 
   SurfaceRegistry(Atlas& atlas) : atlas_(&atlas) {}
 
-  [[nodiscard]] SurfaceId resolve(const std::string& path, std::vector<UvBuffer>& buffers);
+  [[nodiscard]] SurfaceId Resolve(const std::string& path, std::vector<UvBuffer>& buffers);
 
-  [[nodiscard]] const UvRegion& extractRegion(SurfaceId id) const;
+  [[nodiscard]] const UvRegion& ExtractRegion(SurfaceId id) const;
 
-  void updateAnimations(float dt, UvBuffer& buffer);
+  void UpdateAnimations(float dt, UvBuffer& buffer);
 
  private:
-  [[nodiscard]] SurfaceId load(const std::string& path, std::vector<UvBuffer>& buffers);
-  [[nodiscard]] SurfaceId registerSurface(const UvRegion& uvRegion, std::vector<UvBuffer>& buffers);
-  [[nodiscard]] SurfaceId registerAnimatedSurface(const Animation& animation,
+  [[nodiscard]] SurfaceId Load(const std::string& path, std::vector<UvBuffer>& buffers);
+  [[nodiscard]] SurfaceId RegisterSurface(const UvRegion& uvRegion, std::vector<UvBuffer>& buffers);
+  [[nodiscard]] SurfaceId RegisterAnimatedSurface(const Animation& animation,
                                                   std::vector<UvBuffer>& buffers);
 
  private:

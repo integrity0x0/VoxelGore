@@ -9,7 +9,7 @@ PhysicalDevice::PhysicalDevice(const Instance& instance, VkPhysicalDevice physic
   dt.vkGetPhysicalDeviceProperties(physicalDevice, &properties);
   dt.vkGetPhysicalDeviceFeatures(physicalDevice, &features);
 
-  uint32_t extensionsCount = 0u;
+  uint32_t extensionsCount = 0;
   static const char* failedMsg = "Failed to enumerate physical device extension properties";
   SystemError::check(
       dt.vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionsCount, nullptr),
@@ -47,7 +47,7 @@ bool PhysicalDevice::supportsQueueFamilies(const std::vector<VkQueueFlags>& requ
         "missing from dispatch table");
   }
 
-  uint32_t familyCount = 0u;
+  uint32_t familyCount = 0;
   dt.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &familyCount, nullptr);
   std::vector<VkQueueFamilyProperties> families(familyCount);
   dt.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &familyCount, families.data());
@@ -83,7 +83,7 @@ QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices(VkSurfaceKHR surface) c
         "surfaceTable / vkGetPhysicalDeviceSurfaceSupportKHR is missing");
   }
 
-  uint32_t familyCount = 0u;
+  uint32_t familyCount = 0;
   dt.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &familyCount, nullptr);
   std::vector<VkQueueFamilyProperties> families(familyCount);
   dt.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &familyCount, families.data());
@@ -125,7 +125,7 @@ std::unique_ptr<PhysicalDevice> pick(const Instance& instance,
     throw std::runtime_error("pick: vkEnumeratePhysicalDevices is missing from dispatch table");
   }
 
-  uint32_t count = 0u;
+  uint32_t count = 0;
   dt.vkEnumeratePhysicalDevices(instance.handle(), &count, nullptr);
   if (count == 0) throw std::runtime_error("No Vulkan physical devices found");
 

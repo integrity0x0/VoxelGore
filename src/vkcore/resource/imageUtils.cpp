@@ -17,7 +17,7 @@ void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, c
   barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
   barrier.subresourceRange = range;
 
-  device.dispatchTable().vkCmdPipelineBarrier(cmd, srcStage, dstStage, 0u, 0u, nullptr, 0u, nullptr,
+  device.dispatchTable().vkCmdPipelineBarrier(cmd, srcStage, dstStage, 0, 0, nullptr, 0, nullptr,
                                               1, &barrier);
 }
 
@@ -30,7 +30,7 @@ void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, c
 
 void LoadDataToImage(const vkcore::Device& device,
                      TransferContext& transferCtxt,  // requires image be in TRANSFER_DST_OPTIMAL
-                     std::span<const uint8_t> data, const Image& dstImage,
+                     std::span<const std::byte> data, const Image& dstImage,
                      const ImageCopyRegion& copyRegion) {
   TransferContext::Allocation allocation =
       transferCtxt.AllocateStagingBuffer(data.size());  // if overflowed, returns nullopt
@@ -78,8 +78,8 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
     barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 
-    dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0u,
-                            0u, nullptr, 0u, nullptr, 1u, &barrier);
+    dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0,
+                            0, nullptr, 0, nullptr, 1u, &barrier);
 
     VkImageBlit blit = {};
 
@@ -125,7 +125,7 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
     barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
     barrier.dstAccessMask = dstTransition.accessFlags;
 
-    dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, dstStage, 0u, 0u, nullptr, 0u,
+    dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, dstStage, 0, 0, nullptr, 0,
                             nullptr, 1u, &barrier);
 
     mipExtent.width = std::max(1u, mipExtent.width / 2u);
@@ -144,13 +144,13 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
   barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
   barrier.dstAccessMask = dstTransition.accessFlags;
 
-  dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, dstStage, 0u, 0u, nullptr, 0u,
+  dt.vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, dstStage, 0, 0, nullptr, 0,
                           nullptr, 1u, &barrier);
 }
 
 void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer, const Image& dstImage,
                 ImageTransitionInfo dstTransition, VkPipelineStageFlags dstStage) {
-  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0u, dstImage.mipLevels(), 0u,
+  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0, dstImage.mipLevels(), 0,
                               dstImage.layers());
 
   GenMipMaps(device, commandBuffer, dstImage, range, dstTransition, dstStage);

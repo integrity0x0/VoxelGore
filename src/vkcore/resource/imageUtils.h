@@ -11,10 +11,10 @@
 namespace vkcore {
 
 struct ImageSubresourceLayers : VkImageSubresourceLayers {
-  ImageSubresourceLayers() : VkImageSubresourceLayers{VK_IMAGE_ASPECT_COLOR_BIT, 0u, 0u, 1u} {}
+  ImageSubresourceLayers() : VkImageSubresourceLayers{VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1u} {}
 
-  ImageSubresourceLayers(VkImageAspectFlags aspectMask, uint32_t mipLevel = 0u,
-                         uint32_t baseArrayLayer = 0u, uint32_t layerCount = 1u)
+  ImageSubresourceLayers(VkImageAspectFlags aspectMask, uint32_t mipLevel = 0,
+                         uint32_t baseArrayLayer = 0, uint32_t layerCount = 1u)
       : VkImageSubresourceLayers{aspectMask, mipLevel, baseArrayLayer, layerCount} {}
 };
 
@@ -32,10 +32,10 @@ struct ImageCopyRegion {
 
 struct ImageSubresourceRange : VkImageSubresourceRange {
   ImageSubresourceRange()
-      : VkImageSubresourceRange{VK_IMAGE_ASPECT_COLOR_BIT, 0u, VK_REMAINING_MIP_LEVELS, 0u, 1u} {}
+      : VkImageSubresourceRange{VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, 0, 1u} {}
 
-  ImageSubresourceRange(VkImageAspectFlags aspectMask, uint32_t baseMipLevel = 0u,
-                        uint32_t levelCount = VK_REMAINING_MIP_LEVELS, uint32_t baseArrayLayer = 0u,
+  ImageSubresourceRange(VkImageAspectFlags aspectMask, uint32_t baseMipLevel = 0,
+                        uint32_t levelCount = VK_REMAINING_MIP_LEVELS, uint32_t baseArrayLayer = 0,
                         uint32_t layerCount = VK_REMAINING_ARRAY_LAYERS)
       : VkImageSubresourceRange{aspectMask, baseMipLevel, levelCount, baseArrayLayer, layerCount} {}
 };
@@ -55,7 +55,7 @@ extern void TransitionImage(const Device& device, const CommandBuffer& commandBu
                             VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage);
 
 extern void LoadDataToImage(const vkcore::Device& device, TransferContext& transferCtxt,
-                            const std::span<const uint8_t> data, const Image& dstImage,
+                            const std::span<const std::byte> data, const Image& dstImage,
                             const ImageCopyRegion& copyRegion);
 
 extern void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,

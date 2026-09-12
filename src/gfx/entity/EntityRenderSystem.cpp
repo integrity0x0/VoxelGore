@@ -19,7 +19,7 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
 
   for (size_t i = 0; i < entities.size(); ++i) {
     const gm::EntityId id = entities[i];
-    const gm::RenderComponent& render = components[i];
+    const gm::RenderComponent& Render = components[i];
 
     const auto* hitbox = hitboxStorage.Get(id);
     if (!hitbox) {
@@ -28,23 +28,24 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
 
     const glm::vec3 pos = hitbox->pos;
 
-    glm::vec3 color =
-        render.ignoreLighting ? glm::vec3(1.0f) : world.chunks().getLightColor(glm::ivec3(pos));
+    glm::vec3 color = Render.ignoreLighting ? glm::vec3(1.0f)
+                                            : world.chunks().getLightColor(
+                                                  glm::ivec3(pos), glm::vec3(0.08f, 0.10f, 0.18f));
 
-    if (!render.ignoreHurtColor && healthStorage.Contains(id) &&
+    if (!Render.ignoreHurtColor && healthStorage.Contains(id) &&
         healthStorage.Get(id)->hurtFlash > 0.0f) {
       color *= kHurtColor;
     }
 
     const gm::Entity entity{id, em.GetGeneration(id)};
-    renderData_.Update(entity, render);
+    renderData_.Update(entity, Render);
 
     const auto* renderInfo = renderData_.Get(entity);
     if (!renderInfo) {
       continue;
     }
 
-    switch (render.type) {
+    switch (Render.type) {
       case gm::RenderComponent::Type::Model: {
         if (!renderInfo->model) {
           continue;
@@ -67,9 +68,9 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
         instance.pos = pos;
         instance.uvMinMax = glm::vec4(region.min, region.max);
         instance.color = glm::vec4(color, 1.0f);
-        instance.size = render.billboardSize;
+        instance.size = Render.billboardSize;
 
-        billboardRenderBucket.Submit(instance, ToRenderLayer(render.renderLayer), currentFrame);
+        billboardRenderBucket.Submit(instance, ToRenderLayer(Render.renderLayer), currentFrame);
         break;
       }
     }

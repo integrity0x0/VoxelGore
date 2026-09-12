@@ -29,7 +29,7 @@ class Mesh {
   uint32_t vertexCount_;
 
   std::optional<vkcore::BufferSlice> indexBuffer_;
-  uint32_t indexCount_ = 0u;
+  uint32_t indexCount_ = 0;
   VkIndexType indexType_ = VK_INDEX_TYPE_UINT32;
 };
 

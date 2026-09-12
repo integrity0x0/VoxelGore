@@ -14,7 +14,7 @@ class RenderGroupRegistry {
  public:
   static constexpr RenderGroupId kInvalid = UINT32_MAX;
 
-  RenderGroupId registerGroup(std::string_view name) {
+  [[nodiscard]] RenderGroupId registerGroup(std::string_view name) {
     auto it = groups_.find(name.data());
 
     if (it != groups_.end()) {

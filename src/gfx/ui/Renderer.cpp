@@ -59,8 +59,8 @@ void Renderer::begin(VkCommandBuffer cmd) {
                                              pipeline_.handle());
 
   VkBuffer buffers[] = {vertexBuffer_.handle()};
-  VkDeviceSize offsets[] = {0ull};
-  device_->dispatchTable().vkCmdBindVertexBuffers(cmd, 0u, 1u, buffers, offsets);
+  VkDeviceSize offsets[] = {0ll};
+  device_->dispatchTable().vkCmdBindVertexBuffers(cmd, 0, 1u, buffers, offsets);
 }
 
 glm::vec4 Renderer::resolveUvRect(const TextureRegion& region,

@@ -1,78 +1,88 @@
 #include "LightChannelProcessor.h"
 
-#include <optional>
-
-#include "../voxel/ChunkManager.h"
+#include <array>
 
 namespace gm {
 
 namespace {
-constexpr glm::ivec3 kNeighbourOffsets[6] = {
+constexpr auto kNeighbourOffsets = std::to_array<glm::ivec3>({
     {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
-};
+});
 
-bool passesLight(const BlockManager* blockManager, uint32_t blockId) {
+bool PassesLight(const BlockManager* blockManager, uint32_t blockId) {
   const Block* block = blockManager->block(blockId);
   return block != nullptr && block->isPassingLight();
 }
 }  // namespace
 
 void LightChannelProcessor::Update() {
-  processRemoveQueue();
-  processSpreadQueue();
+  ProcessRemoveQueue();
+  ProcessSpreadQueue();
 }
 
-void LightChannelProcessor::processRemoveQueue() {
-  std::vector<glm::ivec3> affected;
-  while (!removeQueue.empty()) {
-    LightNode front = removeQueue.front();
-    removeQueue.pop();
+void LightChannelProcessor::ProcessRemoveQueue() {
+  while (!removeQueue_.empty()) {
+    LightNode front = removeQueue_.front();
+    removeQueue_.pop();
 
-    for (size_t i = 0; i < 6; ++i) {
-      glm::ivec3 neighbourPos = front.pos + kNeighbourOffsets[i];
-      std::optional<Voxel> voxel = chunkManager->getVoxel(neighbourPos);
+    for (const glm::ivec3& offset : kNeighbourOffsets) {
+      glm::ivec3 neighborPos = front.pos + offset;
 
-      if (!voxel.has_value() || !passesLight(blockManager, voxel->id)) continue;
+      std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
+      if (!voxel.has_value()) {
+        continue;
+      }
 
-      uint32_t neighbourLight = chunkManager->getLight(neighbourPos, channel);
+      uint32_t neighborLight = chunkManager_->getLight(neighborPos, channel_);
 
-      if (neighbourLight != 0 && neighbourLight < front.strength) {
-        remove(neighbourPos);
-      } else if (neighbourLight >= front.strength) {
-        spread(neighbourPos, neighbourLight);
+      if (neighborLight != 0 && neighborLight == front.strength - 1) {
+        const Block* block = blockManager_->block(voxel->id);
+
+        if (block) {
+          glm::ivec3 emission = block->getEmission();
+          uint32_t sourceLight = (channel_ != LightChannel::S) ? emission[static_cast<size_t>(channel_)] : 0;
+          if (sourceLight != 0) {
+            Spread(neighborPos, sourceLight);
+          } else {
+            Remove(neighborPos);
+          }
+        } else {
+          Remove(neighborPos);
+        }
+      } else if (neighborLight >= front.strength) {
+        Spread(neighborPos, neighborLight);
       }
     }
-  }
 
-  removeQueue = {};
+    chunkManager_->setLight(front.pos, channel_, 0);
+  }
 }
 
-void LightChannelProcessor::processSpreadQueue() {
-  while (!spreadQueue.empty()) {
-    LightNode front = spreadQueue.front();
-    spreadQueue.pop();
+void LightChannelProcessor::ProcessSpreadQueue() {
+  while (!spreadQueue_.empty()) {
+    LightNode front = spreadQueue_.front();
+    spreadQueue_.pop();
 
+    chunkManager_->setLight(front.pos, channel_, front.strength);
+    
     if (front.strength <= 1) continue;
 
-    uint32_t nextStrength = front.strength - 1;
+    for (size_t i = 0; i < kNeighbourOffsets.size(); ++i) {
+      glm::ivec3 neighborPos = front.pos + kNeighbourOffsets[i];
 
-    for (size_t i = 0; i < 6; ++i) {
-      glm::ivec3 neighbourPos = front.pos + kNeighbourOffsets[i];
-      std::optional<Voxel> voxel = chunkManager->getVoxel(neighbourPos);
-
-      if (!voxel.has_value()) continue;
-
-      if (!passesLight(blockManager, voxel->id)) continue;
-      uint32_t neighbourLight = chunkManager->getLight(neighbourPos, channel);
-
-      if (neighbourLight < nextStrength) {
-        chunkManager->setLight(neighbourPos, channel, nextStrength);
-        spread(neighbourPos, nextStrength);
+      std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
+      if (!voxel.has_value() || !PassesLight(blockManager_, voxel->id)) {
+        continue;
       }
+
+      uint32_t neighborLight = chunkManager_->getLight(neighborPos, channel_);
+      
+      if (neighborLight < front.strength - 1) {
+        Spread(neighborPos, front.strength - 1);
+      }
+
     }
   }
-
-  spreadQueue = {};
 }
 
 }  // namespace gm

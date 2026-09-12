@@ -56,15 +56,15 @@ class BufferSlice {
   }
   [[nodiscard]] VkDeviceSize offset() const { return region_.offset; }
   [[nodiscard]] VkDeviceSize size() const { return region_.size; }
-  [[nodiscard]] void* map(VkDeviceSize offset = 0ull) const {
+  [[nodiscard]] void* map(VkDeviceSize offset = 0ll) const {
     return storage_ ? storage_->buffer.memorySlice().map(region_.offset + offset) : nullptr;
   }
 
-  void BindVertex(VkCommandBuffer cmd, VkDeviceSize offset = 0ull,
-                  uint32_t firstBinding = 0u) const {
+  void BindVertex(VkCommandBuffer cmd, VkDeviceSize offset = 0ll,
+                  uint32_t firstBinding = 0) const {
     if (storage_) storage_->buffer.BindVertex(cmd, region_.offset + offset, firstBinding);
   }
-  void BindIndex(VkCommandBuffer cmd, VkDeviceSize offset = 0ull) const {
+  void BindIndex(VkCommandBuffer cmd, VkDeviceSize offset = 0ll) const {
     if (storage_) storage_->buffer.BindIndex(cmd, region_.offset + offset);
   }
 
@@ -98,7 +98,7 @@ class BufferBlock {
 
   [[nodiscard]] const Buffer& buffer() const { return storage_->buffer; }
 
-  std::optional<BufferSlice> Allocate(VkDeviceSize size, VkDeviceSize alignment = 0ull);
+  std::optional<BufferSlice> Allocate(VkDeviceSize size, VkDeviceSize alignment = 0ll);
 
  private:
   std::shared_ptr<BufferBlockStorage> storage_;

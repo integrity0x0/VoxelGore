@@ -23,8 +23,8 @@ class EntityManager {
     } else {
       const EntityId id = static_cast<EntityId>(generations_.size());
 
-      generations_.push_back(0u);
-      entity = Entity(id, 0u);
+      generations_.push_back(0);
+      entity = Entity(id, 0);
     }
 
     const size_t index = entities_.size();
@@ -38,7 +38,7 @@ class EntityManager {
   }
 
   uint32_t GetGeneration(EntityId id) const {
-    return static_cast<size_t>(id) < entities_.size() ? entities_[id].generation : 0u;
+    return static_cast<size_t>(id) < entities_.size() ? entities_[id].generation : 0;
   }
 
   void DestroyEntity(Entity entity) {

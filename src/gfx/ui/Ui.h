@@ -77,9 +77,9 @@ class Ui {
     if (!pageStack_.empty()) pageStack_.top()->Update(screenSize_);
   }
 
-  void render(VkCommandBuffer cmd) {
+  void Render(VkCommandBuffer cmd) {
     renderer_.begin(cmd);
-    if (!pageStack_.empty()) pageStack_.top()->render(renderer_);
+    if (!pageStack_.empty()) pageStack_.top()->Render(renderer_);
     renderer_.end();
   }
 

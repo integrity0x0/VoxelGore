@@ -62,7 +62,7 @@ class ChunkManager {
     return true;
   }
 
-  glm::vec3 getLightColor(const glm::ivec3& worldPos) const {
+  glm::vec3 getLightColor(const glm::ivec3& worldPos, const glm::vec3& ambientColor = glm::vec3(1.0f)) const {
     const uint16_t light = getLight(worldPos);
 
     constexpr float kMaxLight = 15.0f;
@@ -72,14 +72,16 @@ class ChunkManager {
     const float b = static_cast<float>((light >> 8) & 0xF) / kMaxLight;
     const float s = static_cast<float>((light >> 12) & 0xF) / kMaxLight;
 
-    return glm::vec3(std::max(r, s), std::max(g, s), std::max(b, s));
+    glm::vec3 sunLight = ambientColor * s;
+
+    return glm::clamp(glm::vec3(r, g, b) + sunLight, 0.0f, 1.0f);
   }
 
-  uint8_t getLight(const glm::ivec3& worldPos, LightChannel channel) const {
+  uint32_t getLight(const glm::ivec3& worldPos, LightChannel channel) const {
     glm::ivec3 chunkPos = toChunkPos(worldPos);
     const Chunk* chunk = getChunk(chunkPos);
     if (!chunk) {
-      return 15u;
+      return 0u;
     }
     glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
     const LightMap& lightMap = chunk->lightMap();
@@ -100,7 +102,7 @@ class ChunkManager {
     glm::ivec3 chunkPos = toChunkPos(worldPos);
     const Chunk* chunk = getChunk(chunkPos);
     if (!chunk) {
-      return 0u;
+      return 0;
     }
     glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
     return chunk->lightMap().get(localPos);

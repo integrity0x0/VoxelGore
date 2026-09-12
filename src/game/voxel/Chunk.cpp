@@ -40,12 +40,12 @@ Chunk::Chunk(const glm::ivec3& pos)
 
   uint32_t seed = hashChunkPos(pos_);
 
-  bool spawnsOre = (seed % 100u) < oreSpawnChance;
+  bool spawnsOre = (seed % 100) < oreSpawnChance;
   spawnsOre = true;
 
   if (spawnsOre) {
-    int oreX = static_cast<int>((seed / 100u) % kLength);
-    int oreZ = static_cast<int>((seed / 10000u) % kLength);
+    int oreX = static_cast<int>((seed / 100) % kLength);
+    int oreZ = static_cast<int>((seed / 10000) % kLength);
     int oreY = platformHeight - 1;
 
     if (oreX >= 0 && oreX < kLength && oreY >= 0 && oreY < kLength && oreZ >= 0 && oreZ < kLength) {

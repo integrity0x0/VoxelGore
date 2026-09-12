@@ -11,7 +11,7 @@
 namespace gfx {
 
 using ModelId = uint32_t;
-static constexpr ModelId kInvalidModel = std::numeric_limits<ModelId>::max();
+static constexpr ModelId kInvalidModelId = std::numeric_limits<ModelId>::max();
 
 class Model {
  public:

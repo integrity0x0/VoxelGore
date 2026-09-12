@@ -6,7 +6,7 @@ namespace vkcore {
 
 class Semaphore {
  public:
-  explicit Semaphore(const Device& device, VkSemaphoreCreateFlags flags = 0u);
+  explicit Semaphore(const Device& device, VkSemaphoreCreateFlags flags = 0);
 
   VkSemaphore handle() const noexcept { return semaphore_.get(); }
 

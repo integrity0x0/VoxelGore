@@ -36,6 +36,6 @@ class BillboardRenderBucket {
 
   std::array<BillboardBatch, static_cast<size_t>(RenderLayer::Count)> batches_;
 
-  uint32_t currentFrame_ = 0u;
+  uint32_t currentFrame_ = 0;
 };
 }  // namespace gfx

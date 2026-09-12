@@ -40,7 +40,7 @@ gm::Block::Face pickFace(gm::BlockDebrisConfig::Face mode) {
 }
 
 bool isObstacle(const glm::ivec3& pos, const gm::ChunkManager& chunkManager) {
-  return chunkManager.hasVoxel(pos) && chunkManager.getVoxel(pos)->id != 0u;
+  return chunkManager.hasVoxel(pos) && chunkManager.getVoxel(pos)->id != 0;
 }
 void resolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chunkManager) {
   static constexpr float kSettleVelocity = 0.05f;
@@ -88,7 +88,7 @@ void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
 
   for (uint32_t i = 0; i < config.count; ++i) {
     gm::Block::Face face = pickFace(config.face);
-    const UvRegion& region = renderData_->extractRegion(blockId, face);
+    const UvRegion& region = renderData_->ExtractRegion(blockId, face);
 
     float uRange = region.max.x - region.min.x;
     float vRange = region.max.y - region.min.y;

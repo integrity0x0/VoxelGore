@@ -39,7 +39,7 @@ class Engine {
   ~Engine();
 
   bool beginFrame(uint32_t& imageIndex);
-  void beginRenderPass(uint32_t imageIndex, float r, float g, float b);
+  void BeginRenderPass(uint32_t imageIndex, float r, float g, float b);
   void endRenderPass();
   void endFrame(uint32_t imageIndex);
   uint32_t getCurrentFrameIndex() const { return currentFrame; }
@@ -49,8 +49,8 @@ class Engine {
   const vkcore::CommandPool& getCommandPool() const { return *commandPool; }
   const vkcore::Device& getDevice() const { return *device; }
   const vkcore::RenderPass& getRenderPass() const { return *renderPass; }
-  vkcore::MemoryAllocator& getMemoryAllocator() { return *memoryAllocator; }
-  vkcore::BufferAllocator& getBufferAllocator() { return *bufferAllocator; }
+  vkcore::MemoryAllocator& memoryAllocator() { return *memoryAllocator_; }
+  vkcore::BufferAllocator& bufferAllocator() { return *bufferAllocator_; }
   const vkcore::DeviceQueue& getGraphicsQueue() const {
     return device->getQueues()[graphicsQueueIndex];
   }
@@ -59,7 +59,7 @@ class Engine {
     return device->getQueues()[presentQueueIndex];
   }
 
-  vkcore::TransferContext& getTransferContext() { return *transferCtxt; }
+  vkcore::TransferContext& transferContext() { return *transferCtxt; }
 
   void recreateSwapchain();
   void destroySurface();
@@ -116,8 +116,8 @@ class Engine {
 
   std::vector<std::unique_ptr<vkcore::CommandBuffer>> commandBuffers;
 
-  std::unique_ptr<vkcore::MemoryAllocator> memoryAllocator;
-  std::unique_ptr<vkcore::BufferAllocator> bufferAllocator;
+  std::unique_ptr<vkcore::MemoryAllocator> memoryAllocator_;
+  std::unique_ptr<vkcore::BufferAllocator> bufferAllocator_;
   std::unique_ptr<vkcore::Texture> depthTexture;
   VkFormat depthFormat = VK_FORMAT_D16_UNORM;
 

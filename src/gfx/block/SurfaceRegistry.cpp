@@ -5,7 +5,7 @@
 namespace gfx::block {
 
 namespace {
-void updateAllBuffers(SurfaceId id, const UvRegion& region, std::vector<UvBuffer>& buffers) {
+void UpdateAllBuffers(SurfaceId id, const UvRegion& region, std::vector<UvBuffer>& buffers) {
   for (size_t i = 0; i < buffers.size(); ++i) {
     UniformUv* ptr = buffers[i].mapped() + id;
     ptr->uvRect = glm::vec4(region.min, region.max);
@@ -15,24 +15,24 @@ void updateAllBuffers(SurfaceId id, const UvRegion& region, std::vector<UvBuffer
 
 }  // namespace
 
-SurfaceId SurfaceRegistry::registerSurface(const UvRegion& uvRegion,
+SurfaceId SurfaceRegistry::RegisterSurface(const UvRegion& uvRegion,
                                            std::vector<UvBuffer>& buffers) {
   const SurfaceId id = static_cast<SurfaceId>(surfaces_.size());
   surfaces_.emplace_back(uvRegion);
-  updateAllBuffers(id, uvRegion, buffers);
+  UpdateAllBuffers(id, uvRegion, buffers);
   return id;
 }
 
-SurfaceId SurfaceRegistry::registerAnimatedSurface(const Animation& animation,
+SurfaceId SurfaceRegistry::RegisterAnimatedSurface(const Animation& animation,
                                                    std::vector<UvBuffer>& buffers) {
   const SurfaceId id = static_cast<SurfaceId>(surfaces_.size());
   animatedIds_.push_back(id);
   surfaces_.emplace_back(animation);
-  updateAllBuffers(id, animation.getCurrentRegion(), buffers);
+  UpdateAllBuffers(id, animation.getCurrentRegion(), buffers);
   return id;
 }
 
-const UvRegion& SurfaceRegistry::extractRegion(SurfaceId id) const {
+const UvRegion& SurfaceRegistry::ExtractRegion(SurfaceId id) const {
   assert(id < surfaces_.size() && "SurfaceId out of range");
 
   const Surface& surface = surfaces_[id];
@@ -43,36 +43,36 @@ const UvRegion& SurfaceRegistry::extractRegion(SurfaceId id) const {
   return std::get<Animation>(surface).getCurrentRegion();
 }
 
-SurfaceId SurfaceRegistry::resolve(const std::string& path, std::vector<UvBuffer>& buffers) {
+SurfaceId SurfaceRegistry::Resolve(const std::string& path, std::vector<UvBuffer>& buffers) {
   if (path.empty()) return kInvalidSurface;
 
   if (auto it = cache_.find(path); it != cache_.end()) {
     return it->second;
   }
 
-  SurfaceId id = load(path, buffers);
+  SurfaceId id = Load(path, buffers);
 
   cache_.emplace(path, id);
 
   return id;
 }
 
-SurfaceId SurfaceRegistry::load(const std::string& path, std::vector<UvBuffer>& buffers) {
+SurfaceId SurfaceRegistry::Load(const std::string& path, std::vector<UvBuffer>& buffers) {
   if (path.ends_with(".json")) {
     Animation animation = AnimationParser::parse(path, *atlas_);
 
-    return registerAnimatedSurface(std::move(animation), buffers);
+    return RegisterAnimatedSurface(std::move(animation), buffers);
   }
 
-  if (atlas_->load(path)) {
-    auto* region = atlas_->get(path);
-    return registerSurface(region->toUv(), buffers);
+  if (atlas_->Load(path)) {
+    auto* region = atlas_->Require(path);
+    return RegisterSurface(region->toUv(), buffers);
   }
 
   return kInvalidSurface;
 }
 
-void SurfaceRegistry::updateAnimations(float dt, UvBuffer& uvBuffer) {
+void SurfaceRegistry::UpdateAnimations(float dt, UvBuffer& uvBuffer) {
   UniformUv* mapped = uvBuffer.mapped();
 
   for (SurfaceId id : animatedIds_) {

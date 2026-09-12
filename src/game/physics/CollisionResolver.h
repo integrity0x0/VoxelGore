@@ -33,9 +33,11 @@ class CollisionResolver {
       : chunkManager_(&chunkManager), blockManager_(&blockManager) {}
   void Depenetrate(Hitbox& hitbox) const;
   void Collision(Hitbox& hitbox, float dt, glm::vec3 g = {0.0f, -25.3f, 0.0f});
-  std::optional<RayCastHit> Raycast(const glm::vec3& origin, const glm::vec3& dir,
+
+  [[nodiscard]] std::optional<RayCastHit> Raycast(const glm::vec3& origin, const glm::vec3& dir,
                                     ComponentRegistry& registry, float maxDistance = 0.15f) const;
-  bool CanPlaceBlock(const glm::ivec3& position, const gm::ComponentRegistry& components) const;
+  [[nodiscard]] bool CanPlaceBlock(const glm::ivec3& position,
+                                   const gm::ComponentRegistry& components) const;
 
  private:
   SweepResult SweepAABB(const AABB& moving, const glm::vec3& vel, const AABB& other) const;

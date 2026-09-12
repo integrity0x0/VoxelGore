@@ -81,9 +81,9 @@ Page::Page(const vkcore::Device& device, const vkcore::CommandPool& commandPool,
   }
 }
 
-void Page::render(Renderer& renderer) {
+void Page::Render(Renderer& renderer) {
   for (size_t i = 0; i < nodes_.size(); ++i) {
-    nodes_[i]->render(renderer);
+    nodes_[i]->Render(renderer);
   }
 }
 

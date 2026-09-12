@@ -7,7 +7,7 @@ namespace vkcore {
 
 class CommandPool {
  public:
-  CommandPool(const Device& device, uint32_t queueFamilyIndex, VkCommandPoolCreateFlags flags = 0u)
+  CommandPool(const Device& device, uint32_t queueFamilyIndex, VkCommandPoolCreateFlags flags = 0)
       : queueFamilyIndex_(queueFamilyIndex), flags_(flags), device_(&device) {
     VkCommandPoolCreateInfo poolCI = {VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
     poolCI.flags = flags_;

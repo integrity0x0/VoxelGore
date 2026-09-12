@@ -11,6 +11,23 @@
     <None Include="assets\entities\integrity.json" />
     <None Include="assets\blocks\ice.json" />
     <None Include="src\gfx\block\faceVertices.inl" />
+    <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
+    <None Include="shaders\skybox.vert" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\particle_cutout.frag" />
+    <None Include="shaders\blockPreview.frag" />
+    <None Include="shaders\blockPreview.vert" />
+    <None Include="shaders\crosshair.frag" />
+    <None Include="shaders\crosshair.vert" />
+    <None Include="shaders\main.frag" />
+    <None Include="shaders\main.vert" />
+    <None Include="shaders\main_cutout.frag" />
+    <None Include="shaders\model.frag.spv" />
+    <None Include="shaders\particle.frag" />
+    <None Include="shaders\particle.vert" />
+    <None Include="shaders\ui.frag" />
+    <None Include="shaders\ui.vert" />
+    <None Include="shaders\main_atlas_debug.vert" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -126,6 +143,7 @@
     <ClCompile Include="src\gfx\texture\Skybox.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\util\files.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -274,5 +292,8 @@
     <ClInclude Include="src\gfx\texture\Skybox.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
+    <ClInclude Include="shaders\UniformGameData.glsl" />
+    <ClInclude Include="src\util\files.h" />
   </ItemGroup>
 </Project>

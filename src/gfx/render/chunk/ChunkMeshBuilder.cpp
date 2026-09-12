@@ -129,7 +129,7 @@ bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
                const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
                glm::ivec3 neighborLocalPos, uint32_t sourceVoxelId) {
   const gm::Chunk* target = ResolveChunk(self, neighbors, neighborLocalPos);
-  if (!target) return false;
+  if (!target) return true;
 
   uint32_t neighborId = target->getVoxel(neighborLocalPos).id;
   return renderData.renderGroupId(neighborId) == renderData.renderGroupId(sourceVoxelId);
@@ -163,7 +163,7 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
   }
 
   std::array<Vertex, 4> vertices;
-  for (uint32_t corner = 0u; corner < 4u; ++corner) {
+  for (uint32_t corner = 0; corner < 4u; ++corner) {
     vertices[corner] = kFaceVertices[face * 4u + corner];
     vertices[corner].pos += worldOffset;
     vertices[corner].color = cornerColors[corner];
@@ -171,7 +171,7 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
   }
 
   std::array<uint32_t, 6> localIndices;
-  for (uint32_t i = 0u; i < 6u; ++i) {
+  for (uint32_t i = 0; i < 6u; ++i) {
     localIndices[i] = kFaceIndices[face * 6u + i];
   }
 
@@ -179,7 +179,7 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
 
   if (renderLayer == RenderLayer::Translucent) {
     std::array<uint32_t, 6> globalIndices;
-    for (size_t i = 0u; i < 6u; ++i) globalIndices[i] = baseVertex + localIndices[i];
+    for (size_t i = 0; i < 6u; ++i) globalIndices[i] = baseVertex + localIndices[i];
     staging.AddTranslucentQuad(worldOffset, globalIndices);
   }
 
@@ -246,10 +246,10 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
                                   const gm::ChunksMap& chunksMap, const gm::Chunk& chunk) {
   auto neighbors = CollectNeighbors(chunksMap, chunk.pos());
 
-  for (uint32_t face = 0u; face < 6u; face++) {
-    for (uint32_t x = 0u; x < gm::Chunk::kLength; x++) {
-      for (uint32_t y = 0u; y < gm::Chunk::kLength; y++) {
-        for (uint32_t z = 0u; z < gm::Chunk::kLength; z++) {
+  for (uint32_t face = 0; face < 6u; face++) {
+    for (uint32_t x = 0; x < gm::Chunk::kLength; x++) {
+      for (uint32_t y = 0; y < gm::Chunk::kLength; y++) {
+        for (uint32_t z = 0; z < gm::Chunk::kLength; z++) {
           glm::ivec3 localPos(x, y, z);
           const gm::Voxel& v = chunk.getVoxel(localPos);
 
@@ -265,13 +265,13 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
           if (renderLayer >= RenderLayer::Count) continue;
 
           uint32_t blockSurfaceId =
-              block ? blockRenderData_->surfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0u;
+              block ? blockRenderData_->surfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0;
 
           std::array<glm::vec4, 4> cornerColors;
           if (block && block->isIgnoreLighting()) {
             cornerColors.fill(glm::vec4(1.0f));
           } else {
-            for (uint32_t corner = 0u; corner < 4u; ++corner) {
+            for (uint32_t corner = 0; corner < 4u; ++corner) {
               cornerColors[corner] = LightSample(chunk, neighbors, localPos, face, corner) / 15.0f;
             }
           }

@@ -20,9 +20,9 @@
 #include "gfx/texture/Skybox.h"
 #include "gfx/render/skybox/SkyboxRenderer.h"
 
-constexpr uint32_t WORLD_WIDTH = 3;
-constexpr uint32_t WORLD_HEIGHT = 2;
-constexpr uint32_t WORLD_DEPTH = 3;
+constexpr uint32_t WORLD_WIDTH = 1;
+constexpr uint32_t WORLD_HEIGHT = 1;
+constexpr uint32_t WORLD_DEPTH = 1;
 
 static bool cursorLocked = true;
 
@@ -63,7 +63,7 @@ class GameContext {
 
     engine = std::make_unique<Engine>(window_->getWindow());
     const vkcore::Device& device = engine->getDevice();
-    vkcore::MemoryAllocator& memoryAllocator = engine->getMemoryAllocator();
+    vkcore::MemoryAllocator& memoryAllocator = engine->memoryAllocator();
 
     // ===== ПАЙПЛАЙН ПРИЦЕЛА =====
     crosshairPipelineLayout = std::make_unique<vkcore::PipelineLayout>(
@@ -105,43 +105,64 @@ class GameContext {
     blockManager->Load(core::kAssetsPrefix + "blocks/sand.json");
     blockManager->Load(core::kAssetsPrefix + "blocks/tnt.json");
     lighting = std::make_unique<gm::Lighting>(world->chunks(), *blockManager);
-    lighting->lightUp();
+    lighting->LightUp();
 
-    gameDataBinding = std::make_unique<gfx::GameDataBinding>(device, engine->getBufferAllocator(),
+    gameDataBinding = std::make_unique<gfx::GameDataBinding>(device, engine->bufferAllocator(),
                                                              engine->getFramesInFlightCount());
 
-    textureManager = std::make_unique<gfx::TextureManager>(device, engine->getTransferContext(),
-                                                           engine->getMemoryAllocator());
-    //skyboxRenderer = std::make_unique<gfx::SkyboxRenderer>(device, engine->getRenderPass(), *gameDataBinding);
-   // daySkybox = std::make_unique<gfx::Skybox>(gfx::Skybox::Load(device, engine->getTransferContext(), memoryAllocator, skyboxRenderer->de);
+    textureManager = std::make_unique<gfx::TextureManager>(device, engine->transferContext(),
+                                                           engine->memoryAllocator());    
+    std::array<std::string, 6> kNightPaths = {
+      core::kAssetsPrefix + "skybox/night/right.png",
+      core::kAssetsPrefix + "skybox/night/left.png",
+      core::kAssetsPrefix + "skybox/night/top.png",
+      core::kAssetsPrefix + "skybox/night/bottom.png",
+      core::kAssetsPrefix + "skybox/night/front.png",
+      core::kAssetsPrefix + "skybox/night/back.png",
+    };
+
+    std::array<std::string, 6> kDayPaths = {
+        core::kAssetsPrefix + "skybox/day/right.png",
+        core::kAssetsPrefix + "skybox/day/left.png",
+        core::kAssetsPrefix + "skybox/day/top.png",
+        core::kAssetsPrefix + "skybox/day/bottom.png",
+        core::kAssetsPrefix + "skybox/day/front.png",
+        core::kAssetsPrefix + "skybox/day/back.png",
+    };
+
+    skyboxRenderer = std::make_unique<gfx::SkyboxRenderer>(device, engine->bufferAllocator(), 
+      engine->transferContext(), engine->getRenderPass(), *gameDataBinding);
+    nightSkybox = std::make_unique<gfx::Skybox>(gfx::Skybox::Load(device, engine->transferContext(), memoryAllocator,
+        skyboxRenderer->descriptorPool(), skyboxRenderer->descriptorSetLayout(), kNightPaths, 4u).value());
+
     //nightSkybox;
     modelPipeline =
         std::make_unique<gfx::ModelPipeline>(device, engine->getRenderPass(), *gameDataBinding);
 
     modelCache = std::make_unique<gfx::ModelCache>(
-        device, engine->getTransferContext(), engine->getBufferAllocator(),
+        device, engine->transferContext(), engine->bufferAllocator(),
         modelPipeline->pipelineLayout(), modelPipeline->descriptorSetLayout(), *textureManager,
         engine->getFramesInFlightCount());
 
     modelRenderer = std::make_unique<gfx::ModelRenderer>(
-        device, engine->getBufferAllocator(), *modelPipeline, engine->getFramesInFlightCount());
+        device, engine->bufferAllocator(), *modelPipeline, engine->getFramesInFlightCount());
 
     chunkRenderer = std::make_unique<gfx::ChunkRenderer>(
-        device, engine->getTransferContext(), engine->getGraphicsQueue(), memoryAllocator,
+        device, engine->transferContext(), engine->getGraphicsQueue(), memoryAllocator,
         engine->getRenderPass().handle(), *gameDataBinding, world->chunks(), *blockManager,
         engine->getFramesInFlightCount());
 
-    billboardsAtlas = std::make_unique<gfx::Atlas>(device, engine->getTransferContext(),
+    billboardsAtlas = std::make_unique<gfx::Atlas>(device, engine->transferContext(),
                                                    memoryAllocator, glm::ivec2{4096, 4096}, 4u);
 
     billboardRenderer =
         std::make_unique<gfx::BillboardRenderer>(device, engine->getRenderPass(), *gameDataBinding);
 
-    generalBucket = &billboardRenderer->CreateBucket(engine->getBufferAllocator(), *billboardsAtlas,
+    generalBucket = &billboardRenderer->CreateBucket(engine->bufferAllocator(), *billboardsAtlas,
                                                      engine->getFramesInFlightCount());
 
     blockBucket = &billboardRenderer->CreateBucket(
-        engine->getBufferAllocator(), chunkRenderer->getAtlas(), engine->getFramesInFlightCount());
+        engine->bufferAllocator(), chunkRenderer->getAtlas(), engine->getFramesInFlightCount());
 
     particleEngine = std::make_unique<gfx::ParticleEngine>(
         *billboardsAtlas, chunkRenderer->blockRenderData(), *blockManager, world->chunks(),
@@ -165,7 +186,7 @@ class GameContext {
     // ================================================
 
     blockPreviewRenderer = std::make_unique<gfx::block::PreviewRenderer>(
-        device, engine->getCommandPool(), engine->getGraphicsQueue(), engine->getMemoryAllocator(),
+        device, engine->getCommandPool(), engine->getGraphicsQueue(), engine->memoryAllocator(),
         chunkRenderer->blockRenderData());
 
     // ===== UI + CONTROL =====
@@ -208,7 +229,7 @@ class GameContext {
     barrelEntity = entityFactory->Create("barrel", worldCenter + glm::vec3(4.0f));
     integrityEntity = entityFactory->Create("integrity", glm::vec3(20.0f));
 
-    camera.lookAt(GetPlayerHitbox().pos, worldCenter);
+    camera.LookAt(GetPlayerHitbox().pos, worldCenter);
   }
 
   ~GameContext() {
@@ -241,8 +262,8 @@ class GameContext {
 
     VkRect2D scissors[] = {{.offset = {}, .extent = engine->extent()}};
 
-    engine->getDevice().dispatchTable().vkCmdSetViewport(cmd, 0u, 1u, viewports);
-    engine->getDevice().dispatchTable().vkCmdSetScissor(cmd, 0u, 1u, scissors);
+    engine->getDevice().dispatchTable().vkCmdSetViewport(cmd, 0, 1u, viewports);
+    engine->getDevice().dispatchTable().vkCmdSetScissor(cmd, 0, 1u, scissors);
   }
 
   glm::vec3 cameraForward() const {
@@ -265,7 +286,7 @@ class GameContext {
 
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    lighting->onVoxelSetted(worldPos, {voxelId});
+    lighting->OnVoxelSetted(worldPos, {voxelId});
 
     auto t2 = std::chrono::high_resolution_clock::now();
 
@@ -401,8 +422,8 @@ class GameContext {
 
     ui->Update();
 
-    !cursorLocked ? camera.rotate(swipe.deltaX, swipe.deltaY)
-                  : camera.rotate(window_->getInput().getState().cursorDeltaX(),
+    !cursorLocked ? camera.Rotate(swipe.deltaX, swipe.deltaY)
+                  : camera.Rotate(window_->getInput().getState().cursorDeltaX(),
                                   window_->getInput().getState().cursorDeltaY());
 
     float forwardAxis = static_cast<float>(controlState.move.z);
@@ -462,7 +483,7 @@ class GameContext {
     camera.position = playerHitbox.pos + glm::vec3(0.0f, EYE_HEIGHT, 0.0f) * 0.5f +
                       cameraShake.getPositionOffset();
 
-    glm::mat4 view = camera.getView();
+    glm::mat4 view = camera.GetView();
 
     glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
 
@@ -475,19 +496,19 @@ class GameContext {
     gameData.projView = proj * view;
     gameData.cameraPos = camera.position;
     gameData.cameraDir = cameraForward();
+    gameData.ambientColor = glm::vec3(0.05f, 0.065f, 0.12f);
+    gameData.fogDensity = 0.015f;
 
     gameDataBinding->Update(frameIndex, gameData);
 
     particleEngine->Update(dt, frameIndex);
-
-    modelRenderer->BeginFrame(frameIndex);
 
     entityRenderSystem->Render(world->components(), *modelRenderer, *generalBucket, *world,
                                frameIndex);
 
     gameDataBinding->Bind(cmd, frameIndex);
 
-    engine->beginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
+    engine->BeginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
 
     SetViewportAndScissor(cmd);
 
@@ -498,12 +519,15 @@ class GameContext {
     billboardRenderer->Render(cmd, camera.position, gfx::RenderLayer::Cutout, frameIndex);
 
     modelPipeline->Bind(cmd);
-    modelRenderer->Render(cmd);
+    modelRenderer->Render(cmd, frameIndex);
+
+    skyboxRenderer->BindPipeline(cmd);
+    skyboxRenderer->Draw(cmd, *nightSkybox);
 
     chunkRenderer->Render(cmd, dt, frameIndex, camera.position, gfx::RenderLayer::Translucent);
     billboardRenderer->Render(cmd, camera.position, gfx::RenderLayer::Translucent, frameIndex);
 
-    ui->render(cmd);
+    ui->Render(cmd);
 
     crosshairPipeline->Bind(cmd);
 

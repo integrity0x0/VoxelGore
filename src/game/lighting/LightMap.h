@@ -8,7 +8,7 @@
 
 namespace gm {
 
-enum class LightChannel { R, G, B, S };
+enum class LightChannel { R, G, B, S, Count };
 
 class LightMap {
  public:

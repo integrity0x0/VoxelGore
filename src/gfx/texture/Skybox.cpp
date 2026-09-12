@@ -28,7 +28,7 @@ Skybox::Skybox(const vkcore::Device& device, vkcore::SampledTexture&& cubemap,
 
 std::optional<Skybox> Skybox::Load(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
                            vkcore::MemoryAllocator& memoryAllocator,
-                           vkcore::DescriptorPool& descriptorPool,
+                           const vkcore::DescriptorPool& descriptorPool,
                            const vkcore::DescriptorSetLayout& descriptorSetLayout,
                            const std::array<std::string, 6>& paths, uint32_t mipLevels) {
   if (auto cubemap =
@@ -38,4 +38,9 @@ std::optional<Skybox> Skybox::Load(const vkcore::Device& device, vkcore::Transfe
   }
   return std::nullopt;
 }
+
+void Skybox::Bind(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout) const {
+  descriptorSet_.Bind(cmd, pipelineLayout, kCubemapBinding);
+}
+
 }  // namespace gfx

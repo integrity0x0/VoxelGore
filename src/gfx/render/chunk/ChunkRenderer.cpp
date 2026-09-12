@@ -86,7 +86,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
     writes[0] = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
     writes[0].dstSet = descriptorSets_[frame]->handle();
     writes[0].dstBinding = 0;
-    writes[0].dstArrayElement = 0u;
+    writes[0].dstArrayElement = 0;
     writes[0].descriptorCount = 1;
     writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     writes[0].pBufferInfo = &uvInfo;
@@ -94,7 +94,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
     writes[1] = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
     writes[1].dstSet = descriptorSets_[frame]->handle();
     writes[1].dstBinding = 1;
-    writes[1].dstArrayElement = 0u;
+    writes[1].dstArrayElement = 0;
     writes[1].descriptorCount = 1;
     writes[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     writes[1].pImageInfo = &imageInfo;
@@ -139,7 +139,7 @@ void ChunkRenderer::Render(VkCommandBuffer cmd, float dt, uint32_t currentFrame,
 
   device_.dispatchTable().vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
                                                   pipelines_->pipelineLayout().handle(),
-                                                  kDescriptorSetIndex, 1u, &set, 0u, nullptr);
+                                                  kDescriptorSetIndex, 1u, &set, 0, nullptr);
 
   switch (renderLayer) {
     case RenderLayer::Solid: {

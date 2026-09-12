@@ -27,16 +27,16 @@ class PreviewRenderer {
   PreviewRenderer(const vkcore::Device& device, const vkcore::CommandPool& commandPool,
                   const vkcore::DeviceQueue& deviceQueue, vkcore::MemoryAllocator& memoryAllocator,
                   RenderData& blockRenderData);
-  vkcore::SampledTexture Render(uint32_t blockId);
+  [[nodiscard]] vkcore::SampledTexture Render(uint32_t blockId);
 
  private:
-  vkcore::Texture CreateDepthTexture(const vkcore::Device& device,
+  [[nodiscard]] vkcore::Texture CreateDepthTexture(const vkcore::Device& device,
                                      vkcore::MemoryAllocator& memoryAllocator);
-  vkcore::RenderPass BuildRenderPass(const vkcore::Device& device);
-  vkcore::DescriptorSetLayout BuildDescriptorSetLayout(const vkcore::Device& device);
-  vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device);
-  vkcore::PipelineLayout BuildPipelineLayout(const vkcore::Device& device);
-  vkcore::Buffer BuildVertexBuffer(uint32_t blockId);
+  [[nodiscard]] vkcore::RenderPass BuildRenderPass(const vkcore::Device& device);
+  [[nodiscard]] vkcore::DescriptorSetLayout BuildDescriptorSetLayout(const vkcore::Device& device);
+  [[nodiscard]] vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device);
+  [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(const vkcore::Device& device);
+  [[nodiscard]] vkcore::Buffer BuildVertexBuffer(uint32_t blockId);
 
   struct PushConstants {
     glm::mat4 mvp;

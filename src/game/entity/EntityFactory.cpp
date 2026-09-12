@@ -20,16 +20,16 @@ Entity EntityFactory::Create(std::string_view definitionId, const glm::vec3& pos
   Entity entity = entityManager_->CreateEntity();
 
   if (definition->render) {
-    const auto& render = *definition->render;
+    const auto& Render = *definition->render;
 
     components_->Storage<RenderComponent>().Add(entity.id,
                                                 RenderComponent{
-                                                    .type = render.type,
-                                                    .renderLayer = render.layer,
-                                                    .resource = render.resource,
-                                                    .billboardSize = render.billboardSize,
-                                                    .ignoreLighting = render.ignoreLighting,
-                                                    .ignoreHurtColor = render.ignoreHurtColor,
+                                                    .type = Render.type,
+                                                    .renderLayer = Render.layer,
+                                                    .resource = Render.resource,
+                                                    .billboardSize = Render.billboardSize,
+                                                    .ignoreLighting = Render.ignoreLighting,
+                                                    .ignoreHurtColor = Render.ignoreHurtColor,
                                                 });
   }
 
