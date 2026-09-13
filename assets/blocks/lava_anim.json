@@ -4,5 +4,9 @@
     "orientation": "vertical",
     "texture": "materials/clouds.png"
   },
-  "duration": 3.0
+  "duration": 3.0,
+
+  "light": {
+    "channel": "fire"
+  }
 }

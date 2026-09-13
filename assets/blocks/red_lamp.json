@@ -3,8 +3,8 @@
   "emission": [ 12, 0, 0 ],
   "ignoreLighting": true,
   "textures": "materials/red_lamp.png",
-
-  "debris": {
-
+  "debris": {},
+  "light": {
+    "channel": "red"
   }
 }

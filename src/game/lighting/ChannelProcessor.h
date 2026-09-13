@@ -19,31 +19,33 @@ struct LightNode {
 class ChannelProcessor {
  public:
   ChannelProcessor(LightChunkStorage& storage,
-                   const ChannelDefinition& definition, const BlockLightCache& blockLightCache, ChunkManager& chunkManager,
+                   const ChannelDefinition& definition, ChannelId id, BlockLightCache& blockCache, ChunkManager& chunkManager,
                    const BlockManager& blockManager)
       : storage_(&storage),
         definition_(&definition),
+        id_(id),
+        blockCache_(&blockCache),
         chunkManager_(&chunkManager),
         blockManager_(&blockManager) {}
 
   void Spread(const glm::ivec3& pos, uint32_t strength) {
     if (strength == 0) return;
     spreadQueue_.emplace(pos, strength);
-    storage_->SetLight(pos, strength);
+    storage_->SetLight(pos, id_, strength);
   }
 
   void Spread(const glm::ivec3& pos) {
-    Spread(pos, storage_->GetLight(pos));
+    Spread(pos, storage_->GetLight(pos, id_));
   }
 
   void Remove(const glm::ivec3& pos) {
-    uint8_t light = storage_->GetLight(pos);
+    uint8_t light = storage_->GetLight(pos, id_);
     if (light == 0) {
       return;
     }
 
     removeQueue_.emplace(pos, light);
-    storage_->SetLight(pos, 0);
+    storage_->SetLight(pos, id_, 0);
   }
 
   void Update();
@@ -53,6 +55,8 @@ class ChannelProcessor {
   void ProcessSpreadQueue();
   LightChunkStorage* storage_;
   const ChannelDefinition* definition_;
+  ChannelId id_;
+  BlockLightCache* blockCache_;
   ChunkManager* chunkManager_;
   const BlockManager* blockManager_;
   std::queue<LightNode> removeQueue_;

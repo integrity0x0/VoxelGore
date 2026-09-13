@@ -28,10 +28,10 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
 
     const glm::vec3 pos = hitbox->pos;
 
-    glm::vec3 color = Render.ignoreLighting ? glm::vec3(1.0f)
-                                            : world.chunks().getLightColor(
-                                                  glm::ivec3(pos), glm::vec3(0.08f, 0.10f, 0.18f));
-
+    //glm::vec3 color = Render.ignoreLighting ? glm::vec3(1.0f)
+                                   //         : world.chunks().getLightColor(
+                                        //          glm::ivec3(pos), glm::vec3(0.08f, 0.10f, 0.18f));
+    glm::vec3 color(1.0f);
     if (!Render.ignoreHurtColor && healthStorage.Contains(id) &&
         healthStorage.Get(id)->hurtFlash > 0.0f) {
       color *= kHurtColor;

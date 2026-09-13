@@ -28,6 +28,11 @@
     <None Include="shaders\ui.frag" />
     <None Include="shaders\ui.vert" />
     <None Include="shaders\main_atlas_debug.vert" />
+    <None Include="assets\light_channels\red.json" />
+    <None Include="assets\light_channels\fire.json" />
+    <None Include="assets\blocks\sea_lantern.json" />
+    <None Include="assets\light_channels\sea.json" />
+    <None Include="assets\blocks\glowstone.json" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -148,7 +153,9 @@
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
-    <ClCompile Include="src\game\lighting\LightChannel.cpp" />
+    <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
+    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
+    <ClCompile Include="src\WorldSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -307,5 +314,7 @@
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\util\containers.h" />
     <ClInclude Include="src\game\lighting\LightChannel.h" />
+    <ClInclude Include="src\game\lighting\LightColorSampler.h" />
+    <ClInclude Include="src\WorldSession.h" />
   </ItemGroup>
 </Project>

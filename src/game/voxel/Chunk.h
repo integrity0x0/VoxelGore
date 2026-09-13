@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-#include "../lighting/LightMap.h"
 #include "Voxel.h"
 
 namespace gm {

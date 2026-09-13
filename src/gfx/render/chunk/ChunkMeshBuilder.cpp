@@ -103,27 +103,20 @@ static const gm::Chunk* ResolveChunk(
   return neighbors[ChunkCubeIndex(chunkOffset)];
 }
 
-glm::vec4 LightSample(const gm::Chunk& self,
-                      const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
-                      glm::ivec3 localPos, uint32_t face, uint32_t corner) {
-  glm::ivec3 facePos = localPos + kFaceNormals[face];
-
+glm::vec4 LightSample(const gm::lighting::Lighting& lighting, glm::ivec3 worldPos, uint32_t face,
+                      uint32_t corner) {
   const CornerSign& sign = kCornerSigns[face * 4u + corner];
-  glm::ivec3 rightOffset = kFaceRight[face] * static_cast<int32_t>(sign.right);
-  glm::ivec3 upOffset = kFaceUp[face] * static_cast<int32_t>(sign.up);
 
-  auto sampleOne = [&](glm::ivec3 pos) -> glm::ivec4 {
-    const gm::Chunk* chunk = ResolveChunk(self, neighbors, pos);
-    if (!chunk) return glm::ivec4(0);
-    const gm::LightMap& lm = chunk->lightMap();
-    return glm::ivec4(lm.getR(pos), lm.getG(pos), lm.getB(pos), lm.getS(pos));
-  };
+  const glm::ivec3 facePos = worldPos + kFaceNormals[face];
+  const glm::ivec3 rightOffset = kFaceRight[face] * static_cast<int32_t>(sign.right);
+  const glm::ivec3 upOffset = kFaceUp[face] * static_cast<int32_t>(sign.up);
 
-  glm::ivec4 sum = sampleOne(facePos) + sampleOne(facePos + upOffset) +
-                   sampleOne(facePos + rightOffset) + sampleOne(facePos + rightOffset + upOffset);
-
-  return glm::vec4(sum) * 0.25f;
+  return (lighting.GetColor(facePos) + lighting.GetColor(facePos + upOffset) +
+          lighting.GetColor(facePos + rightOffset) +
+          lighting.GetColor(facePos + rightOffset + upOffset)) *
+         0.25f;
 }
+
 
 bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
                const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
@@ -138,10 +131,12 @@ bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
 }  // namespace
 
 ChunkMeshBuilder::ChunkMeshBuilder(const vkcore::Device& device,
+                                   const gm::lighting::Lighting& lighting,
                                    const gm::BlockManager& blockManager,
                                    block::RenderData& blockRenderData, uint32_t framesCount)
     : device_(&device),
       blockManager_(&blockManager),
+      lighting_(&lighting),
       blockRenderData_(&blockRenderData),
       memoryAllocator_(device),
       bufferAllocator_(device, memoryAllocator_),
@@ -244,9 +239,12 @@ std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBu
 
 bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
                                   const gm::ChunksMap& chunksMap, const gm::Chunk& chunk) {
+  using clock = std::chrono::steady_clock;
+  const auto t0 = clock::now();
+
   auto neighbors = CollectNeighbors(chunksMap, chunk.pos());
 
-  for (uint32_t face = 0; face < 6u; face++) {
+  for (uint32_t face = 0; face < 6; face++) {
     for (uint32_t x = 0; x < gm::Chunk::kLength; x++) {
       for (uint32_t y = 0; y < gm::Chunk::kLength; y++) {
         for (uint32_t z = 0; z < gm::Chunk::kLength; z++) {
@@ -261,30 +259,42 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
             continue;
 
           RenderLayer renderLayer = ToRenderLayer(block->renderLayer());
-
           if (renderLayer >= RenderLayer::Count) continue;
 
           uint32_t blockSurfaceId =
               block ? blockRenderData_->surfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0;
 
           std::array<glm::vec4, 4> cornerColors;
-          if (block && block->isIgnoreLighting()) {
+
+          // было: if (block || block->isIgnoreLighting())  ← баг (UB + логика наоборот)
+          if (!block || block->isIgnoreLighting()) {
             cornerColors.fill(glm::vec4(1.0f));
           } else {
+            const glm::ivec3 worldPos =
+                localPos + chunk.pos() * static_cast<int>(gm::Chunk::kLength);
+
             for (uint32_t corner = 0; corner < 4u; ++corner) {
-              cornerColors[corner] = LightSample(chunk, neighbors, localPos, face, corner) / 15.0f;
+              cornerColors[corner] = LightSample(*lighting_, worldPos, face, corner);
             }
           }
 
           glm::vec3 worldOffset = glm::vec3(localPos) + glm::vec3(0.5f) +
                                   glm::vec3(chunk.pos()) * static_cast<float>(gm::Chunk::kLength);
 
-          if (!AddFace(staging, face, worldOffset, blockSurfaceId, cornerColors, renderLayer))
+          if (!AddFace(staging, face, worldOffset, blockSurfaceId, cornerColors, renderLayer)) {
+            const auto t1 = clock::now();
+            const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+            printf("BuildChunk (failed): %.3f ms\n", ms);
             return false;
+          }
         }
       }
     }
   }
+
+  const auto t1 = clock::now();
+  const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+  printf("BuildChunk: %.3f ms\n", ms);
 
   return true;
 }

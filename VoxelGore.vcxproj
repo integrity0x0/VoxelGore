@@ -22,9 +22,14 @@
     <None Include=".clang-format" />
     <None Include=".gitignore" />
     <None Include="assets\blocks\air.json" />
+    <None Include="assets\blocks\glowstone.json" />
     <None Include="assets\blocks\ice.json" />
+    <None Include="assets\blocks\sea_lantern.json" />
     <None Include="assets\entities\barrel.json" />
     <None Include="assets\entities\integrity.json" />
+    <None Include="assets\light_channels\fire.json" />
+    <None Include="assets\light_channels\red.json" />
+    <None Include="assets\light_channels\sea.json" />
     <None Include="shaders\blockPreview.frag" />
     <None Include="shaders\blockPreview.vert" />
     <None Include="shaders\crosshair.frag" />
@@ -48,11 +53,12 @@
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
-    <ClCompile Include="src\game\lighting\LightChannel.cpp" />
     <ClCompile Include="src\game\lighting\LightChunk.cpp" />
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
+    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\texture\Skybox.cpp" />
@@ -160,6 +166,7 @@
     <ClCompile Include="src\vkcore\sync\Fence.cpp" />
     <ClCompile Include="src\vkcore\sync\Semaphore.cpp" />
     <ClCompile Include="third_party\tinyxml2.cpp" />
+    <ClCompile Include="src\WorldSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaders\UniformGameData.glsl" />
@@ -170,6 +177,7 @@
     <ClInclude Include="src\game\lighting\LightChannel.h" />
     <ClInclude Include="src\game\lighting\LightChunk.h" />
     <ClInclude Include="src\game\lighting\LightChunkStorage.h" />
+    <ClInclude Include="src\game\lighting\LightColorSampler.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
@@ -318,6 +326,7 @@
     <ClInclude Include="src\vkcore\resource\TransferContext.h" />
     <ClInclude Include="src\vkcore\sync\Fence.h" />
     <ClInclude Include="src\vkcore\sync\Semaphore.h" />
+    <ClInclude Include="src\WorldSession.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

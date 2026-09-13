@@ -20,9 +20,9 @@
 #include "gfx/texture/Skybox.h"
 #include "gfx/render/skybox/SkyboxRenderer.h"
 
-constexpr uint32_t WORLD_WIDTH = 1;
+constexpr uint32_t WORLD_WIDTH = 3;
 constexpr uint32_t WORLD_HEIGHT = 1;
-constexpr uint32_t WORLD_DEPTH = 1;
+constexpr uint32_t WORLD_DEPTH = 3;
 
 static bool cursorLocked = true;
 
@@ -100,11 +100,14 @@ class GameContext {
     blockManager->Load(core::kAssetsPrefix + "blocks/red_lamp.json");
     blockManager->Load(core::kAssetsPrefix + "blocks/glass_lime.json");
     blockManager->Load(core::kAssetsPrefix + "blocks/glass_purple.json");
+    //blockManager->Load(core::kAssetsPrefix + "blocks/ice.json");
+   // blockManager->Load(core::kAssetsPrefix + "blocks/lava.json");
+    //blockManager->Load(core::kAssetsPrefix + "blocks/sand.json");
+    blockManager->Load(core::kAssetsPrefix + "blocks/sea_lantern.json");
+    blockManager->Load(core::kAssetsPrefix + "blocks/glowstone.json");
     blockManager->Load(core::kAssetsPrefix + "blocks/ice.json");
-    blockManager->Load(core::kAssetsPrefix + "blocks/lava.json");
-    blockManager->Load(core::kAssetsPrefix + "blocks/sand.json");
     blockManager->Load(core::kAssetsPrefix + "blocks/tnt.json");
-    lighting = std::make_unique<gm::Lighting>(world->chunks(), *blockManager);
+    lighting = std::make_unique<gm::lighting::Lighting>(world->chunks(), *blockManager);
     lighting->LightUp();
 
     gameDataBinding = std::make_unique<gfx::GameDataBinding>(device, engine->bufferAllocator(),
@@ -149,7 +152,7 @@ class GameContext {
 
     chunkRenderer = std::make_unique<gfx::ChunkRenderer>(
         device, engine->transferContext(), engine->getGraphicsQueue(), memoryAllocator,
-        engine->getRenderPass().handle(), *gameDataBinding, world->chunks(), *blockManager,
+        engine->getRenderPass().handle(), *gameDataBinding, world->chunks(), *lighting, *blockManager,
         engine->getFramesInFlightCount());
 
     billboardsAtlas = std::make_unique<gfx::Atlas>(device, engine->transferContext(),
@@ -562,7 +565,7 @@ class GameContext {
   gfx::BillboardRenderBucket* blockBucket;
 
   std::unique_ptr<gfx::ParticleEngine> particleEngine;
-  std::unique_ptr<gm::Lighting> lighting;
+  std::unique_ptr<gm::lighting::Lighting> lighting;
   std::unique_ptr<gm::CollisionResolver> collisionResolver;
 
   std::unique_ptr<gfx::ModelPipeline> modelPipeline;
@@ -610,7 +613,7 @@ int main() {
     core::Window::hint(GLFW_RESIZABLE, GLFW_TRUE);
     core::Window::hint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    auto window = std::make_unique<core::Window>(1280, 720, "Voxel Game");
+    auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha");
 
     g_ctx = std::make_unique<GameContext>(std::move(window));
 

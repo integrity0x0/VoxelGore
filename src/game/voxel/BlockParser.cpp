@@ -61,6 +61,33 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
     block.setEmission(emission);
   }
 
+  if (j.contains("light")) {
+    const auto& lightJson = j["light"];
+
+    if (!lightJson.is_object()) {
+      throw std::runtime_error("BlockParser: block " + std::to_string(id) +
+                               " 'light' must be an object");
+    }
+
+    if (!lightJson.contains("channel") || !lightJson["channel"].is_string()) {
+      throw std::runtime_error("BlockParser: block " + std::to_string(id) +
+                               " 'light.channel' must be a string");
+    }
+
+    const int strength = lightJson.value<int>("strength", 15);
+
+    if (strength < 0 || strength > 15) {
+      throw std::runtime_error("BlockParser: block " + std::to_string(id) +
+                               " 'light.strength' must be between 0 and 15");
+    }
+
+    Block::Light light;
+    light.channelId = lightJson["channel"].get<std::string>();
+    light.strength = static_cast<uint8_t>(strength);
+
+    block.setLight(light);
+  }
+
   if (!j.contains("textures")) {
     throw std::runtime_error("BlockParser: block " + std::to_string(id) + " has no 'textures'");
   }
@@ -109,7 +136,6 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
     return block;
   }
 
-  // Строка или массив
   if (texturesJson.is_string()) {
     block.setAllSurfaces(util::NormalizePath(jsonDir + texturesJson.get<std::string>()));
     return block;

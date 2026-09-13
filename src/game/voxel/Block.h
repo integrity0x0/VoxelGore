@@ -17,7 +17,7 @@ class Block {
   enum class Face { North, South, West, East, Bottom, Top };
   enum class RenderLayer { Solid, Cutout, Translucent, Count };
   struct Light {
-    std::string id;
+    std::string channelId;
     uint8_t strength;
   };
 

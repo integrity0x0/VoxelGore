@@ -42,11 +42,11 @@ void ParticleEngine::WriteParticles(std::span<const Particle> particles, uint32_
     instance.size = particle.size;
     instance.uvMinMax = particle.uvMinMax;
     instance.layer = particle.layer;
-    instance.color =
-        particle.ignoreLighting
-            ? particle.color
-            : particle.color *
-                  glm::vec4(chunkManager_->getLightColor(glm::ivec3(particle.pos)), 1.0f);
+    //instance.color =
+       // particle.ignoreLighting
+          //  ? particle.color
+           // : particle.color *
+            //      glm::vec4(chunkManager_->getLightColor(glm::ivec3(particle.pos)), 1.0f);
     BucketFor(particle).Submit(instance, particle.renderLayer, currentFrame);
   }
 }

@@ -12,6 +12,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
                              const vkcore::DeviceQueue& graphicsQueue,
                              vkcore::MemoryAllocator& memoryAllocator, VkRenderPass renderPass,
                              const GameDataBinding& gameDataBinding, gm::ChunkManager& chunkManager,
+                             const gm::lighting::Lighting& lighting,
                              const gm::BlockManager& blockManager, uint32_t framesInFlightCount)
     : device_(device),
       transferCtxt_(&transferCtxt),
@@ -20,7 +21,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
       chunkManager_(&chunkManager),
       blockRenderData_(std::make_unique<block::RenderData>(blockManager, device, transferCtxt,
                                                            memoryAllocator, framesInFlightCount)),
-      meshBuilder_(device, blockManager, *blockRenderData_, framesInFlightCount),
+      meshBuilder_(device, lighting, blockManager, *blockRenderData_, framesInFlightCount),
       framesInFlightCount_(framesInFlightCount) {
   // ---------------------------------------------------------------------
   //   0 - UniformGameData (UBO)

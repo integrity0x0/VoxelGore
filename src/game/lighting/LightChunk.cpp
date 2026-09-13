@@ -1,6 +1,8 @@
 #include "LightChunk.h"
 
 namespace gm::lighting {
+
+
 size_t LightChunk::GetIndex(const glm::ivec3& localPos) {
   return static_cast<size_t>(localPos.x) * kLength * kLength +
          static_cast<size_t>(localPos.y) * kLength + static_cast<size_t>(localPos.z);

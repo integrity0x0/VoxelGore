@@ -9,37 +9,15 @@ LightChannel& Lighting::RequireChannel(ChannelId id) {
   }
 
   if (!channels_[id]) {
-    const auto* definition = registry_.Get(id);
-    channels_[id] = std::make_unique<LightChannel>(*definition, *chunkManager_, *blockManager_);
+    const auto* definition = registry_.GetById(id);
+
+    channels_[id] = std::make_unique<LightChannel>(*definition, storage_, id, blockCache_,
+                                                   *chunkManager_, *blockManager_);
   }
 
   return *channels_[id];
 }
 
-const BlockLightData* Lighting::RequireBlockLight(uint32_t id) {
-  if (const auto* light = blockCache_.Get(id)) {
-    return light;
-  }
-
-  const auto* block = blockManager_->block(id);
-  if (!block || !block->light()) {
-    blockCache_.Set(id, {
-                            .id = kInvalidChannelId,
-                            .strength = 0,
-                        });
-
-    return blockCache_.Get(id);
-  }
-
-  const auto channelId = registry_.Require(block->light()->channelId);
-
-  blockCache_.Set(id, {
-                          .id = channelId,
-                          .strength = block->light()->strength,
-                      });
-
-  return blockCache_.Get(id);
-}
 void Lighting::LightUp() {
   constexpr int L = static_cast<int>(Chunk::kLength);
   constexpr uint8_t kSunLight = 15;
@@ -62,7 +40,7 @@ void Lighting::LightUp() {
         const auto* block = blockManager_->block(voxel->id);
         const bool isPassingLight = block && block->isPassingLight();
 
-        if (const auto* light = RequireBlockLight(voxel->id);
+        if (const auto* light = blockCache_.Require(voxel->id);
             light && light->id != kInvalidChannelId && light->strength > 0) {
           RequireChannel(light->id).Spread(pos, light->strength);
         }
@@ -88,70 +66,109 @@ void Lighting::LightUp() {
 }
 
 void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
-  //static constexpr uint32_t kSunLight = 15;
+  const Block* block = blockManager_->block(voxel.id);
+  const bool isPassingLight = block && block->isPassingLight();
 
-  //static const glm::ivec3 kOffsets[6] = {
-  //    {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
-  //};
+  for (auto& channel : channels_) {
+    if (!channel) continue;
+    channel->Remove(pos);
+  }
 
-  //auto block = blockManager->block(voxel.id);
-  //bool isPassingLight = block && block->isPassingLight();
-  //glm::ivec3 emission = block ? block->getEmission() : glm::ivec3(0);
+  for (auto& channel : channels_) {
+    if (channel) channel->Update();
+  }
 
-  //if (isPassingLight) {
-  //  if (chunkManager->getLight(pos + glm::ivec3(0, 1, 0), LightChannel::S) == kSunLight) {
-  //    for (int32_t i = pos.y; i >= 0; --i) {
-  //      glm::ivec3 p = {pos.x, i, pos.z};
+  constexpr uint8_t kSunLight = 15;
 
-  //      auto v = chunkManager->getVoxel(p);
-  //      if (!v.has_value()) break;
+  if (!isPassingLight) {
+    sun_.Remove(pos);
+    for (int32_t y = pos.y - 1; y >= 0; --y) {
+      const glm::ivec3 currentPos{pos.x, y, pos.z};
+      const auto currentVoxel = chunkManager_->getVoxel(currentPos);
+      if (!currentVoxel.has_value()) break;
 
-  //      auto b = blockManager->block(v->id);
-  //      if (!b || !b->isPassingLight()) break;
+      const Block* currentBlock = blockManager_->block(currentVoxel->id);
+      if (!currentBlock || !currentBlock->isPassingLight()) break;
 
-  //      s.Spread(p, kSunLight);
-  //    }
-  //  }
-  //} else {
-  //  s.Remove(pos);
-  //  for (int32_t i = pos.y - 1; i >= 0; --i) {
-  //    glm::ivec3 p = {pos.x, i, pos.z};
+      sun_.Remove(currentPos);
+    }
+  } else {
+    const glm::ivec3 abovePos = pos + glm::ivec3(0, 1, 0);
+    if (sun_.GetLight(abovePos) == kSunLight) {
+      for (int32_t y = pos.y; y >= 0; --y) {
+        const glm::ivec3 currentPos{pos.x, y, pos.z};
+        const auto currentVoxel = chunkManager_->getVoxel(currentPos);
+        if (!currentVoxel.has_value()) break;
 
-  //    auto v = chunkManager->getVoxel(p);
-  //    if (!v.has_value()) break;
+        const Block* currentBlock = blockManager_->block(currentVoxel->id);
+        if (!currentBlock || !currentBlock->isPassingLight()) break;
 
-  //    auto b = blockManager->block(v->id);
-  //    if (!b || !b->isPassingLight()) break;
+        sun_.Spread(currentPos, kSunLight);
+      }
+    }
+  }
 
-  //    s.Remove(p);
-  //  }
-  //  s.Update();
-  //}
+  sun_.Update();
 
-  //r.Remove(pos);
-  //g.Remove(pos);
-  //b.Remove(pos);
+  static const glm::ivec3 kOffsets[6] = {
+      {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
+  };
 
-  //r.Update();
-  //g.Update();
-  //b.Update();
+  for (const auto& off : kOffsets) {
+    const glm::ivec3 neighborPos = pos + off;
 
-  //for (const auto& off : kOffsets) {
-  //  glm::ivec3 neighborPos = pos + off;
+    for (auto& channel : channels_) {
+      if (channel) {
+        channel->Spread(neighborPos);
+      }
+    }
+    sun_.Spread(neighborPos);
+  }
 
-  //  r.Spread(neighborPos);
-  //  g.Spread(neighborPos);
-  //  b.Spread(neighborPos);
-  //  s.Spread(neighborPos);
-  //}
+  if (const auto* light = blockCache_.Require(voxel.id);
+      light && light->id != kInvalidChannelId && light->strength > 0) {
+    auto& channel = RequireChannel(light->id);
+    channel.Spread(pos, light->strength);
+  }
 
-  //if (emission.r) r.Spread(pos, emission.r);
-  //if (emission.g) g.Spread(pos, emission.g);
-  //if (emission.b) b.Spread(pos, emission.b);
-
-  //r.Update();
-  //g.Update();
-  //b.Update();
-  //s.Update();
+  for (auto& channel : channels_) {
+    if (channel) channel->Update();
+  }
+  sun_.Update();
 }
+
+glm::vec4 Lighting::GetColor(const glm::ivec3& pos) const {
+  glm::ivec3 localPos;
+  const auto* chunk = storage_.GetChunkData(pos, localPos);
+  if (chunk == nullptr) {
+    return glm::vec4(0.0f);
+  }
+
+  const auto& lights = chunk->channels;
+
+  float sun = lights[kSunId] ? lights[kSunId]->Get(localPos) / 15.0f : 0.0f;
+  glm::vec3 color(0.0f);
+
+  for (ChannelId id = 0; id < channels_.size(); ++id) {
+    if (id >= lights.size() || !lights[id]) {
+      continue;
+    }
+
+    const float strength = static_cast<float>(lights[id]->Get(localPos)) / 15.0f;
+
+    const auto& channel = channels_[id];
+    if (!channel) {
+      continue;
+    }
+
+    const glm::vec3 channelColor = channel->definition().color * strength;
+
+    color.r = std::max(color.r, channelColor.r);
+    color.g = std::max(color.g, channelColor.g);
+    color.b = std::max(color.b, channelColor.b);
+  }
+
+  return glm::vec4(color, sun);
+}
+
 }  // namespace gm

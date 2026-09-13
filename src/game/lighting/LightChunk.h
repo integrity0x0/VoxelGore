@@ -11,7 +11,7 @@ class LightChunk {
   static constexpr uint32_t kLength = 16u;
   static constexpr uint32_t kVolume = kLength * kLength * kLength;
 
-  LightChunk() = default;
+  explicit LightChunk() { data_.fill(0); }
 
   [[nodiscard]] uint8_t Get(const glm::ivec3& localPos) const;
 

@@ -2,13 +2,16 @@
 
 #include <vector>
 
-#include "ChannelRegistry.h"
 #include "../../util/containers.h"
+#include "../voxel/BlockManager.h"
+#include "ChannelRegistry.h"
 
 namespace gm::lighting {
+
 struct BlockLightData {
   ChannelId id = kInvalidChannelId;
   uint8_t strength = 0;
+  bool passingLight = false;
 };
 
 class BlockLightCache {
@@ -16,6 +19,9 @@ class BlockLightCache {
   using Index = uint32_t;
 
   static constexpr Index kInvalidIndex = std::numeric_limits<Index>::max();
+
+  BlockLightCache(const BlockManager& blockManager, ChannelRegistry& registry)
+      : blockManager_(&blockManager), registry_(&registry) {}
 
   void Resize(uint32_t blockCount) { sparse_.resize(blockCount, kInvalidIndex); }
 
@@ -54,6 +60,8 @@ class BlockLightCache {
     sparse_[blockId] = kInvalidIndex;
   }
 
+  [[nodiscard]] const BlockLightData* Require(uint32_t blockId);
+
   [[nodiscard]] BlockLightData* Get(uint32_t blockId) {
     if (!Has(blockId)) return nullptr;
     return &dense_[sparse_[blockId]];
@@ -79,13 +87,17 @@ class BlockLightCache {
  private:
   void EnsureSparse(uint32_t blockId) {
     if (blockId >= sparse_.size()) {
-      sparse_.resize(blockId + 1, kInvalidIndex);
+      sparse_.resize(static_cast<size_t>(blockId + 1), kInvalidIndex);
     }
   }
 
  private:
+  const BlockManager* blockManager_;
+  ChannelRegistry* registry_;
+
   std::vector<BlockLightData> dense_;
   std::vector<uint32_t> denseBlockIds_;
   std::vector<uint32_t> sparse_;
 };
+
 }  // namespace gm::lighting

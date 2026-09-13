@@ -6,7 +6,12 @@ namespace gm::lighting {
 
 namespace {
 constexpr auto kNeighbourOffsets = std::to_array<glm::ivec3>({
-    {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
+    {1, 0, 0},
+    {-1, 0, 0},
+    {0, 1, 0},
+    {0, -1, 0},
+    {0, 0, 1},
+    {0, 0, -1},
 });
 
 bool PassesLight(const BlockManager* blockManager, uint32_t blockId) {
@@ -26,26 +31,20 @@ void ChannelProcessor::ProcessRemoveQueue() {
     removeQueue_.pop();
 
     for (const glm::ivec3& offset : kNeighbourOffsets) {
-      glm::ivec3 neighborPos = front.pos + offset;
+      const glm::ivec3 neighborPos = front.pos + offset;
 
-      std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
+      const std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
       if (!voxel.has_value()) {
         continue;
       }
 
-      uint32_t neighborLight = chunkManager_->getLight(neighborPos, channel_);
+      const uint8_t neighborLight = storage_->GetLight(neighborPos, id_);
 
       if (neighborLight != 0 && neighborLight == front.strength - 1) {
-        const Block* block = blockManager_->block(voxel->id);
+        const auto* light = blockCache_->Require(voxel->id);
 
-        if (block) {
-          glm::ivec3 emission = block->getEmission();
-          uint32_t sourceLight = (channel_ != LightChannel::S) ? emission[static_cast<size_t>(channel_)] : 0;
-          if (sourceLight != 0) {
-            Spread(neighborPos, sourceLight);
-          } else {
-            Remove(neighborPos);
-          }
+        if (light && light->id == id_ && light->strength != 0) {
+          Spread(neighborPos, light->strength);
         } else {
           Remove(neighborPos);
         }
@@ -54,7 +53,7 @@ void ChannelProcessor::ProcessRemoveQueue() {
       }
     }
 
-    storage_->SetLight(front.pos, 0);
+    storage_->SetLight(front.pos, id_, 0);
   }
 }
 
@@ -63,24 +62,25 @@ void ChannelProcessor::ProcessSpreadQueue() {
     LightNode front = spreadQueue_.front();
     spreadQueue_.pop();
 
-    storage_->SetLight(front.pos, front.strength);
-    
-    if (front.strength <= 1) continue;
+    storage_->SetLight(front.pos, id_, front.strength);
 
-    for (size_t i = 0; i < kNeighbourOffsets.size(); ++i) {
-      glm::ivec3 neighborPos = front.pos + kNeighbourOffsets[i];
+    if (front.strength <= 1) {
+      continue;
+    }
 
-      std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
+    for (const glm::ivec3& offset : kNeighbourOffsets) {
+      const glm::ivec3 neighborPos = front.pos + offset;
+
+      const std::optional<Voxel> voxel = chunkManager_->getVoxel(neighborPos);
       if (!voxel.has_value() || !PassesLight(blockManager_, voxel->id)) {
         continue;
       }
 
-      uint32_t neighborLight = storage_->GetLight(neighborPos);
-      
+      const uint8_t neighborLight = storage_->GetLight(neighborPos, id_);
+
       if (neighborLight < front.strength - 1) {
         Spread(neighborPos, front.strength - 1);
       }
-
     }
   }
 }

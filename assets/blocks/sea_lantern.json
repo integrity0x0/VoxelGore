@@ -1,0 +1,10 @@
+{
+  "id": "sea_lantern",
+  "textures": {
+    "all": "materials/sea_lantern.png"
+  },
+  "light": {
+    "channel": "sea",
+    "strength": 15
+  }
+}

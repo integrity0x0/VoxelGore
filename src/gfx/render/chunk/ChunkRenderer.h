@@ -28,7 +28,7 @@ class ChunkRenderer {
   ChunkRenderer(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
                 const vkcore::DeviceQueue& graphicsQueue, vkcore::MemoryAllocator& memoryAllocator,
                 VkRenderPass renderPass, const GameDataBinding& gameDataBinding,
-                gm::ChunkManager& chunkManager, const gm::BlockManager& blockManager,
+                gm::ChunkManager& chunkManager, const gm::lighting::Lighting& lighting, const gm::BlockManager& blockManager,
                 uint32_t framesInFlightCount);
 
   ~ChunkRenderer();

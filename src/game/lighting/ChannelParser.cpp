@@ -29,8 +29,6 @@ std::optional<ChannelDefinition> ChannelParser::Parse(std::string_view path) {
     color[i] = json["color"][i].get<float>();
   }
 
-  uint8_t decay = json.value("decay", 1);
-
-  return ChannelDefinition(json["id"].get<std::string>(), color, decay);
+  return ChannelDefinition(json["id"].get<std::string>(), color);
 }
 }  // namespace gm::lighting

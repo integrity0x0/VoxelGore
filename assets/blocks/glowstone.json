@@ -1,0 +1,10 @@
+{
+  "id": "glowstone",
+  "textures": {
+    "all": "materials/glowstone.png"
+  },
+  "light": {
+    "channel": "fire",
+    "strength": 15
+  }
+}

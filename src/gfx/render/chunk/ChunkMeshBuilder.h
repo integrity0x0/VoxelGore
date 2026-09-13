@@ -9,6 +9,7 @@
 #include "../../block/RenderData.h"
 #include "../RenderLayers.h"
 #include "ChunkMeshes.h"
+#include "../../../game/lighting/Lighting.h"
 
 namespace gfx {
 class ChunkMeshBuilder {
@@ -21,17 +22,21 @@ class ChunkMeshBuilder {
     uint32_t blockSurfaceId;
   };
 
-  ChunkMeshBuilder(const vkcore::Device& device, const gm::BlockManager& blockManager,
+  ChunkMeshBuilder(const vkcore::Device& device, const gm::lighting::Lighting& lighting, const gm::BlockManager& blockManager,
                    block::RenderData& blockRenderData, uint32_t framesCount);
 
   void BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame, gm::DirtyChunkSet& dirtyChunks,
                    const gm::ChunksMap& chunksMap, ChunkMeshes& meshes);
+
+  static constexpr size_t kBakedLength = gm::Chunk::kLength + 2ull;
+  static constexpr size_t kBakedVolume = kBakedLength * kBakedLength * kBakedLength;
 
  private:
   class MeshStream {
    public:
     static constexpr uint32_t kVerticesPerQuad = 4u;
     static constexpr uint32_t kIndicesPerQuad = 6u;
+
 
     MeshStream() = default;
 
@@ -198,10 +203,12 @@ class ChunkMeshBuilder {
                                     RenderLayer renderLayer);
   std::optional<TranslucentMesh> MakeTranslucentMesh(VkCommandBuffer cmd, StagingInfo& staging);
 
+ private:
   const vkcore::Device* device_;
+  const gm::lighting::Lighting* lighting_;
   const gm::BlockManager* blockManager_;
   block::RenderData* blockRenderData_;
-
+  
   vkcore::MemoryAllocator memoryAllocator_;
   vkcore::BufferAllocator bufferAllocator_;
 

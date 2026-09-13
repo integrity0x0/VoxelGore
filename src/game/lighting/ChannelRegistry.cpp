@@ -10,40 +10,40 @@ constexpr std::string_view kChannelPath = "light_channels/";
 constexpr std::string_view kChannelExtension = ".json";
 }  // namespace
 
-ChannelRegistry::ChannelRegistry(ChannelDefinition&& sunDefinition) {
-  std::ignore = Register(std::move(sunDefinition));
+ChannelRegistry::ChannelRegistry(const ChannelDefinition& sunDefinition) {
+  std::ignore = Register(sunDefinition);
 }
 
 ChannelId ChannelRegistry::Register(ChannelDefinition definition) {
-  if (const auto it = ids_.find(definition.id); it != ids_.end()) {
-    definitions_[it->second] = std::move(definition);
+  if (const auto it = ids_.find(definition.name); it != ids_.end()) {
+    definitions_[it->second] = std::make_unique<ChannelDefinition>(std::move(definition));
     return it->second;
   }
 
   const auto id = static_cast<ChannelId>(definitions_.size());
 
-  ids_.emplace(definition.id, id);
-  definitions_.push_back(std::move(definition));
+  ids_.emplace(definition.name, id);
+  definitions_.emplace_back(std::make_unique<ChannelDefinition>(std::move(definition)));
 
   return id;
 }
 
-ChannelId ChannelRegistry::Find(std::string_view id) const {
-  auto it = ids_.find(id);
+ChannelId ChannelRegistry::Find(std::string_view name) const {
+  auto it = ids_.find(name);
   return it != ids_.end() ? it->second : kInvalidChannelId;
 }
 
-ChannelId ChannelRegistry::Require(std::string_view id) {
-  if (auto channelId = Find(id); channelId != kInvalidChannelId) {
+ChannelId ChannelRegistry::Require(std::string_view name) {
+  if (auto channelId = Find(name); channelId != kInvalidChannelId) {
     return channelId;
   }
 
   std::string path;
-  path.reserve(core::kAssetsPrefix.size() + kChannelPath.size() + id.size() +
+  path.reserve(core::kAssetsPrefix.size() + kChannelPath.size() + name.size() +
                kChannelExtension.size());
   path += core::kAssetsPrefix;
   path += kChannelPath;
-  path += id;
+  path += name;
   path += kChannelExtension;
 
   auto definition = ChannelParser::Parse(path);
@@ -53,21 +53,21 @@ ChannelId ChannelRegistry::Require(std::string_view id) {
   
   const ChannelId channelId = static_cast<ChannelId>(definitions_.size());
 
-  ids_.emplace(definition->id, channelId);
-  definitions_.push_back(std::move(*definition));
+  ids_.emplace(definition->name, channelId);
+  definitions_.emplace_back(std::make_unique<ChannelDefinition>(std::move(*definition)));
 
   return channelId;
 }
 
-const ChannelDefinition* ChannelRegistry::Get(ChannelId id) const {
+const ChannelDefinition* ChannelRegistry::GetById(ChannelId id) const {
   if (id >= definitions_.size()) {
     return nullptr;
   }
 
-  return &definitions_[id];
+  return definitions_[id].get();
 }
 
-const ChannelDefinition* ChannelRegistry::Get(std::string_view key) const { 
-  return Get(Find(key)); 
+const ChannelDefinition* ChannelRegistry::GetByName(std::string_view name) const { 
+  return GetById(Find(name));
 }
 }  // namespace gm::lighting
