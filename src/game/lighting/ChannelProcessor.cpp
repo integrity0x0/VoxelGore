@@ -1,8 +1,8 @@
-#include "LightChannelProcessor.h"
+#include "ChannelProcessor.h"
 
 #include <array>
 
-namespace gm {
+namespace gm::lighting {
 
 namespace {
 constexpr auto kNeighbourOffsets = std::to_array<glm::ivec3>({
@@ -15,12 +15,12 @@ bool PassesLight(const BlockManager* blockManager, uint32_t blockId) {
 }
 }  // namespace
 
-void LightChannelProcessor::Update() {
+void ChannelProcessor::Update() {
   ProcessRemoveQueue();
   ProcessSpreadQueue();
 }
 
-void LightChannelProcessor::ProcessRemoveQueue() {
+void ChannelProcessor::ProcessRemoveQueue() {
   while (!removeQueue_.empty()) {
     LightNode front = removeQueue_.front();
     removeQueue_.pop();
@@ -54,16 +54,16 @@ void LightChannelProcessor::ProcessRemoveQueue() {
       }
     }
 
-    chunkManager_->setLight(front.pos, channel_, 0);
+    storage_->SetLight(front.pos, 0);
   }
 }
 
-void LightChannelProcessor::ProcessSpreadQueue() {
+void ChannelProcessor::ProcessSpreadQueue() {
   while (!spreadQueue_.empty()) {
     LightNode front = spreadQueue_.front();
     spreadQueue_.pop();
 
-    chunkManager_->setLight(front.pos, channel_, front.strength);
+    storage_->SetLight(front.pos, front.strength);
     
     if (front.strength <= 1) continue;
 
@@ -75,7 +75,7 @@ void LightChannelProcessor::ProcessSpreadQueue() {
         continue;
       }
 
-      uint32_t neighborLight = chunkManager_->getLight(neighborPos, channel_);
+      uint32_t neighborLight = storage_->GetLight(neighborPos);
       
       if (neighborLight < front.strength - 1) {
         Spread(neighborPos, front.strength - 1);
@@ -85,4 +85,4 @@ void LightChannelProcessor::ProcessSpreadQueue() {
   }
 }
 
-}  // namespace gm
+}  // namespace gm::lighting

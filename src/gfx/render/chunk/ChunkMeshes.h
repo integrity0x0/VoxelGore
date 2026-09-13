@@ -10,8 +10,8 @@
 namespace gfx {
 struct ChunkMeshes {
  public:
-  std::unordered_map<glm::ivec3, Mesh, util::Vec3Hash> solid;
-  std::unordered_map<glm::ivec3, Mesh, util::Vec3Hash> cutout;
-  std::unordered_map<glm::ivec3, TranslucentMesh, util::Vec3Hash> translucent;
+  std::unordered_map<glm::ivec3, Mesh, util::IVec3Hash> solid;
+  std::unordered_map<glm::ivec3, Mesh, util::IVec3Hash> cutout;
+  std::unordered_map<glm::ivec3, TranslucentMesh, util::IVec3Hash> translucent;
 };
 }  // namespace gfx

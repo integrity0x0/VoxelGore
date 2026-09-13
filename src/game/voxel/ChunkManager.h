@@ -11,8 +11,8 @@
 #include "Chunk.h"
 
 namespace gm {
-using ChunksMap = std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, util::Vec3Hash>;
-using DirtyChunkSet = std::unordered_set<glm::ivec3, util::Vec3Hash>;
+using ChunksMap = std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, util::IVec3Hash>;
+using DirtyChunkSet = std::unordered_set<glm::ivec3, util::IVec3Hash>;
 
 class ChunkManager {
  public:
@@ -47,7 +47,7 @@ class ChunkManager {
     if (!chunk) {
       return std::nullopt;
     }
-    return chunk->getVoxel(toLocalPos(worldPos, chunkPos));
+    return chunk->GetVoxel(toLocalPos(worldPos, chunkPos));
   }
 
   bool setVoxel(const glm::ivec3& worldPos, const Voxel& value) {
@@ -57,79 +57,7 @@ class ChunkManager {
       return false;
     }
     glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
-    chunk->setVoxel(localPos, value);
-    markDirtyWithNeighbors(chunkPos, localPos);
-    return true;
-  }
-
-  glm::vec3 getLightColor(const glm::ivec3& worldPos, const glm::vec3& ambientColor = glm::vec3(1.0f)) const {
-    const uint16_t light = getLight(worldPos);
-
-    constexpr float kMaxLight = 15.0f;
-
-    const float r = static_cast<float>((light >> 0) & 0xF) / kMaxLight;
-    const float g = static_cast<float>((light >> 4) & 0xF) / kMaxLight;
-    const float b = static_cast<float>((light >> 8) & 0xF) / kMaxLight;
-    const float s = static_cast<float>((light >> 12) & 0xF) / kMaxLight;
-
-    glm::vec3 sunLight = ambientColor * s;
-
-    return glm::clamp(glm::vec3(r, g, b) + sunLight, 0.0f, 1.0f);
-  }
-
-  uint32_t getLight(const glm::ivec3& worldPos, LightChannel channel) const {
-    glm::ivec3 chunkPos = toChunkPos(worldPos);
-    const Chunk* chunk = getChunk(chunkPos);
-    if (!chunk) {
-      return 0u;
-    }
-    glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
-    const LightMap& lightMap = chunk->lightMap();
-    switch (channel) {
-      case LightChannel::R:
-        return lightMap.getR(localPos);
-      case LightChannel::G:
-        return lightMap.getG(localPos);
-      case LightChannel::B:
-        return lightMap.getB(localPos);
-      case LightChannel::S:
-        return lightMap.getS(localPos);
-    }
-    return 15u;
-  }
-
-  uint16_t getLight(const glm::ivec3& worldPos) const {
-    glm::ivec3 chunkPos = toChunkPos(worldPos);
-    const Chunk* chunk = getChunk(chunkPos);
-    if (!chunk) {
-      return 0;
-    }
-    glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
-    return chunk->lightMap().get(localPos);
-  }
-
-  bool setLight(const glm::ivec3& worldPos, LightChannel channel, uint8_t value) {
-    glm::ivec3 chunkPos = toChunkPos(worldPos);
-    Chunk* chunk = getChunk(chunkPos);
-    if (!chunk) {
-      return false;
-    }
-    glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
-    LightMap& lightMap = chunk->lightMap();
-    switch (channel) {
-      case LightChannel::R:
-        lightMap.setR(localPos, value);
-        break;
-      case LightChannel::G:
-        lightMap.setG(localPos, value);
-        break;
-      case LightChannel::B:
-        lightMap.setB(localPos, value);
-        break;
-      case LightChannel::S:
-        lightMap.setS(localPos, value);
-        break;
-    }
+    chunk->SetVoxel(localPos, value);
     markDirtyWithNeighbors(chunkPos, localPos);
     return true;
   }

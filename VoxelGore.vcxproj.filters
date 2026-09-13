@@ -44,7 +44,7 @@
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\game\LibControl.cpp" />
-    <ClCompile Include="src\game\lighting\LightChannelProcessor.cpp" />
+    <ClCompile Include="src\game\lighting\ChannelProcessor.cpp" />
     <ClCompile Include="src\game\lighting\Lighting.cpp" />
     <ClCompile Include="src\game\physics\CollisionResolver.cpp" />
     <ClCompile Include="src\game\voxel\Block.cpp" />
@@ -144,6 +144,11 @@
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\util\files.cpp" />
+    <ClCompile Include="src\game\lighting\LightChunk.cpp" />
+    <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
+    <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
+    <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
+    <ClCompile Include="src\game\lighting\LightChannel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -159,9 +164,8 @@
     <ClInclude Include="src\game\ControlState.h" />
     <ClInclude Include="src\game\entity\Entity.h" />
     <ClInclude Include="src\game\LibControl.h" />
-    <ClInclude Include="src\game\lighting\LightChannelProcessor.h" />
+    <ClInclude Include="src\game\lighting\ChannelProcessor.h" />
     <ClInclude Include="src\game\lighting\Lighting.h" />
-    <ClInclude Include="src\game\lighting\LightMap.h" />
     <ClInclude Include="src\game\physics\CollisionResolver.h" />
     <ClInclude Include="src\game\physics\Hitbox.h" />
     <ClInclude Include="src\game\voxel\Block.h" />
@@ -295,5 +299,13 @@
     <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
     <ClInclude Include="shaders\UniformGameData.glsl" />
     <ClInclude Include="src\util\files.h" />
+    <ClInclude Include="src\game\lighting\LightChunk.h" />
+    <ClInclude Include="src\game\lighting\LightChunkStorage.h" />
+    <ClInclude Include="src\game\lighting\ChannelRegistry.h" />
+    <ClInclude Include="src\game\lighting\ChannelParser.h" />
+    <ClInclude Include="src\game\lighting\ChannelDefinition.h" />
+    <ClInclude Include="src\game\lighting\BlockLightCache.h" />
+    <ClInclude Include="src\util\containers.h" />
+    <ClInclude Include="src\game\lighting\LightChannel.h" />
   </ItemGroup>
 </Project>

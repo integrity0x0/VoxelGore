@@ -8,6 +8,7 @@
 
 #include "Entity.h"
 #include "IComponentStorage.h"
+#include "../../util/containers.h"
 
 namespace gm {
 template <typename T>
@@ -34,13 +35,13 @@ class ComponentStorage final : public IComponentStorage {
     if (index != lastIndex) {
       const EntityId movedEntity = denseEntities_.back();
 
-      SwapAndPop(denseEntities_, index);
-      SwapAndPop(denseComponents_, index);
+      util::SwapAndPop(denseEntities_, index);
+      util::SwapAndPop(denseComponents_, index);
 
       sparse_[movedEntity] = index;
     } else {
-      SwapAndPop(denseEntities_, index);
-      SwapAndPop(denseComponents_, index);
+      util::SwapAndPop(denseEntities_, index);
+      util::SwapAndPop(denseComponents_, index);
     }
 
     sparse_[entityId] = kInvalidIndex;
@@ -71,16 +72,6 @@ class ComponentStorage final : public IComponentStorage {
   ~ComponentStorage() override = default;
 
  private:
-  template <typename U>
-  void SwapAndPop(std::vector<U>& vector, size_t index) {
-    const size_t lastIndex = vector.size() - 1;
-
-    if (index != lastIndex) {
-      vector[index] = std::move(vector[lastIndex]);
-    }
-
-    vector.pop_back();
-  }
 
   void ExtendSparse(EntityId entityId) {
     sparse_.resize(static_cast<size_t>(entityId) + 1, kInvalidIndex);

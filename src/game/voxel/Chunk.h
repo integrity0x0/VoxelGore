@@ -15,10 +15,10 @@ class Chunk {
 
   explicit Chunk(const glm::ivec3& pos);
 
-  [[nodiscard]] Voxel& getVoxel(const glm::ivec3& localPos);
-  [[nodiscard]] const Voxel& getVoxel(const glm::ivec3& localPos) const;
+  [[nodiscard]] Voxel& GetVoxel(const glm::ivec3& localPos);
+  [[nodiscard]] const Voxel& GetVoxel(const glm::ivec3& localPos) const;
 
-  void setVoxel(const glm::ivec3& localPos, const Voxel& voxel) {
+  void SetVoxel(const glm::ivec3& localPos, const Voxel& voxel) {
     if (localPos.x >= kLength || localPos.y >= kLength || localPos.z >= kLength) return;
 
     size_t voxelIndex = ArrayIndex(localPos);
@@ -39,9 +39,6 @@ class Chunk {
 
   [[nodiscard]] glm::ivec3 pos() const { return pos_; }
 
-  [[nodiscard]] LightMap& lightMap() { return lightMap_; }
-  [[nodiscard]] const LightMap& lightMap() const { return lightMap_; }
-
   [[nodiscard]] bool IsEmpty() const { return nonEmptyCount_ == 0ll; }
 
  private:
@@ -50,7 +47,6 @@ class Chunk {
   }
   std::unique_ptr<Voxel[]> voxels_;
   glm::ivec3 pos_;
-  LightMap lightMap_;
   size_t nonEmptyCount_ = 0ll;
 };
 

@@ -131,7 +131,7 @@ bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
   const gm::Chunk* target = ResolveChunk(self, neighbors, neighborLocalPos);
   if (!target) return true;
 
-  uint32_t neighborId = target->getVoxel(neighborLocalPos).id;
+  uint32_t neighborId = target->GetVoxel(neighborLocalPos).id;
   return renderData.renderGroupId(neighborId) == renderData.renderGroupId(sourceVoxelId);
 }
 
@@ -251,7 +251,7 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
       for (uint32_t y = 0; y < gm::Chunk::kLength; y++) {
         for (uint32_t z = 0; z < gm::Chunk::kLength; z++) {
           glm::ivec3 localPos(x, y, z);
-          const gm::Voxel& v = chunk.getVoxel(localPos);
+          const gm::Voxel& v = chunk.GetVoxel(localPos);
 
           if (!v.id) continue;
 

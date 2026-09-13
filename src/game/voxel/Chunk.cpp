@@ -20,7 +20,7 @@ uint32_t hashChunkPos(const glm::ivec3& pos) {
 }  // namespace
 
 Chunk::Chunk(const glm::ivec3& pos)
-    : voxels_(std::make_unique<Voxel[]>(kVolume)), pos_(pos), lightMap_(kLength, kLength, kLength) {
+    : voxels_(std::make_unique<Voxel[]>(kVolume)), pos_(pos) {
   constexpr int platformHeight = 4;
   constexpr uint32_t oreSpawnChance = 100;
 
@@ -55,7 +55,7 @@ Chunk::Chunk(const glm::ivec3& pos)
   }
 }
 
-Voxel& Chunk::getVoxel(const glm::ivec3& localPos) {
+Voxel& Chunk::GetVoxel(const glm::ivec3& localPos) {
   assert(localPos.x >= 0 && localPos.x < kLength);
   assert(localPos.y >= 0 && localPos.y < kLength);
   assert(localPos.z >= 0 && localPos.z < kLength);
@@ -63,7 +63,7 @@ Voxel& Chunk::getVoxel(const glm::ivec3& localPos) {
   return voxels_[ArrayIndex(localPos)];
 }
 
-const Voxel& Chunk::getVoxel(const glm::ivec3& localPos) const {
+const Voxel& Chunk::GetVoxel(const glm::ivec3& localPos) const {
   assert(localPos.x >= 0 && localPos.x < kLength);
   assert(localPos.y >= 0 && localPos.y < kLength);
   assert(localPos.z >= 0 && localPos.z < kLength);

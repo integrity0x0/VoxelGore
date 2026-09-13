@@ -16,6 +16,11 @@ class Block {
  public:
   enum class Face { North, South, West, East, Bottom, Top };
   enum class RenderLayer { Solid, Cutout, Translucent, Count };
+  struct Light {
+    std::string id;
+    uint8_t strength;
+  };
+
   Block(uint32_t id) : id_(id) {}
 
   [[nodiscard]] uint32_t getId() const { return id_; }
@@ -61,6 +66,9 @@ class Block {
   [[nodiscard]] float friction() const { return friction_; }
   void setFriction(float friction) { friction_ = friction; }
 
+  [[nodiscard]] const std::optional<Light>& light() const { return light_; }
+  void setLight(const std::optional<Light>& light) { light_ = light; }
+
  private:
   uint32_t id_;
   bool obstacle_ = false;
@@ -73,6 +81,7 @@ class Block {
   std::string renderGroup_;
   RenderLayer renderLayer_ = RenderLayer::Solid;
   float friction_ = 10.2f;
+  std::optional<Light> light_;
 };
 
 }  // namespace gm
