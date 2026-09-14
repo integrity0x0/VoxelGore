@@ -45,9 +45,14 @@ set_target_properties(native_app_glue PROPERTIES
 
 set(SOURCE_FILES
 
-        # Platform
+        # Root
         src/main_android.cpp
 
+        src/Game.cpp
+        src/WorldSession.cpp
+        src/RenderWorld.cpp
+        src/PlayerController.cpp
+     
         # Engine
         src/Engine.cpp
 

@@ -16,10 +16,14 @@ class RenderPass {
              std::span<const SubpassDescription> subpasses,
              std::span<const VkSubpassDependency> dependencies = {});
 
-  VkRenderPass handle() const { return renderPass_.get(); }
-  const std::vector<VkAttachmentDescription>& attachments() const { return attachments_; }
-  const std::vector<SubpassDescription>& subpasses() const { return subpasses_; }
-  const std::vector<VkSubpassDependency>& dependencies() const { return dependencies_; }
+  [[nodiscard]] VkRenderPass handle() const { return renderPass_.get(); }
+  [[nodiscard]] const std::vector<VkAttachmentDescription>& attachments() const {
+    return attachments_;
+  }
+  [[nodiscard]] const std::vector<SubpassDescription>& subpasses() const { return subpasses_; }
+  [[nodiscard]] const std::vector<VkSubpassDependency>& dependencies() const {
+    return dependencies_;
+  }
 
   void Begin(VkCommandBuffer cmd, const Framebuffer& framebuffer, VkRect2D renderArea,
              const std::vector<VkClearValue>& clearValues,
@@ -27,16 +31,13 @@ class RenderPass {
 
   void End(VkCommandBuffer cmd) const;
 
-  Framebuffer MakeFramebuffer(const std::vector<const ImageView*>& attachments, uint32_t width,
-                              uint32_t height, uint32_t layers = 1,
+  [[nodiscard]] Framebuffer MakeFramebuffer(std::span<const ImageView* const> attachments,
+                              VkExtent2D extent, uint32_t layers = 1,
                               VkFramebufferCreateFlags flags = 0) const;
 
-  Framebuffer MakeFramebuffer(const std::vector<const ImageView*>& attachments, VkExtent2D extent,
-                              uint32_t layers = 1, VkFramebufferCreateFlags flags = 0) const;
-
-  Framebuffer MakeFramebuffer(const ImageView* attachment, uint32_t width, uint32_t height,
-                              uint32_t layers = 1, VkFramebufferCreateFlags flags = 0) const;
-
+  [[nodiscard]] Framebuffer MakeFramebuffer(const ImageView* attachment, VkExtent2D extent,
+                                           uint32_t layers = 1, 
+                                           VkFramebufferCreateFlags flags = 0) const;
  private:
   const Device* device_;
   UniqueRenderPass renderPass_;

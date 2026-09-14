@@ -215,7 +215,7 @@ vkcore::SampledTexture PreviewRenderer::Render(uint32_t blockId) {
   vkcore::ImageView colorView(*device_, colorViewCI);
 
   vkcore::Framebuffer framebuffer = renderPass_.MakeFramebuffer(
-      {&colorView, &depthTexture.imageView()}, kPreviewSize, kPreviewSize);
+      std::to_array<const vkcore::ImageView*>({&colorView, &depthTexture.imageView()}), {kPreviewSize, kPreviewSize});
 
   VkSamplerCreateInfo samplerCI = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
   samplerCI.magFilter = VK_FILTER_LINEAR;

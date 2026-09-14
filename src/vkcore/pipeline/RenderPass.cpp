@@ -1,5 +1,7 @@
 #include "RenderPass.h"
 
+#include <array>
+
 namespace vkcore {
 
 RenderPass::RenderPass(const Device& device, std::span<const VkAttachmentDescription> attachments,
@@ -49,23 +51,17 @@ void RenderPass::End(VkCommandBuffer cmd) const {
   device_->dispatchTable().vkCmdEndRenderPass(cmd);
 }
 
-Framebuffer RenderPass::MakeFramebuffer(const std::vector<const ImageView*>& attachments,
-                                        uint32_t width, uint32_t height, uint32_t layers,
-                                        VkFramebufferCreateFlags flags) const {
-  return Framebuffer(*device_, attachments, renderPass_.get(), width, height, layers, flags);
-}
-
-Framebuffer RenderPass::MakeFramebuffer(const std::vector<const ImageView*>& attachments,
+Framebuffer RenderPass::MakeFramebuffer(std::span<const ImageView* const> attachments,
                                         VkExtent2D extent, uint32_t layers,
                                         VkFramebufferCreateFlags flags) const {
-  return MakeFramebuffer(attachments, extent.width, extent.height, layers, flags);
+  return Framebuffer(*device_, attachments, renderPass_.get(), extent, layers, flags);
 }
 
-Framebuffer RenderPass::MakeFramebuffer(const ImageView* attachment, uint32_t width,
-                                        uint32_t height, uint32_t layers,
+Framebuffer RenderPass::MakeFramebuffer(const ImageView* attachment, VkExtent2D extent,
+                                        uint32_t layers,
                                         VkFramebufferCreateFlags flags) const {
-  std::vector<const ImageView*> attachments = {attachment};
-  return MakeFramebuffer(attachments, width, height, layers, flags);
+  auto attachments = std::to_array({attachment});
+  return MakeFramebuffer(attachments, extent, layers, flags);
 }
 
 }  // namespace vkcore

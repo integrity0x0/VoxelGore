@@ -53,12 +53,14 @@
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
     <ClCompile Include="src\game\lighting\LightChunk.cpp" />
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
     <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\texture\Skybox.cpp" />
@@ -127,6 +129,8 @@
     <ClCompile Include="src\gfx\ui\Page.cpp" />
     <ClCompile Include="src\gfx\ui\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\PlayerController.cpp" />
+    <ClCompile Include="src\RenderWorld.cpp" />
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\util\files.cpp" />
@@ -170,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaders\UniformGameData.glsl" />
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\game\lighting\ChannelDefinition.h" />
     <ClInclude Include="src\game\lighting\ChannelParser.h" />
@@ -178,6 +183,8 @@
     <ClInclude Include="src\game\lighting\LightChunk.h" />
     <ClInclude Include="src\game\lighting\LightChunkStorage.h" />
     <ClInclude Include="src\game\lighting\LightColorSampler.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
@@ -276,6 +283,8 @@
     <ClInclude Include="src\gfx\ui\TriggerDispatcher.h" />
     <ClInclude Include="src\gfx\ui\Ui.h" />
     <ClInclude Include="src\gfx\UvRegion.h" />
+    <ClInclude Include="src\PlayerController.h" />
+    <ClInclude Include="src\RenderWorld.h" />
     <ClInclude Include="src\script\LuaScript.h" />
     <ClInclude Include="src\script\LuaState.h" />
     <ClInclude Include="src\util\containers.h" />

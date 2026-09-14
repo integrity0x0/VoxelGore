@@ -53,7 +53,6 @@ void ChannelProcessor::ProcessRemoveQueue() {
       }
     }
 
-    storage_->SetLight(front.pos, id_, 0);
   }
 }
 
@@ -61,8 +60,6 @@ void ChannelProcessor::ProcessSpreadQueue() {
   while (!spreadQueue_.empty()) {
     LightNode front = spreadQueue_.front();
     spreadQueue_.pop();
-
-    storage_->SetLight(front.pos, id_, front.strength);
 
     if (front.strength <= 1) {
       continue;

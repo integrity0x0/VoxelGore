@@ -32,6 +32,7 @@ class ChannelProcessor {
     if (strength == 0) return;
     spreadQueue_.emplace(pos, strength);
     storage_->SetLight(pos, id_, strength);
+    chunkManager_->MarkDirty(pos);
   }
 
   void Spread(const glm::ivec3& pos) {
@@ -46,6 +47,7 @@ class ChannelProcessor {
 
     removeQueue_.emplace(pos, light);
     storage_->SetLight(pos, id_, 0);
+    chunkManager_->MarkDirty(pos);
   }
 
   void Update();

@@ -156,6 +156,10 @@
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
     <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
     <ClCompile Include="src\WorldSession.cpp" />
+    <ClCompile Include="src\PlayerController.cpp" />
+    <ClCompile Include="src\RenderWorld.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -316,5 +320,10 @@
     <ClInclude Include="src\game\lighting\LightChannel.h" />
     <ClInclude Include="src\game\lighting\LightColorSampler.h" />
     <ClInclude Include="src\WorldSession.h" />
+    <ClInclude Include="src\PlayerController.h" />
+    <ClInclude Include="src\RenderWorld.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
   </ItemGroup>
 </Project>

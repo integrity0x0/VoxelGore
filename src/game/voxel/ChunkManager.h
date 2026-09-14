@@ -18,6 +18,12 @@ class ChunkManager {
  public:
   ChunkManager(uint32_t width, uint32_t height, uint32_t depth);
 
+  void MarkDirty(const glm::ivec3& worldPos) {
+    glm::ivec3 chunkPos = toChunkPos(worldPos);
+    glm::ivec3 localPos = toLocalPos(worldPos, chunkPos);
+    markDirtyWithNeighbors(chunkPos, localPos);
+  }
+
   bool isDirty(const glm::ivec3& chunkPos) const {
     return dirtyChunks_.find(chunkPos) != dirtyChunks_.end();
   }
