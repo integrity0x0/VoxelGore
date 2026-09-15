@@ -39,7 +39,7 @@ Instance::Instance(const LibraryLoader& loader, std::vector<std::string> extensi
   instanceCI.flags = instanceCreateFlags;
 
   VkInstance inst = VK_NULL_HANDLE;
-  SystemError::check(loader.getDispatchTable().vkCreateInstance(&instanceCI, nullptr, &inst),
+  SystemError::Check(loader.getDispatchTable().vkCreateInstance(&instanceCI, nullptr, &inst),
                      "Failed to create instance");
 
   PFN_vkDestroyInstance pfnDestroy = reinterpret_cast<PFN_vkDestroyInstance>(

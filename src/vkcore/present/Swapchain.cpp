@@ -43,7 +43,7 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
   swapchainCI.oldSwapchain = VK_NULL_HANDLE;
 
   VkSwapchainKHR rawSwapchain = VK_NULL_HANDLE;
-  SystemError::check(
+  SystemError::Check(
       swapchainTable.vkCreateSwapchainKHR(device.handle(), &swapchainCI, nullptr, &rawSwapchain),
       "Swapchain: vkCreateSwapchainKHR failed");
 
@@ -53,11 +53,11 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
   swapchain_ = UniqueSwapchainKHR(rawSwapchain, deleter);
 
   uint32_t actualImageCount = 0;
-  SystemError::check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
+  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
                                                             &actualImageCount, nullptr),
                      "Swapchain: vkGetSwapchainImagesKHR (count) failed");
   images_.resize(actualImageCount);
-  SystemError::check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
+  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
                                                             &actualImageCount, images_.data()),
                      "Swapchain: vkGetSwapchainImagesKHR failed");
 

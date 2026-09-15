@@ -7,7 +7,7 @@ class Sampler {
  public:
   Sampler(const Device& device, const VkSamplerCreateInfo& samplerCI) {
     VkSampler samplerRaw = VK_NULL_HANDLE;
-    SystemError::check(
+    SystemError::Check(
         device.dispatchTable().vkCreateSampler(device.handle(), &samplerCI, nullptr, &samplerRaw),
         "failed to create sampler");
 

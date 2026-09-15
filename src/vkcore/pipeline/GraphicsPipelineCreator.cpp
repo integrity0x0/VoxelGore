@@ -1,20 +1,25 @@
 #include "GraphicsPipelineCreator.h"
 
-#include <stdexcept>
-
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-#include <android/asset_manager.h>
-extern AAssetManager* g_AAssetManager;
-#endif
-
 namespace vkcore {
 
 GraphicsPipelineCreator::GraphicsPipelineCreator(const Device& device) : device_(&device) {}
 
 Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRenderPass renderPass,
                                         uint32_t subpassIndex) {
-  for (size_t i = 0; i < shaderStages_.size(); ++i)
-    shaderStages_[i].pName = entryPointNames_[i].c_str();
+  std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+  shaderStages.reserve(shaderStages_.size());
+
+  for (const auto& shader : shaderStages_) {
+    shaderStages.push_back({
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .stage = shader.stage,
+        .module = shader.module.get().handle(),
+        .pName = shader.entryPoint.c_str(),
+        .pSpecializationInfo = nullptr,
+    });
+  }
 
   VkPipelineVertexInputStateCreateInfo vertexInputInfo = {
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
@@ -33,8 +38,8 @@ Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRende
   };
 
   static const VkRect2D defaultScissor = {
-      {0, 0},      // offset
-      {1280, 720}  // extent (width, height)
+      {.x = 0, .y = 0},      // offset
+      {.width = 1280, .height = 720}  // extent
   };
 
   if (viewports_.empty()) {
@@ -71,8 +76,8 @@ Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRende
 
   VkGraphicsPipelineCreateInfo pipelineInfo = {VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
   pipelineInfo.flags = flags_;
-  pipelineInfo.stageCount = static_cast<uint32_t>(shaderStages_.size());
-  pipelineInfo.pStages = shaderStages_.data();
+  pipelineInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
+  pipelineInfo.pStages = shaderStages.data();
   pipelineInfo.pVertexInputState = &vertexInputInfo;
   pipelineInfo.pInputAssemblyState = &inputAssembly_;
   pipelineInfo.pTessellationState = useTessellation_ ? &tessellation_ : nullptr;
@@ -89,66 +94,16 @@ Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRende
   pipelineInfo.basePipelineIndex = basePipelineIndex_;
 
   VkPipeline rawPipeline;
-  SystemError::check(
+
+  SystemError::Check(
       device_->dispatchTable().vkCreateGraphicsPipelines(device_->handle(), VK_NULL_HANDLE, 1,
                                                          &pipelineInfo, nullptr, &rawPipeline),
       "failed to create pipeline");
 
   UniquePipeline pipeline(
       rawPipeline, PipelineDeleter{device_->handle(), device_->dispatchTable().vkDestroyPipeline});
+
   return Pipeline(*device_, std::move(pipeline));
-}
-
-UniqueShaderModule GraphicsPipelineCreator::LoadShaderModule(const Device& device,
-                                                             const std::string_view& path) {
-  std::vector<uint32_t> data;
-  size_t fileSize = 0;
-
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-  AAsset* asset = AAssetManager_open(g_AAssetManager, path.data(), AASSET_MODE_BUFFER);
-  if (!asset) {
-    throw std::runtime_error("failed to load shader module: unable to open asset " +
-                             std::string(path));
-  }
-
-  fileSize = static_cast<size_t>(AAsset_getLength(asset));
-  data.resize(fileSize / sizeof(uint32_t));
-
-  int readBytes = AAsset_read(asset, data.data(), fileSize);
-  AAsset_close(asset);
-
-  if (readBytes < 0 || static_cast<size_t>(readBytes) != fileSize) {
-    throw std::runtime_error("failed to load shader module: incomplete read " + std::string(path));
-  }
-#else
-  std::ifstream file(path.data(), std::ios::binary | std::ios::ate);
-  if (!file.is_open()) {
-    throw std::runtime_error("failed to load shader module: unable to open file " +
-                             std::string(path));
-  }
-
-  fileSize = file.tellg();
-  file.seekg(0, std::ios::beg);
-
-  data.resize(fileSize / sizeof(uint32_t));
-  file.read(reinterpret_cast<char*>(data.data()), fileSize);
-
-  if (file.gcount() != fileSize) {
-    throw std::runtime_error("failed to load shader module: incomplete read " + std::string(path));
-  }
-#endif
-
-  VkShaderModuleCreateInfo shaderModuleCI = {VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
-  shaderModuleCI.pCode = data.data();
-  shaderModuleCI.codeSize = fileSize;
-
-  VkShaderModule shaderModuleRaw = VK_NULL_HANDLE;
-  SystemError::check(device.dispatchTable().vkCreateShaderModule(device.handle(), &shaderModuleCI,
-                                                                 nullptr, &shaderModuleRaw),
-                     "failed to create shader module");
-
-  return UniqueShaderModule(shaderModuleRaw,
-                            {device.handle(), device.dispatchTable().vkDestroyShaderModule});
 }
 
 }  // namespace vkcore

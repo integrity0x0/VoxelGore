@@ -15,7 +15,7 @@ DescriptorPool::DescriptorPool(const Device& device,
   descriptorPoolCI.maxSets = maxSets;
   descriptorPoolCI.flags |= VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
   VkDescriptorPool descriptorPoolRaw = VK_NULL_HANDLE;
-  SystemError::check(device.dispatchTable().vkCreateDescriptorPool(
+  SystemError::Check(device.dispatchTable().vkCreateDescriptorPool(
                          device.handle(), &descriptorPoolCI, nullptr, &descriptorPoolRaw),
                      "failed to create descriptor pool");
 
@@ -30,7 +30,7 @@ DescriptorSet DescriptorPool::Allocate(const DescriptorSetLayout& layout) const 
   descriptorSetAI.descriptorSetCount = 1;
   descriptorSetAI.pSetLayouts = layouts;
   VkDescriptorSet descriptorSetRaw = VK_NULL_HANDLE;
-  SystemError::check(device->dispatchTable().vkAllocateDescriptorSets(
+  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(
                          device->handle(), &descriptorSetAI, &descriptorSetRaw),
                      "Failed to allocate descriptor set");
 
@@ -50,7 +50,7 @@ std::vector<DescriptorSet> DescriptorPool::Allocate(const DescriptorSetLayout& l
   allocInfo.pSetLayouts = rawLayouts.data();
 
   std::vector<VkDescriptorSet> rawSets(allocInfo.descriptorSetCount);
-  SystemError::check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
+  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
                                                                       rawSets.data()),
                      "Failed to allocate descriptor sets");
 
@@ -83,7 +83,7 @@ std::vector<DescriptorSet> DescriptorPool::Allocate(
   allocInfo.pSetLayouts = rawLayouts.data();
 
   std::vector<VkDescriptorSet> rawSets(allocInfo.descriptorSetCount);
-  SystemError::check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
+  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
                                                                       rawSets.data()),
                      "Failed to allocate descriptor sets");
 

@@ -28,7 +28,7 @@ RenderPass::RenderPass(const Device& device, std::span<const VkAttachmentDescrip
   VkRenderPass raw = VK_NULL_HANDLE;
   VkResult result =
       device.dispatchTable().vkCreateRenderPass(device.handle(), &renderPassCI, nullptr, &raw);
-  SystemError::check(result, "failed to create render pass");
+  SystemError::Check(result, "failed to create render pass");
 
   RenderPassDeleter deleter{device.handle(), device.dispatchTable().vkDestroyRenderPass};
   renderPass_ = UniqueRenderPass(raw, deleter);

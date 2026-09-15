@@ -11,12 +11,12 @@ PhysicalDevice::PhysicalDevice(const Instance& instance, VkPhysicalDevice physic
 
   uint32_t extensionsCount = 0;
   static const char* failedMsg = "Failed to enumerate physical device extension properties";
-  SystemError::check(
+  SystemError::Check(
       dt.vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionsCount, nullptr),
       failedMsg);
 
   std::vector<VkExtensionProperties> extProperties(extensionsCount);
-  SystemError::check(dt.vkEnumerateDeviceExtensionProperties(
+  SystemError::Check(dt.vkEnumerateDeviceExtensionProperties(
                          physicalDevice, nullptr, &extensionsCount, extProperties.data()),
                      failedMsg);
 

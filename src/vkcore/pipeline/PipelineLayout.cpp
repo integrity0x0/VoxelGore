@@ -25,7 +25,7 @@ PipelineLayout::PipelineLayout(const Device& device,
   pipelineLayoutCI.pPushConstantRanges = pcRanges.data();
 
   VkPipelineLayout pipelineLayoutRaw = VK_NULL_HANDLE;
-  SystemError::check(device.dispatchTable().vkCreatePipelineLayout(
+  SystemError::Check(device.dispatchTable().vkCreatePipelineLayout(
                          device.handle(), &pipelineLayoutCI, nullptr, &pipelineLayoutRaw),
                      "failed to create pipeline layout");
   pipelineLayout = UniquePipelineLayout(

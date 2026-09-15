@@ -33,6 +33,10 @@
     <None Include="assets\blocks\sea_lantern.json" />
     <None Include="assets\light_channels\sea.json" />
     <None Include="assets\blocks\glowstone.json" />
+    <None Include="shaders\main_depth.vert" />
+    <None Include="shaders\main_depth.frag" />
+    <None Include="shaders\main_depth_cutout.frag" />
+    <None Include="shaders\main_depth_cutout.vert" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -160,6 +164,8 @@
     <ClCompile Include="src\RenderWorld.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ShadowPipelines.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -325,5 +331,6 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
+    <ClInclude Include="src\gfx\render\chunk\ShadowPipelines.h" />
   </ItemGroup>
 </Project>

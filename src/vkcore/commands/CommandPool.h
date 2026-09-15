@@ -14,7 +14,7 @@ class CommandPool {
     poolCI.queueFamilyIndex = queueFamilyIndex_;
 
     VkCommandPool rawPool = VK_NULL_HANDLE;
-    SystemError::check(
+    SystemError::Check(
         device.dispatchTable().vkCreateCommandPool(device.handle(), &poolCI, nullptr, &rawPool),
         "failed to create command pool");
 
@@ -33,7 +33,7 @@ class CommandPool {
     commandBufferAI.commandBufferCount = 1;
 
     VkCommandBuffer buffer = VK_NULL_HANDLE;
-    SystemError::check(device_->dispatchTable().vkAllocateCommandBuffers(device_->handle(),
+    SystemError::Check(device_->dispatchTable().vkAllocateCommandBuffers(device_->handle(),
                                                                          &commandBufferAI, &buffer),
                        "failed to allocate command buffer");
 
@@ -50,7 +50,7 @@ class CommandPool {
     commandBufferAI.commandBufferCount = count;
 
     std::vector<VkCommandBuffer> rawBuffers(count);
-    SystemError::check(device_->dispatchTable().vkAllocateCommandBuffers(
+    SystemError::Check(device_->dispatchTable().vkAllocateCommandBuffers(
                            device_->handle(), &commandBufferAI, rawBuffers.data()),
                        "failed to allocate command buffers");
 
@@ -70,7 +70,7 @@ class CommandPool {
     VkCommandBufferBeginInfo beginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    SystemError::check(device_->dispatchTable().vkBeginCommandBuffer(cmd.handle(), &beginInfo),
+    SystemError::Check(device_->dispatchTable().vkBeginCommandBuffer(cmd.handle(), &beginInfo),
                        "failed to begin command buffer");
 
     return cmd;

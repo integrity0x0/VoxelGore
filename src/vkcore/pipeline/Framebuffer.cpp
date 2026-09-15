@@ -3,10 +3,10 @@
 namespace vkcore {
 
 Framebuffer::Framebuffer(const Device& device, std::span<const ImageView* const> attachments,
-                         VkRenderPass renderPass, uint32_t width, uint32_t height, uint32_t layers,
+                         VkRenderPass renderPass, VkExtent2D extent, uint32_t layers,
                          VkFramebufferCreateFlags flags)
-    : width_(width),
-      height_(height),
+    : width_(extent.width),
+      height_(extent.height),
       layers_(layers),
       flags_(flags),
       renderPass_(renderPass),
@@ -22,8 +22,8 @@ Framebuffer::Framebuffer(const Device& device, std::span<const ImageView* const>
   framebufferCI.renderPass = renderPass_;
   framebufferCI.attachmentCount = static_cast<uint32_t>(viewHandles.size());
   framebufferCI.pAttachments = viewHandles.data();
-  framebufferCI.width = width_;
-  framebufferCI.height = height_;
+  framebufferCI.width = extent.width;
+  framebufferCI.height = extent.height;
   framebufferCI.layers = layers_;
 
   VkFramebuffer rawFramebuffer = VK_NULL_HANDLE;

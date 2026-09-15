@@ -7,8 +7,10 @@ namespace gfx::shadow {
 class ShadowMap {
  public:
   ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
-            const ShadowPass& shadowPass,
-            const VkExtent2D& resolution = {4096, 4096});
+            const ShadowPass& shadowPass, const VkExtent2D& resolution = {4096, 4096});
+
+  [[nodiscard]] const vkcore::Framebuffer& framebuffer() const { return framebuffer_; }
+
  private:
   [[nodiscard]] vkcore::SampledTexture CreateTexture(const vkcore::Device& device,
                                                      vkcore::MemoryAllocator& memoryAllocator,
@@ -21,4 +23,4 @@ class ShadowMap {
   vkcore::SampledTexture texture_;
   vkcore::Framebuffer framebuffer_;
 };
-}  // namespace gfx
+}  // namespace gfx::shadow

@@ -11,7 +11,7 @@ DeviceMemory::DeviceMemory(const Device& device, VkDeviceSize size, uint32_t mem
 
   VkDeviceMemory deviceMemoryRaw = VK_NULL_HANDLE;
 
-  SystemError::check(device_->dispatchTable().vkAllocateMemory(device_->handle(), &memoryAI,
+  SystemError::Check(device_->dispatchTable().vkAllocateMemory(device_->handle(), &memoryAI,
                                                                nullptr, &deviceMemoryRaw),
                      "failed to allocate device memory");
 
@@ -24,7 +24,7 @@ DeviceMemory::DeviceMemory(const Device& device, VkDeviceSize size, uint32_t mem
           .propertyFlags &
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
     void* mapped = nullptr;
-    SystemError::check(device_->dispatchTable().vkMapMemory(device_->handle(), deviceMemoryRaw, 0,
+    SystemError::Check(device_->dispatchTable().vkMapMemory(device_->handle(), deviceMemoryRaw, 0,
                                                             size, 0, &mapped),
                        "failed to map memory");
     MappedDeleter deleter = {deviceMemoryRaw, device.handle(),

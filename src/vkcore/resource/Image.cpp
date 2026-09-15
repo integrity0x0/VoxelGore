@@ -9,7 +9,7 @@ UniqueImage Image::CreateImage(const Device& device, const VkImageCreateInfo& im
 
   VkImage imageRaw = VK_NULL_HANDLE;
   VkResult result = dispatchTable.vkCreateImage(device.handle(), &imageCI, nullptr, &imageRaw);
-  SystemError::check(result, "Failed to create image");
+  SystemError::Check(result, "Failed to create image");
 
   return UniqueImage(imageRaw, {device.handle(), dispatchTable.vkDestroyImage});
 }
@@ -26,7 +26,7 @@ void Image::BindImageMemory(const Device& device, VkImage image, const MemorySli
   VkResult result = dispatchTable.vkBindImageMemory(device.handle(), image, memorySlice.memory(),
                                                     memorySlice.offset());
 
-  SystemError::check(result, "Failed to bind image memory");
+  SystemError::Check(result, "Failed to bind image memory");
 }
 
 Image::Image(const Device& device, const VkImageCreateInfo& imageCI, VkMemoryPropertyFlags flags)

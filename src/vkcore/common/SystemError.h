@@ -30,7 +30,7 @@ class SystemError final : public std::system_error {
 
   VkResult result() const noexcept { return static_cast<VkResult>(code().value()); }
 
-  static void check(VkResult result, const std::string& what_arg) {
+  static void Check(VkResult result, const std::string& what_arg) {
     if (result != VK_SUCCESS) throw SystemError(result, what_arg);
   }
 };

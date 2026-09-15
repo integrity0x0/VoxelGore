@@ -26,7 +26,7 @@ Surface::Surface(const Instance& instance, ANativeWindow* window) : instance_(&i
   VkSurfaceKHR surfaceRaw = VK_NULL_HANDLE;
   VkResult result =
       androidTable.vkCreateAndroidSurfaceKHR(instance_->handle(), &surfaceCI, nullptr, &surfaceRaw);
-  SystemError::check(result, "Surface: vkCreateAndroidSurfaceKHR failed");
+  SystemError::Check(result, "Surface: vkCreateAndroidSurfaceKHR failed");
 
   setupDeleter(surfaceRaw);
 }
@@ -40,7 +40,7 @@ Surface::Surface(const Instance& instance, GLFWwindow* window) : instance_(&inst
 
   VkSurfaceKHR surfaceRaw = VK_NULL_HANDLE;
   VkResult result = glfwCreateWindowSurface(instance_->handle(), window, nullptr, &surfaceRaw);
-  SystemError::check(result, "Surface: glfwCreateWindowSurface failed");
+  SystemError::Check(result, "Surface: glfwCreateWindowSurface failed");
 
   setupDeleter(surfaceRaw);
 }

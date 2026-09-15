@@ -45,7 +45,7 @@ Device DeviceCreator::createDevice() {
   deviceCI.pEnabledFeatures = &enabledFeatures_;
 
   VkDevice devHandle = VK_NULL_HANDLE;
-  SystemError::check(instance_->getDispatchTable().vkCreateDevice(physicalDevice_.handle(),
+  SystemError::Check(instance_->getDispatchTable().vkCreateDevice(physicalDevice_.handle(),
                                                                   &deviceCI, nullptr, &devHandle),
                      "Failed to create logical device");
 

@@ -16,32 +16,32 @@ struct SwapchainCapabilities {
                                        const SurfaceDispatchTable& surfaceTable) {
     SwapchainCapabilities caps;
 
-    SystemError::check(surfaceTable.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+    SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
                            physicalDevice, surface, &caps.surfaceCapabilities),
                        "SwapchainCapabilities::extract: "
                        "vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed");
 
     uint32_t formatCount = 0;
-    SystemError::check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface,
+    SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface,
                                                                          &formatCount, nullptr),
                        "SwapchainCapabilities::extract: "
                        "vkGetPhysicalDeviceSurfaceFormatsKHR (count) failed");
     if (formatCount > 0) {
       caps.surfaceFormats.resize(formatCount);
-      SystemError::check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(
+      SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(
                              physicalDevice, surface, &formatCount, caps.surfaceFormats.data()),
                          "SwapchainCapabilities::extract: "
                          "vkGetPhysicalDeviceSurfaceFormatsKHR failed");
     }
 
     uint32_t presentModeCount = 0;
-    SystemError::check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
+    SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
                            physicalDevice, surface, &presentModeCount, nullptr),
                        "SwapchainCapabilities::extract: "
                        "vkGetPhysicalDeviceSurfacePresentModesKHR (count) failed");
     if (presentModeCount > 0) {
       caps.presentModes.resize(presentModeCount);
-      SystemError::check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
+      SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
                              physicalDevice, surface, &presentModeCount, caps.presentModes.data()),
                          "SwapchainCapabilities::extract: "
                          "vkGetPhysicalDeviceSurfacePresentModesKHR failed");

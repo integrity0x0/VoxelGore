@@ -250,8 +250,7 @@ void Engine::createFramebuffers() {
     attachments.push_back(&imageView);
     attachments.push_back(&depthTexture->imageView());
 
-    framebuffers.push_back(renderPass->MakeFramebuffer(attachments, swapchain->extent().width,
-                                                       swapchain->extent().height, 1, 0));
+    framebuffers.push_back(renderPass->MakeFramebuffer(attachments, swapchain->extent(), 1, 0));
 
     LOGI("Framebuffer created: %p", (void*)framebuffers.back().handle());
   }

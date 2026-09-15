@@ -24,6 +24,7 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
 
   vkcore::SampledTexture texture(device, memoryAllocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, imageCI, imageViewCI, samplerCI);
 }
+
 ShadowMap::ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
                      const ShadowPass& shadowPass, const VkExtent2D& resolution)
     : texture_(CreateTexture(device, memoryAllocator, resolution)), framebuffer_(shadowPass.MakeFramebuffer(&texture_.imageView(), resolution)){

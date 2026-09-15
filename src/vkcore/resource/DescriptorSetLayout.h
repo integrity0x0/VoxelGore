@@ -18,7 +18,7 @@ class DescriptorSetLayout {
     descriptorSetLayoutCI.flags = flags;
 
     VkDescriptorSetLayout descriptorSetLayoutRaw = VK_NULL_HANDLE;
-    SystemError::check(
+    SystemError::Check(
         device.dispatchTable().vkCreateDescriptorSetLayout(device.handle(), &descriptorSetLayoutCI,
                                                            nullptr, &descriptorSetLayoutRaw),
         "failed to create descriptor set layout");

@@ -1,8 +1,10 @@
 #pragma once
-#include <fstream>
+
+#include <functional>
 #include <string>
 #include <vector>
 
+#include "ShaderModule.h"
 #include "Pipeline.h"
 
 namespace vkcore {
@@ -11,14 +13,9 @@ class GraphicsPipelineCreator {
  public:
   GraphicsPipelineCreator(const Device& device);
 
-  GraphicsPipelineCreator& AddShaderStage(const std::string_view& path, VkShaderStageFlagBits stage,
-                                          const char* entryPoint = "main") {
-    shaderModules_.emplace_back(std::move(LoadShaderModule(*device_, path)));
-    shaderStages_.push_back(VkPipelineShaderStageCreateInfo{
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-        .stage = stage,
-        .module = shaderModules_.back().get()});
-    entryPointNames_.push_back(entryPoint);
+  GraphicsPipelineCreator& AddShaderStage(const ShaderModule& shader, VkShaderStageFlagBits stage,
+                                          std::string_view entryPoint = "main") {
+    shaderStages_.push_back({shader, stage, std::string(entryPoint)});
     return *this;
   }
 
@@ -156,15 +153,19 @@ class GraphicsPipelineCreator {
     VkPipelineColorBlendAttachmentState state{};
     state.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
                            VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
     state.blendEnable = blendEnable ? VK_TRUE : VK_FALSE;
+
     if (blendEnable) {
       state.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
       state.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
       state.colorBlendOp = VK_BLEND_OP_ADD;
+
       state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
       state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
       state.alphaBlendOp = VK_BLEND_OP_ADD;
     }
+
     colorBlendAttachments_.push_back(state);
     return *this;
   }
@@ -193,8 +194,8 @@ class GraphicsPipelineCreator {
     return *this;
   }
 
-  GraphicsPipelineCreator& setFlags(VkPipelineCreateFlags f) {
-    flags_ = f;
+  GraphicsPipelineCreator& setFlags(VkPipelineCreateFlags flags) {
+    flags_ = flags;
     return *this;
   }
 
@@ -208,19 +209,26 @@ class GraphicsPipelineCreator {
                  uint32_t subpassIndex = 0);
 
  private:
+  struct ShaderStage {
+    std::reference_wrapper<const ShaderModule> module;
+    VkShaderStageFlagBits stage;
+    std::string entryPoint;
+  };
+
   const Device* device_;
 
-  std::vector<VkPipelineShaderStageCreateInfo> shaderStages_;
-  std::vector<std::string> entryPointNames_;
+  std::vector<ShaderStage> shaderStages_;
 
   std::vector<VkVertexInputBindingDescription> vertexBindings_;
   std::vector<VkVertexInputAttributeDescription> vertexAttributes_;
 
   std::vector<VkViewport> viewports_;
   std::vector<VkRect2D> scissors_;
+
   std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments_;
+
   std::vector<VkDynamicState> dynamicStates_;
-  std::vector<UniqueShaderModule> shaderModules_ = {};
+
   VkPipelineInputAssemblyStateCreateInfo inputAssembly_ = {
       .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
       .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
@@ -228,6 +236,7 @@ class GraphicsPipelineCreator {
 
   VkPipelineTessellationStateCreateInfo tessellation_ = {
       .sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO};
+
   bool useTessellation_ = false;
 
   VkPipelineRasterizationStateCreateInfo rasterizer_ = {
@@ -258,8 +267,6 @@ class GraphicsPipelineCreator {
   VkPipelineCreateFlags flags_ = 0;
   VkPipeline basePipelineHandle_ = VK_NULL_HANDLE;
   int32_t basePipelineIndex_ = -1;
-
-  UniqueShaderModule LoadShaderModule(const Device& device, const std::string_view& path);
 };
 
 }  // namespace vkcore

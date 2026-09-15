@@ -21,7 +21,7 @@ DebugMessenger::DebugMessenger(const vkcore::Instance& instance,
                       "Failed to create debug messenger: functions are not loaded");
   }
   VkDebugUtilsMessengerEXT debugMessengerRaw = VK_NULL_HANDLE;
-  SystemError::check(debugUtilsTable->vkCreateDebugUtilsMessengerEXT(
+  SystemError::Check(debugUtilsTable->vkCreateDebugUtilsMessengerEXT(
                          instance.handle(), &debugMessengerCI, nullptr, &debugMessengerRaw),
                      "Failed to create VkDebugUtilsMessenger");
   debugMessenger = UniqueDebugUtilsMessengerEXT(

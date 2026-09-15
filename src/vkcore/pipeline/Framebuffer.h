@@ -13,7 +13,7 @@ namespace vkcore {
 class Framebuffer {
  public:
   Framebuffer(const Device& device, std::span<const ImageView* const> attachments,
-              VkRenderPass renderPass, uint32_t width, uint32_t height, uint32_t layers = 1,
+              VkRenderPass renderPass, VkExtent2D, uint32_t layers = 1,
               VkFramebufferCreateFlags flags = 0);
 
   VkFramebuffer handle() const noexcept { return framebuffer_.get(); }

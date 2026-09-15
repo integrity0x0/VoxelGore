@@ -27,7 +27,7 @@ int main() {
   try {
     core::Window::hint(GLFW_RESIZABLE, GLFW_TRUE);
     core::Window::hint(GLFW_CLIENT_API, GLFW_NO_API);
-    auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha");
+    auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha | WTF!!!");
 
     Game game(std::move(window));
     while (!game.window().shouldClose()) {

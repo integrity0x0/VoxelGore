@@ -1,11 +1,12 @@
-#include <GLFW/glfw3.h>
+#include "PlayerController.h"
 
+#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "PlayerController.h"
 #include "core/Window.h"
 #include "gfx/render/particle/ParticleEngine.h"
 #include "WorldSession.h"
+
 
 namespace gm {
 
@@ -18,7 +19,6 @@ PlayerController::PlayerController(WorldSession& session, const glm::vec3& spawn
                                                           .size = glm::vec3(0.6f, 1.8f, 0.6f),
                                                           .vel = glm::vec3(0.0f),
                                                       });
-
   camera_.LookAt(spawnPos, spawnPos + glm::vec3(1, 0, 0));
 }
 

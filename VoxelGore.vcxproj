@@ -38,6 +38,10 @@
     <None Include="shaders\main.vert" />
     <None Include="shaders\main_atlas_debug.vert" />
     <None Include="shaders\main_cutout.frag" />
+    <None Include="shaders\main_depth.frag" />
+    <None Include="shaders\main_depth.vert" />
+    <None Include="shaders\main_depth_cutout.frag" />
+    <None Include="shaders\main_depth_cutout.vert" />
     <None Include="shaders\model.frag.spv" />
     <None Include="shaders\particle.frag" />
     <None Include="shaders\particle.vert" />
@@ -60,7 +64,9 @@
     <ClCompile Include="src\game\lighting\LightChunk.cpp" />
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
     <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ShadowPipelines.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\texture\Skybox.cpp" />
@@ -183,6 +189,7 @@
     <ClInclude Include="src\game\lighting\LightChunk.h" />
     <ClInclude Include="src\game\lighting\LightChunkStorage.h" />
     <ClInclude Include="src\game\lighting\LightColorSampler.h" />
+    <ClInclude Include="src\gfx\render\chunk\ShadowPipelines.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
