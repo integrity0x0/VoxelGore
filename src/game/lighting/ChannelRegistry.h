@@ -10,7 +10,7 @@
 #include "ChannelDefinition.h"
 #include "../../util/hashers.h"
 
-namespace gm::lighting {
+namespace gm {
 
 using ChannelId = uint16_t;
 static constexpr ChannelId kInvalidChannelId = std::numeric_limits<ChannelId>::max();
@@ -32,4 +32,4 @@ class ChannelRegistry {
   std::vector<std::unique_ptr<ChannelDefinition>> definitions_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

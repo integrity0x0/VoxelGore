@@ -4,7 +4,7 @@ namespace vkcore {
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 
-Surface::Surface(const Instance& instance, ANativeWindow* window) : instance_(&instance) {
+BlockSurface::BlockSurface(const Instance& instance, ANativeWindow* window) : instance_(&instance) {
   if (!window) {
     throw std::runtime_error("Surface: ANativeWindow* is null");
   }

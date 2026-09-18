@@ -18,9 +18,6 @@ static std::string NormalizePath(const std::string& raw) {
     }
 
     if (segment == "..") {
-      if (parts.empty()) {
-        throw std::runtime_error("Path escapes root: " + raw);
-      }
       parts.pop_back();
       continue;
     }

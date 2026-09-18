@@ -2,7 +2,7 @@
 
 #include "../../../vkcore/pipeline/RenderPass.h"
 
-namespace gfx::shadow {
+namespace gfx {
 
 class ShadowPass final : public vkcore::RenderPass {
  public:
@@ -14,4 +14,4 @@ class ShadowPass final : public vkcore::RenderPass {
   static vkcore::RenderPass Build(const vkcore::Device& device);
 };
 
-}  // namespace gfx::shadow
+}  // namespace gfx

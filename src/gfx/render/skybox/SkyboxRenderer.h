@@ -1,15 +1,15 @@
 #pragma once
 
 #include "SkyboxPipeline.h"
-#include "../../texture/Skybox.h"
-#include "../../mesh/Mesh.h"
+#include "../../common/texture/Skybox.h"
+#include "../../common/mesh/Mesh.h"
 
 namespace gfx {
 class SkyboxRenderer {
  public:
   SkyboxRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
                  vkcore::TransferContext& transferCtxt, const vkcore::RenderPass& renderPass,
-                 const GameDataBinding& gameDataBinding);
+                 const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
   void Draw(VkCommandBuffer cmd, const Skybox& skybox) const;
   void BindPipeline(VkCommandBuffer cmd) const;

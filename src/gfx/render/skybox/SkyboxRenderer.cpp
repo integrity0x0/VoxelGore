@@ -35,8 +35,9 @@ Mesh SkyboxRenderer::BuildMesh(const vkcore::Device& device,
 SkyboxRenderer::SkyboxRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
                                vkcore::TransferContext& transferCtxt, 
                                const vkcore::RenderPass& renderPass,
-                               const GameDataBinding& gameDataBinding) 
-    : pipeline_(device, renderPass, gameDataBinding),
+                               const GameDataBinding& gameDataBinding,
+                               const ShaderCompiler& shaderCompiler) 
+    : pipeline_(device, renderPass, gameDataBinding, shaderCompiler),
       descriptorPool_(BuildDescriptorPool(device)),
       mesh_(BuildMesh(device, bufferAllocator, transferCtxt)) {}
 

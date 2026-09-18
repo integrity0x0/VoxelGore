@@ -38,7 +38,7 @@ glm::vec3 PlayerController::forward() const {
 
 void PlayerController::HandleInput(core::Window& window, ControlState& control,
                                    bool& cursorLocked) {
-  auto& input = window.getInput();
+  auto& input = window.input();
   const auto& state = input.getState();
 
   control.move.z = 0;
@@ -60,7 +60,7 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
 
   if (state.pressed(GLFW_KEY_ESCAPE)) {
     cursorLocked = !cursorLocked;
-    glfwSetInputMode(window.getWindow(), GLFW_CURSOR,
+    glfwSetInputMode(window.window(), GLFW_CURSOR,
                      cursorLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
   }
 

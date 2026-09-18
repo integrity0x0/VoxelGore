@@ -23,4 +23,4 @@ class ShadowMap {
   vkcore::SampledTexture texture_;
   vkcore::Framebuffer framebuffer_;
 };
-}  // namespace gfx::shadow
+}  // namespace gfx

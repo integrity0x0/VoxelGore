@@ -2,7 +2,7 @@
 
 namespace gfx {
 
-ParticleEngine::ParticleEngine(Atlas& generalAtlas, block::RenderData& blockRenderData,
+ParticleEngine::ParticleEngine(Atlas& generalAtlas, BlockRenderData& blockRenderData,
                                const gm::BlockManager& blockManager,
                                const gm::ChunkManager& chunkManager,
                                BillboardRenderBucket& generalBucket,

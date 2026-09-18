@@ -4,8 +4,8 @@
 
 #include "../../../game/voxel/ChunkManager.h"
 #include "../../../util/hashers.h"
-#include "../../mesh/Mesh.h"
-#include "../../mesh/TranslucentMesh.h"
+#include "../../common/mesh/Mesh.h"
+#include "../../common/mesh/TranslucentMesh.h"
 
 namespace gfx {
 struct ChunkMeshes {

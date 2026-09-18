@@ -3,7 +3,7 @@
 #include <span>
 #include <vector>
 
-#include "../../texture/Atlas.h"
+#include "../../common/texture/Atlas.h"
 #include "BillboardInstance.h"
 #include "BillboardPipelines.h"
 #include "glm/gtx/norm.hpp"

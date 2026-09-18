@@ -11,7 +11,7 @@ namespace gm {
 class Chunk;
 }
 
-namespace gm::lighting {
+namespace gm {
 
 class LightColorSampler {
  public:
@@ -34,4 +34,4 @@ class LightColorSampler {
   mutable glm::ivec3 lastChunkPos_{std::numeric_limits<int>::max()};
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

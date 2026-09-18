@@ -4,7 +4,7 @@
 #include <glm/vec4.hpp>
 #include <vector>
 
-#include "../mesh/ModelCache.h"
+#include "../common/mesh/ModelCache.h"
 #include "ModelInstanceData.h"
 #include "ModelPipeline.h"
 

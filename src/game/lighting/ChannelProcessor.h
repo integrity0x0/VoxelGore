@@ -9,7 +9,7 @@
 #include "ChannelDefinition.h"
 #include "BlockLightCache.h"
 
-namespace gm::lighting {
+namespace gm {
 
 struct LightNode {
   glm::ivec3 pos;
@@ -65,4 +65,4 @@ class ChannelProcessor {
   std::queue<LightNode> spreadQueue_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

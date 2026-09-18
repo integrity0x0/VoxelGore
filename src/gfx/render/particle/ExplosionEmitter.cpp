@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <random>
 
-#include "../../texture/SpriteSheetParser.h"
+#include "../../common/texture/SpriteSheetParser.h"
 
 namespace gfx {
 

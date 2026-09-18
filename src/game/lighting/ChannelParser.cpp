@@ -4,7 +4,7 @@
 
 #include "../../util/files.h"
 
-namespace gm::lighting {
+namespace gm {
 std::optional<ChannelDefinition> ChannelParser::Parse(std::string_view path) {
   auto bytes = util::ReadFileBytes(path);
 
@@ -31,4 +31,4 @@ std::optional<ChannelDefinition> ChannelParser::Parse(std::string_view path) {
 
   return ChannelDefinition(json["id"].get<std::string>(), color);
 }
-}  // namespace gm::lighting
+}  // namespace gm

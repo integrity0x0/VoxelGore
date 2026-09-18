@@ -22,7 +22,7 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
   imageViewCI.subresourceRange.layerCount = 1;
   imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
 
-  vkcore::SampledTexture texture(device, memoryAllocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, imageCI, imageViewCI, samplerCI);
+  return vkcore::SampledTexture(device, memoryAllocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, imageCI, imageViewCI, samplerCI);
 }
 
 ShadowMap::ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
@@ -30,4 +30,4 @@ ShadowMap::ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memo
     : texture_(CreateTexture(device, memoryAllocator, resolution)), framebuffer_(shadowPass.MakeFramebuffer(&texture_.imageView(), resolution)){
 
 }
-}  // namespace gfx::shadow
+}  // namespace gfx

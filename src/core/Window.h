@@ -28,11 +28,11 @@ class Window {
     input_.endFrame();
     resized_ = false;
   };
-  static void hint(int32_t hint, int32_t value);
+  static void Hint(int32_t hint, int32_t value);
 
-  [[nodiscard]] GLFWwindow* getWindow() const { return window_.get(); }
-  [[nodiscard]] InputGlfw& getInput() { return input_; }
-  [[nodiscard]] const InputGlfw& getInput() const { return input_; }
+  [[nodiscard]] GLFWwindow* window() const { return window_.get(); }
+  [[nodiscard]] InputGlfw& input() { return input_; }
+  [[nodiscard]] const InputGlfw& input() const { return input_; }
   [[nodiscard]] uint32_t width() const { return width_; }
   [[nodiscard]] uint32_t height() const { return height_; }
   [[nodiscard]] float getAspectRatio() const {
@@ -47,19 +47,19 @@ class Window {
 
   void setTitle(std::string_view title) { glfwSetWindowTitle(window_.get(), title.data()); }
 
-  [[nodiscard]] bool shouldClose() const { return glfwWindowShouldClose(window_.get()); }
+  [[nodiscard]] bool IsShouldClose() const { return glfwWindowShouldClose(window_.get()); }
 
   void setShouldClose(bool close) { glfwSetWindowShouldClose(window_.get(), close); }
 
-  [[nodiscard]] bool isMinimized() const {
+  [[nodiscard]] bool IsMinimized() const {
     return glfwGetWindowAttrib(window_.get(), GLFW_ICONIFIED);
   }
 
-  [[nodiscard]] bool isMaximized() const {
+  [[nodiscard]] bool IsMaximized() const {
     return glfwGetWindowAttrib(window_.get(), GLFW_MAXIMIZED);
   }
 
-  [[nodiscard]] bool isFocused() const { return glfwGetWindowAttrib(window_.get(), GLFW_FOCUSED); }
+  [[nodiscard]] bool IsFocused() const { return glfwGetWindowAttrib(window_.get(), GLFW_FOCUSED); }
 
   void maximize() { glfwMaximizeWindow(window_.get()); }
 

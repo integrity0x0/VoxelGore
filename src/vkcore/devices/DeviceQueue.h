@@ -15,7 +15,7 @@ class DeviceQueue {
         queueFamilyIndex_(queueFamilyIndex),
         flags_(flags) {}
 
-  void rebindDispatchTable(const DeviceDispatchTable& dispatchTable) noexcept {
+  void RebindDispatchTable(const DeviceDispatchTable& dispatchTable) noexcept {
     dispatchTable_ = &dispatchTable;
   }
 
@@ -25,9 +25,9 @@ class DeviceQueue {
 
   VkQueueFlags flags() const noexcept { return flags_; }
 
-  void waitIdle() const { dispatchTable_->vkQueueWaitIdle(queue_); }
+  void WaitIdle() const { dispatchTable_->vkQueueWaitIdle(queue_); }
 
-  void submit(VkCommandBuffer commandBuffer, VkFence fence = VK_NULL_HANDLE) const {
+  void Submit(VkCommandBuffer commandBuffer, VkFence fence = VK_NULL_HANDLE) const {
     VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
@@ -35,7 +35,7 @@ class DeviceQueue {
     dispatchTable_->vkQueueSubmit(queue_, 1, &submitInfo, fence);
   }
 
-  void submit(const std::vector<VkCommandBuffer>& commandBuffers,
+  void Submit(const std::vector<VkCommandBuffer>& commandBuffers,
               const std::vector<VkSemaphore>& waitSemaphores,
               const std::vector<VkPipelineStageFlags>& waitStages,
               const std::vector<VkSemaphore>& signalSemaphores,

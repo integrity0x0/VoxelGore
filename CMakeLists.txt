@@ -130,28 +130,28 @@ set(SOURCE_FILES
 
         # gfx
 
-        src/gfx/mesh/Mesh.cpp
-        src/gfx/mesh/TranslucentMesh.cpp
-        src/gfx/mesh/Model.cpp
-        src/gfx/mesh/ModelCache.cpp
-        src/gfx/mesh/ModelLoader.cpp
+        src/gfx/common/mesh/Mesh.cpp
+        src/gfx/common/mesh/TranslucentMesh.cpp
+        src/gfx/common/mesh/Model.cpp
+        src/gfx/common/mesh/ModelCache.cpp
+        src/gfx/common/mesh/ModelLoader.cpp
 
-        src/gfx/texture/Atlas.cpp
-        src/gfx/texture/ImageRegionAllocator.cpp
-        src/gfx/texture/SpriteSheetParser.cpp
-        src/gfx/texture/SpriteSheet.cpp
-        src/gfx/texture/TextureLoader.cpp
-        src/gfx/texture/TextureCache.cpp
-        src/gfx/texture/TextureManager.cpp 
-        src/gfx/texture/MaterialManager.cpp
+        src/gfx/common/texture/Atlas.cpp
+        src/gfx/common/texture/ImageRegionAllocator.cpp
+        src/gfx/common/texture/SpriteSheetParser.cpp
+        src/gfx/common/texture/SpriteSheet.cpp
+        src/gfx/common/texture/TextureLoader.cpp
+        src/gfx/common/texture/TextureCache.cpp
+        src/gfx/common/texture/TextureManager.cpp
+        src/gfx/common/texture/MaterialManager.cpp
 
-        src/gfx/block/SurfaceRegistry.cpp
-        src/gfx/block/Animation.cpp
-        src/gfx/block/AnimationParser.cpp
-        src/gfx/block/UvBuffer.cpp
-        src/gfx/block/PreviewRenderer.cpp
-        src/gfx/block/RenderData.cpp
-        src/gfx/block/RenderGroupRegistry.cpp
+        src/gfx/render/block/SurfaceRegistry.cpp
+        src/gfx/render/block/Animation.cpp
+        src/gfx/render/block/AnimationParser.cpp
+        src/gfx/render/block/UvBuffer.cpp
+        src/gfx/render/block/PreviewRenderer.cpp
+        src/gfx/render/block/RenderData.cpp
+        src/gfx/render/block/RenderGroupRegistry.cpp
 
         src/gfx/render/billboard/BillboardBatch.cpp
         src/gfx/render/billboard/BillboardPipelines.cpp
@@ -162,8 +162,8 @@ set(SOURCE_FILES
         src/gfx/render/chunk/ChunkMeshBuilder.cpp
         src/gfx/render/chunk/ChunkRenderer.cpp
         src/gfx/render/chunk/ChunkRenderPipelines.cpp
-        src/gfx/entity/EntityRenderData.cpp
-        src/gfx/entity/EntityRenderSystem.cpp
+        src/gfx/render/entity/EntityRenderData.cpp
+        src/gfx/render/entity/EntityRenderSystem.cpp
         src/gfx/render/ModelPipeline.cpp
         src/gfx/render/ModelRenderer.cpp
 
@@ -173,14 +173,14 @@ set(SOURCE_FILES
         src/gfx/render/particle/ExplosionEmitter.cpp
         
         # UI
-        src/gfx/ui/Node.cpp
-        src/gfx/ui/Container.cpp
-        src/gfx/ui/Page.cpp
-        src/gfx/ui/NodeParser.cpp
-        src/gfx/ui/Renderer.cpp
-        src/gfx/ui/NodeBinding.cpp
-        src/gfx/ui/LibGui.cpp
-        src/gfx/ui/DescriptorSetRegistry.cpp
+        src/gfx/render/ui/Node.cpp
+        src/gfx/render/ui/Container.cpp
+        src/gfx/render/ui/Page.cpp
+        src/gfx/render/ui/NodeParser.cpp
+        src/gfx/render/ui/Renderer.cpp
+        src/gfx/render/ui/NodeBinding.cpp
+        src/gfx/render/ui/LibGui.cpp
+        src/gfx/render/ui/DescriptorSetRegistry.cpp
 
         # scripting
         src/script/LuaState.cpp

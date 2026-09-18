@@ -10,7 +10,7 @@
 #include "LightChunk.h"
 #include "ChannelRegistry.h"
 
-namespace gm::lighting {
+namespace gm {
 
 class LightChunkStorage {
  public:
@@ -75,4 +75,4 @@ class LightChunkStorage {
   LightChunkMap chunks_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

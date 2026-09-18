@@ -39,10 +39,10 @@ Game::Game(android_app* app) {
 #else
 Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
   if (!window_) throw std::runtime_error("Game: window is null");
-  engine_ = std::make_unique<Engine>(window_->getWindow());
+  engine_ = std::make_unique<Engine>(window_->window());
   cursorLocked_ = true;
   Init();
-  glfwSetInputMode(window_->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetInputMode(window_->window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 #endif
 
@@ -52,6 +52,21 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
 
 void Game::Init() {
   const vkcore::Device& device = engine_->getDevice();
+  // world
+  constexpr uint32_t kWorldW = 3;
+  constexpr uint32_t kWorldH = 1;
+  constexpr uint32_t kWorldD = 3;
+
+  session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
+  render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, core::kAssetsPrefix);
+
+  gfx::ShaderCompiler& compiler = render_->shaderCompiler();
+
+  vkcore::ShaderModule crosshairVert =
+      gfx::CompileShaderModule(compiler, device, core::kShadersPrefix + "crosshair.vert", shaderc_vertex_shader);
+
+  vkcore::ShaderModule crosshairFrag = gfx::CompileShaderModule(
+      compiler, device, core::kShadersPrefix + "crosshair.frag", shaderc_fragment_shader);
 
   // crosshair
   crosshairLayout_ = std::make_unique<vkcore::PipelineLayout>(
@@ -60,9 +75,9 @@ void Game::Init() {
 
   crosshairPipeline_ = std::make_unique<vkcore::Pipeline>(
       vkcore::GraphicsPipelineCreator(device)
-          .AddShaderStage(core::kAssetsPrefix + "shaders/crosshair.vert.spv",
+          .AddShaderStage(crosshairVert,
                           VK_SHADER_STAGE_VERTEX_BIT)
-          .AddShaderStage(core::kAssetsPrefix + "shaders/crosshair.frag.spv",
+          .AddShaderStage(crosshairFrag,
                           VK_SHADER_STAGE_FRAGMENT_BIT)
           .setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST)
           .AddColorBlendAttachment(false)
@@ -72,14 +87,7 @@ void Game::Init() {
           .setCullMode(VK_CULL_MODE_NONE)
           .Build(crosshairLayout_->handle(), engine_->getRenderPass().handle()));
 
-  // world
-  constexpr uint32_t kWorldW = 3;
-  constexpr uint32_t kWorldH = 1;
-  constexpr uint32_t kWorldD = 3;
-
-  session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
-  render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, core::kAssetsPrefix);
-
+  
   const glm::vec3 worldCenter((kWorldW * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
                               (kWorldH * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
                               (kWorldD * static_cast<float>(gm::Chunk::kLength)) * 0.5f);
@@ -89,8 +97,8 @@ void Game::Init() {
   session_->entities().Create("barrel", worldCenter + glm::vec3(4.0f));
   session_->entities().Create("integrity", glm::vec3(20.0f));
 
-  blockPreviewRenderer_ = std::make_unique<gfx::block::PreviewRenderer>(
-      device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(),
+  blockPreviewRenderer_ = std::make_unique<gfx::BlockPreviewRenderer>(
+      device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(), compiler,
       render_->chunks().blockRenderData());
 
   std::ignore = render_->textures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
@@ -101,7 +109,8 @@ void Game::Init() {
         return blockPreviewRenderer_->Render(*id);
       });
 
-  ui_.emplace(device, engine_->getCommandPool(), engine_->getRenderPass().handle(), luaState_,
+  ui_.emplace(device, engine_->getCommandPool(), engine_->getRenderPass().handle(), compiler,
+              luaState_,
               render_->textures(), engine_->extent());
   libGui_.emplace(*ui_, luaState_);
   libControl_.emplace(controlState_, luaState_);
@@ -120,7 +129,7 @@ void Game::Init() {
 
 Game::~Game() {
   if (engine_) {
-    engine_->getGraphicsQueue().waitIdle();
+    engine_->getGraphicsQueue().WaitIdle();
   }
 }
 
@@ -149,7 +158,7 @@ bool Game::Frame() {
 
   // touch swipe for unlocked cursor
   if (!cursorLocked_ && ui_) {
-    auto swipe = ui_->routeTouches(window_->getInput().getState().pointers());
+    auto swipe = ui_->routeTouches(window_->input().getState().pointers());
     player_->camera().Rotate(swipe.deltaX, swipe.deltaY);
   }
 

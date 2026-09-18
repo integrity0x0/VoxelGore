@@ -66,7 +66,7 @@ class Device {
 
   void rebindQueues() {
     for (auto& q : queues_) {
-      q.rebindDispatchTable(dispatchTable_);
+      q.RebindDispatchTable(dispatchTable_);
     }
   }
 

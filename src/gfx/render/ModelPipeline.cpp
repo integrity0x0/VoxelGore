@@ -1,15 +1,15 @@
 #include "ModelPipeline.h"
 
 #include "../../core/PathPrefixes.h"
-#include "../mesh/Model.h"
+#include "../common/mesh/Model.h"
 #include "ModelInstanceData.h"
 
 namespace gfx {
 ModelPipeline::ModelPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                             const GameDataBinding& gameDataBinding)
+                             const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderModule)
     : descriptorSetLayout_(BuildDescriptorSetLayout(device)),
       pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout())),
-      pipeline_(BuildPipeline(device, renderPass)) {}
+      pipeline_(BuildPipeline(device, renderPass, shaderModule)) {}
 
 vkcore::DescriptorSetLayout ModelPipeline::BuildDescriptorSetLayout(const vkcore::Device& device) {
   VkDescriptorSetLayoutBinding bindingImage = {};
@@ -29,8 +29,19 @@ vkcore::PipelineLayout ModelPipeline::BuildPipelineLayout(
 }
 
 vkcore::Pipeline ModelPipeline::BuildPipeline(const vkcore::Device& device,
-                                              const vkcore::RenderPass& renderPass) {
+                                              const vkcore::RenderPass& renderPass,
+                                              const ShaderCompiler& shaderCompiler) {
   constexpr VkDeviceSize kVec3Size = sizeof(glm::vec3);
+
+  static const std::string kVertexPath = core::kShadersPrefix + "model.vert";
+  static const std::string kFragmentPath = core::kShadersPrefix + "model.frag";
+  
+  vkcore::ShaderModule vertex =
+      CompileShaderModule(shaderCompiler, device, kVertexPath, shaderc_vertex_shader);
+
+  vkcore::ShaderModule fragment =
+      CompileShaderModule(shaderCompiler, device, kFragmentPath, shaderc_fragment_shader);
+
 
   return vkcore::GraphicsPipelineCreator(device)
       .AddVertexBinding(0, sizeof(Model::Vertex))
@@ -46,8 +57,8 @@ vkcore::Pipeline ModelPipeline::BuildPipeline(const vkcore::Device& device,
       .AddVertexAttribute(6, 1, VK_FORMAT_R32G32B32_SFLOAT,
                           offsetof(ModelInstanceData, transform) + kVec3Size * 3)
       .AddVertexAttribute(7, 1, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(ModelInstanceData, color))
-      .AddShaderStage(core::kAssetsPrefix + "shaders/model.vert.spv", VK_SHADER_STAGE_VERTEX_BIT)
-      .AddShaderStage(core::kAssetsPrefix + "shaders/model.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT)
+      .AddShaderStage(vertex, VK_SHADER_STAGE_VERTEX_BIT)
+      .AddShaderStage(fragment, VK_SHADER_STAGE_FRAGMENT_BIT)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, true)

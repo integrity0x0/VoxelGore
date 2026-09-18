@@ -2,7 +2,7 @@
 
 #include "../voxel/Chunk.h"
 
-namespace gm::lighting {
+namespace gm {
 LightChannel& Lighting::RequireChannel(ChannelId id) {
   if (channels_.size() <= id) {
     channels_.resize(static_cast<size_t>(id + 1));

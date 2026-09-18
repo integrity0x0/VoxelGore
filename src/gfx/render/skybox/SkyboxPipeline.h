@@ -5,12 +5,13 @@
 #include "../../../vkcore/pipeline/RenderPass.h"
 #include "../../../vkcore/resource/DescriptorSetLayout.h"
 #include "../GameDataBinding.h"
+#include "../../common/shader/ShaderCompiler.h"
 
 namespace gfx {
 class SkyboxPipeline {
  public:
   SkyboxPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                 const GameDataBinding& gameDataBinding);
+                 const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
   void Bind(VkCommandBuffer cmd) const {
     pipeline_.Bind(cmd);
@@ -23,7 +24,8 @@ class SkyboxPipeline {
   [[nodiscard]] vkcore::PipelineLayout BuildDescriptorPipelineLayout(
       const vkcore::Device& device, const vkcore::DescriptorSetLayout& gameDataLayout);
   [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device,
-                                               const vkcore::RenderPass& renderPass);
+                                               const vkcore::RenderPass& renderPass,
+                                               const ShaderCompiler& shaderCompiler);
  private:
   vkcore::DescriptorSetLayout descriptorSetLayout_;
   vkcore::PipelineLayout pipelineLayout_;

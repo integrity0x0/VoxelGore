@@ -6,16 +6,17 @@
 
 #include "core/Camera.h"
 #include "gfx/render/GameDataBinding.h"
-#include "gfx/mesh/ModelCache.h"
+#include "gfx/common/mesh/ModelCache.h"
 #include "gfx/render/ModelPipeline.h"
 #include "gfx/render/ModelRenderer.h"
-#include "gfx/entity/EntityRenderSystem.h"
+#include "gfx/render/entity/EntityRenderSystem.h"
 #include "gfx/render/billboard/BillboardRenderer.h"
 #include "gfx/render/chunk/ChunkRenderer.h"
 #include "gfx/render/particle/ParticleEngine.h"
 #include "gfx/render/skybox/SkyboxRenderer.h"
-#include "gfx/texture/Skybox.h"
-#include "gfx/texture/TextureManager.h"
+#include "gfx/common/texture/Skybox.h"
+#include "gfx/common/texture/TextureManager.h"
+#include "gfx/common/shader/ShaderCompiler.h"
 
 class Engine;
 
@@ -43,10 +44,13 @@ class RenderWorld {
 
   Atlas& blockAtlas() { return chunkRenderer_->getAtlas(); }
 
+  ShaderCompiler& shaderCompiler() { return *shaderCompiler_; }
+  const ShaderCompiler& shaderCompiler() const { return *shaderCompiler_; }
+
  private:
   Engine* engine_;
   gm::WorldSession* session_;
-
+  std::unique_ptr<ShaderCompiler> shaderCompiler_;
   std::unique_ptr<GameDataBinding> gameDataBinding_;
   std::unique_ptr<TextureManager> textureManager_;
   std::unique_ptr<ChunkRenderer> chunkRenderer_;

@@ -3,7 +3,7 @@
 #include <array>
 #include <glm/vec3.hpp>
 
-#include "../../texture/Atlas.h"
+#include "../../common/texture/Atlas.h"
 #include "BillboardBatch.h"
 #include "BillboardPipelines.h"
 

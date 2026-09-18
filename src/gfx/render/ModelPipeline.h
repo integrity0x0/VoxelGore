@@ -5,12 +5,13 @@
 #include "../../vkcore/pipeline/RenderPass.h"
 #include "../../vkcore/resource/DescriptorSetLayout.h"
 #include "GameDataBinding.h"
+#include "../common/shader/ShaderCompiler.h"
 
 namespace gfx {
 class ModelPipeline {
  public:
   ModelPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                const GameDataBinding& gameDataBinding);
+                const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
   void Bind(VkCommandBuffer cmd);
 
@@ -25,8 +26,9 @@ class ModelPipeline {
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(
       const vkcore::Device& device, const vkcore::DescriptorSetLayout& gameDataBindingLayout);
 
-  vkcore::Pipeline BuildPipeline(const vkcore::Device& device,
-                                 const vkcore::RenderPass& renderPass);
+  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device,
+                                               const vkcore::RenderPass& renderPass,
+                                               const ShaderCompiler& shaderCompiler);
 
  private:
   vkcore::DescriptorSetLayout descriptorSetLayout_;

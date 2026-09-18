@@ -12,13 +12,13 @@
 #include "WorldSession.h"
 #include "game/ControlState.h"
 #include "game/LibControl.h"
-#include "gfx/block/PreviewRenderer.h"
-#include "gfx/ui/LibGui.h"
-#include "gfx/ui/Ui.h"
+#include "gfx/render/block/BlockPreviewRenderer.h"
+#include "gfx/render/ui/LibGui.h"
+#include "gfx/render/ui/Ui.h"
 
 #ifdef __ANDROID__
 struct android_app;
-#include "core/InputAndroid.h"  // для core::Pointer
+#include "core/InputAndroid.h"
 #else
 #include "core/Window.h"
 #endif
@@ -56,7 +56,7 @@ class Game {
   std::optional<gfx::ui::Ui> ui_;
   std::optional<gfx::ui::LibGui> libGui_;
   std::optional<gm::LibControl> libControl_;
-  std::unique_ptr<gfx::block::PreviewRenderer> blockPreviewRenderer_;
+  std::unique_ptr<gfx::BlockPreviewRenderer> blockPreviewRenderer_;
 
   std::unique_ptr<vkcore::PipelineLayout> crosshairLayout_;
   std::unique_ptr<vkcore::Pipeline> crosshairPipeline_;

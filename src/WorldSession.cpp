@@ -25,7 +25,7 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
   blockManager_->Load(assetsPrefix + "blocks/ice.json");
   blockManager_->Load(assetsPrefix + "blocks/tnt.json");
 
-  lighting_ = std::make_unique<lighting::Lighting>(world_->chunks(), *blockManager_);
+  lighting_ = std::make_unique<Lighting>(world_->chunks(), *blockManager_);
   lighting_->LightUp();
 
   collisionResolver_ = std::make_unique<CollisionResolver>(world_->chunks(), *blockManager_);

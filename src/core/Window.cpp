@@ -18,7 +18,7 @@ Window::Window(uint32_t width, uint32_t height, std::string_view title)
   glfwSetCursorPosCallback(window_.get(), cursorPosCallback);
 }
 
-void Window::hint(int32_t hint, int32_t value) { glfwWindowHint(hint, value); }
+void Window::Hint(int32_t hint, int32_t value) { glfwWindowHint(hint, value); }
 
 Window* Window::self(GLFWwindow* w) {
   return reinterpret_cast<Window*>(glfwGetWindowUserPointer(w));

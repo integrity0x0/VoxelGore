@@ -1,6 +1,6 @@
 #include "BlockLightCache.h"
 
-namespace gm::lighting {
+namespace gm {
 
 const BlockLightData* BlockLightCache::Require(uint32_t blockId) {
   if (const auto* data = Get(blockId)) {
@@ -40,4 +40,4 @@ const BlockLightData* BlockLightCache::Require(uint32_t blockId) {
   return Get(blockId);
 }
 
-}  // namespace gm::lighting
+}  // namespace gm

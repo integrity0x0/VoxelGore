@@ -3,7 +3,7 @@
 #include <string>
 #include <glm/glm.hpp>
 
-namespace gm::lighting {
+namespace gm {
 struct ChannelDefinition {
   std::string name;
   glm::vec3 color;
@@ -15,4 +15,4 @@ struct ChannelDefinition {
   ChannelDefinition(const std::string& id, const glm::vec3& color, uint8_t decay = 1)
       : name(id), color(color), decay(decay) {}
 };
-}  // namespace gm::lighting
+}  // namespace gm

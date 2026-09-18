@@ -4,7 +4,7 @@
 #include <array>
 #include <glm/glm.hpp>
 
-namespace gm::lighting {
+namespace gm {
 
 class LightChunk {
  public:
@@ -26,4 +26,4 @@ class LightChunk {
  private:
   std::array<uint8_t, kVolume / 2ull> data_;
 };
-}  // namespace gm::lighting
+}  // namespace gm

@@ -2,7 +2,7 @@
 
 #include <array>
 
-namespace gfx::shadow {
+namespace gfx {
 
 vkcore::RenderPass ShadowPass::Build(const vkcore::Device& device) {
   VkAttachmentDescription depthAttachment{};
@@ -38,4 +38,4 @@ vkcore::RenderPass ShadowPass::Build(const vkcore::Device& device) {
 
 ShadowPass::ShadowPass(const vkcore::Device& device) : vkcore::RenderPass(Build(device)) {}
 
-}  // namespace gfx::shadow
+}  // namespace gfx

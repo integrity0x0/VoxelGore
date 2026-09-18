@@ -6,7 +6,7 @@
 #include "../voxel/BlockManager.h"
 #include "ChannelRegistry.h"
 
-namespace gm::lighting {
+namespace gm {
 
 struct BlockLightData {
   ChannelId id = kInvalidChannelId;
@@ -100,4 +100,4 @@ class BlockLightCache {
   std::vector<uint32_t> sparse_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

@@ -12,10 +12,10 @@ namespace gfx {
 class BillboardRenderer {
  public:
   BillboardRenderer(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                    const GameDataBinding& gameDataBinding);
+                    const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
-  BillboardRenderBucket& CreateBucket(vkcore::BufferAllocator& bufferAllocator, const Atlas& atlas,
-                                      uint32_t framesCount);
+  [[nodiscard]] BillboardRenderBucket& CreateBucket(vkcore::BufferAllocator& bufferAllocator, 
+                                                    const Atlas& atlas, uint32_t framesCount);
 
   void Render(VkCommandBuffer cmd, const glm::vec3& cameraPos, RenderLayer renderLayer,
               uint32_t currentFrame);

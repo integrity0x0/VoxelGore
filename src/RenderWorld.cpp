@@ -11,6 +11,8 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
   const auto& device = engine.getDevice();
   auto& memoryAllocator = engine.memoryAllocator();
 
+  shaderCompiler_ = std::make_unique<ShaderCompiler>(assetsPrefix);
+
   gameDataBinding_ = std::make_unique<GameDataBinding>(device, engine.bufferAllocator(),
                                                        engine.getFramesInFlightCount());
 
@@ -19,7 +21,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
 
   skyboxRenderer_ =
       std::make_unique<SkyboxRenderer>(device, engine.bufferAllocator(), engine.transferContext(),
-                                       engine.getRenderPass(), *gameDataBinding_);
+                                       engine.getRenderPass(), *gameDataBinding_, *shaderCompiler_);
 
   std::array<std::string, 6> nightPaths = {
       assetsPrefix + "skybox/night/right.png", assetsPrefix + "skybox/night/left.png",
@@ -33,21 +35,22 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
                                             skyboxRenderer_->descriptorSetLayout(), nightPaths, 4u)
                                    .value());
 
-  modelPipeline_ =
-      std::make_unique<ModelPipeline>(device, engine.getRenderPass(), *gameDataBinding_);
+  modelPipeline_ = std::make_unique<ModelPipeline>(device, engine.getRenderPass(),
+                                                   *gameDataBinding_, *shaderCompiler_);
   modelCache_ = std::make_unique<ModelCache>(
       device, engine.transferContext(), engine.bufferAllocator(), modelPipeline_->pipelineLayout(),
       modelPipeline_->descriptorSetLayout(), *textureManager_, engine.getFramesInFlightCount());
+
   modelRenderer_ = std::make_unique<ModelRenderer>(
       device, engine.bufferAllocator(), *modelPipeline_, engine.getFramesInFlightCount());
 
   chunkRenderer_ = std::make_unique<ChunkRenderer>(
       device, engine.transferContext(), engine.getGraphicsQueue(), memoryAllocator,
-      engine.getRenderPass().handle(), *gameDataBinding_, session.world().chunks(),
+      engine.getRenderPass().handle(), *gameDataBinding_, *shaderCompiler_, session.world().chunks(),
       session.lighting(), session.blocks(), engine.getFramesInFlightCount());
 
   billboardRenderer_ =
-      std::make_unique<BillboardRenderer>(device, engine.getRenderPass(), *gameDataBinding_);
+      std::make_unique<BillboardRenderer>(device, engine.getRenderPass(), *gameDataBinding_, *shaderCompiler_);
 
   billboardsAtlas_ = std::make_unique<Atlas>(device, engine.transferContext(), memoryAllocator,
                                                  glm::ivec2{4096, 4096}, 4u);

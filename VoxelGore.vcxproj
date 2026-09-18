@@ -21,38 +21,25 @@
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include=".gitignore" />
-    <None Include="assets\blocks\air.json" />
-    <None Include="assets\blocks\glowstone.json" />
-    <None Include="assets\blocks\ice.json" />
-    <None Include="assets\blocks\sea_lantern.json" />
-    <None Include="assets\entities\barrel.json" />
-    <None Include="assets\entities\integrity.json" />
-    <None Include="assets\light_channels\fire.json" />
-    <None Include="assets\light_channels\red.json" />
-    <None Include="assets\light_channels\sea.json" />
-    <None Include="shaders\blockPreview.frag" />
-    <None Include="shaders\blockPreview.vert" />
-    <None Include="shaders\crosshair.frag" />
-    <None Include="shaders\crosshair.vert" />
-    <None Include="shaders\main.frag" />
-    <None Include="shaders\main.vert" />
-    <None Include="shaders\main_atlas_debug.vert" />
-    <None Include="shaders\main_cutout.frag" />
-    <None Include="shaders\main_depth.frag" />
-    <None Include="shaders\main_depth.vert" />
-    <None Include="shaders\main_depth_cutout.frag" />
-    <None Include="shaders\main_depth_cutout.vert" />
-    <None Include="shaders\model.frag.spv" />
-    <None Include="shaders\particle.frag" />
-    <None Include="shaders\particle.vert" />
-    <None Include="shaders\particle_cutout.frag" />
-    <None Include="shaders\skybox.frag" />
-    <None Include="shaders\skybox.vert" />
-    <None Include="shaders\model.frag" />
-    <None Include="shaders\model.vert" />
-    <None Include="shaders\ui.frag" />
-    <None Include="shaders\ui.vert" />
-    <None Include="src\gfx\block\faceVertices.inl" />
+    <None Include="assets\shaders\blockPreview.frag" />
+    <None Include="assets\shaders\blockPreview.vert" />
+    <None Include="assets\shaders\crosshair.frag" />
+    <None Include="assets\shaders\crosshair.vert" />
+    <None Include="assets\shaders\chunks.frag" />
+    <None Include="assets\shaders\chunks.vert" />
+    <None Include="assets\shaders\chunks_cutout.frag" />
+    <None Include="assets\shaders\main_depth.frag" />
+    <None Include="assets\shaders\main_depth.vert" />
+    <None Include="assets\shaders\billboard.frag" />
+    <None Include="assets\shaders\billboard.vert" />
+    <None Include="assets\shaders\billboard_cutout.frag" />
+    <None Include="assets\shaders\skybox.frag" />
+    <None Include="assets\shaders\skybox.vert" />
+    <None Include="assets\shaders\model.frag" />
+    <None Include="assets\shaders\model.vert" />
+    <None Include="assets\shaders\ui.frag" />
+    <None Include="assets\shaders\ui.vert" />
+    <None Include="src\gfx\render\block\faceVertices.inl" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
@@ -64,22 +51,10 @@
     <ClCompile Include="src\game\lighting\LightChunk.cpp" />
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
     <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
-    <ClCompile Include="src\gfx\render\chunk\ShadowPipelines.cpp" />
-    <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
-    <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
-    <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
-    <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
-    <ClCompile Include="src\gfx\texture\Skybox.cpp" />
-    <ClCompile Include="src\gfx\render\billboard\BillboardBatch.cpp" />
     <ClCompile Include="src\game\entity\EntityDefinitionRegistry.cpp" />
     <ClCompile Include="src\game\entity\EntityFactory.cpp" />
     <ClCompile Include="src\game\entity\EntityParser.cpp" />
     <ClCompile Include="src\game\World.cpp" />
-    <ClCompile Include="src\gfx\entity\EntityRenderData.cpp" />
-    <ClCompile Include="src\gfx\render\billboard\BillboardPipelines.cpp" />
-    <ClCompile Include="src\gfx\render\billboard\BillboardRenderBucket.cpp" />
-    <ClCompile Include="src\gfx\render\billboard\BillboardRenderer.cpp" />
-    <ClCompile Include="src\gfx\render\ModelRenderer.cpp" />
     <ClCompile Include="src\core\CameraShake.cpp" />
     <ClCompile Include="src\core\InputGlfw.cpp" />
     <ClCompile Include="src\core\InputState.cpp" />
@@ -95,45 +70,58 @@
     <ClCompile Include="src\game\voxel\BlockParser.cpp" />
     <ClCompile Include="src\game\voxel\Chunk.cpp" />
     <ClCompile Include="src\game\voxel\ChunkManager.cpp" />
-    <ClCompile Include="src\gfx\block\Animation.cpp" />
-    <ClCompile Include="src\gfx\block\AnimationParser.cpp" />
-    <ClCompile Include="src\gfx\block\PreviewRenderer.cpp" />
-    <ClCompile Include="src\gfx\block\RenderData.cpp" />
-    <ClCompile Include="src\gfx\block\RenderGroupRegistry.cpp" />
-    <ClCompile Include="src\gfx\block\SurfaceRegistry.cpp" />
-    <ClCompile Include="src\gfx\block\UvBuffer.cpp" />
-    <ClCompile Include="src\gfx\entity\EntityRenderSystem.cpp" />
-    <ClCompile Include="src\gfx\mesh\IndexedMesh.cpp" />
-    <ClCompile Include="src\gfx\texture\MaterialManager.cpp" />
-    <ClCompile Include="src\gfx\mesh\Mesh.cpp" />
-    <ClCompile Include="src\gfx\mesh\Model.cpp" />
-    <ClCompile Include="src\gfx\mesh\ModelCache.cpp" />
-    <ClCompile Include="src\gfx\mesh\ModelLoader.cpp" />
-    <ClCompile Include="src\gfx\mesh\TranslucentMesh.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\IndexedMesh.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\Mesh.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\Model.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\ModelCache.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\ModelLoader.cpp" />
+    <ClCompile Include="src\gfx\common\mesh\TranslucentMesh.cpp" />
+    <ClCompile Include="src\gfx\common\shader\ShaderCompiler.cpp" />
+    <ClCompile Include="src\gfx\common\shader\ShaderIncluder.cpp" />
+    <ClCompile Include="src\gfx\common\texture\Atlas.cpp" />
+    <ClCompile Include="src\gfx\common\texture\ImageRegionAllocator.cpp" />
+    <ClCompile Include="src\gfx\common\texture\MaterialManager.cpp" />
+    <ClCompile Include="src\gfx\common\texture\Skybox.cpp" />
+    <ClCompile Include="src\gfx\common\texture\SpriteSheet.cpp" />
+    <ClCompile Include="src\gfx\common\texture\SpriteSheetParser.cpp" />
+    <ClCompile Include="src\gfx\common\texture\TextureCache.cpp" />
+    <ClCompile Include="src\gfx\common\texture\TextureLoader.cpp" />
+    <ClCompile Include="src\gfx\common\texture\TextureManager.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardBatch.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardPipelines.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardRenderBucket.cpp" />
+    <ClCompile Include="src\gfx\render\billboard\BillboardRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockAnimation.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockAnimationParser.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockPreviewRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockRenderData.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockSurfaceRegistry.cpp" />
+    <ClCompile Include="src\gfx\render\block\BlockUvBuffer.cpp" />
     <ClCompile Include="src\gfx\render\chunk\ChunkMeshBuilder.cpp" />
     <ClCompile Include="src\gfx\render\chunk\ChunkRenderer.cpp" />
     <ClCompile Include="src\gfx\render\chunk\ChunkRenderPipelines.cpp" />
+    <ClCompile Include="src\gfx\render\chunk\ChunkShadowPipelines.cpp" />
+    <ClCompile Include="src\gfx\render\entity\EntityRenderData.cpp" />
+    <ClCompile Include="src\gfx\render\entity\EntityRenderSystem.cpp" />
     <ClCompile Include="src\gfx\render\GameDataBinding.cpp" />
     <ClCompile Include="src\gfx\render\ModelPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\ModelRenderer.cpp" />
     <ClCompile Include="src\gfx\render\particle\BlockDebrisEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEngine.cpp" />
-    <ClCompile Include="src\gfx\texture\Atlas.cpp" />
-    <ClCompile Include="src\gfx\texture\ImageRegionAllocator.cpp" />
-    <ClCompile Include="src\gfx\texture\SpriteSheet.cpp" />
-    <ClCompile Include="src\gfx\texture\SpriteSheetParser.cpp" />
-    <ClCompile Include="src\gfx\texture\TextureCache.cpp" />
-    <ClCompile Include="src\gfx\texture\TextureLoader.cpp" />
-    <ClCompile Include="src\gfx\texture\TextureManager.cpp" />
-    <ClCompile Include="src\gfx\ui\Container.cpp" />
-    <ClCompile Include="src\gfx\ui\DescriptorSetRegistry.cpp" />
-    <ClCompile Include="src\gfx\ui\LibGui.cpp" />
-    <ClCompile Include="src\gfx\ui\Node.cpp" />
-    <ClCompile Include="src\gfx\ui\NodeBinding.cpp" />
-    <ClCompile Include="src\gfx\ui\NodeParser.cpp" />
-    <ClCompile Include="src\gfx\ui\Page.cpp" />
-    <ClCompile Include="src\gfx\ui\Renderer.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
+    <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\ui\Container.cpp" />
+    <ClCompile Include="src\gfx\render\ui\DescriptorSetRegistry.cpp" />
+    <ClCompile Include="src\gfx\render\ui\LibGui.cpp" />
+    <ClCompile Include="src\gfx\render\ui\Node.cpp" />
+    <ClCompile Include="src\gfx\render\ui\NodeBinding.cpp" />
+    <ClCompile Include="src\gfx\render\ui\NodeParser.cpp" />
+    <ClCompile Include="src\gfx\render\ui\Page.cpp" />
+    <ClCompile Include="src\gfx\render\ui\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PlayerController.cpp" />
     <ClCompile Include="src\RenderWorld.cpp" />
@@ -153,6 +141,7 @@
     <ClCompile Include="src\vkcore\pipeline\GraphicsPipelineCreator.cpp" />
     <ClCompile Include="src\vkcore\pipeline\PipelineLayout.cpp" />
     <ClCompile Include="src\vkcore\pipeline\RenderPass.cpp" />
+    <ClCompile Include="src\vkcore\pipeline\ShaderModule.cpp" />
     <ClCompile Include="src\vkcore\present\Surface.cpp" />
     <ClCompile Include="src\vkcore\present\Swapchain.cpp" />
     <ClCompile Include="src\vkcore\resource\Buffer.cpp" />
@@ -179,7 +168,7 @@
     <ClCompile Include="src\WorldSession.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shaders\UniformGameData.glsl" />
+    <ClInclude Include="assets\shaders\UniformGameData.glsl" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\game\lighting\ChannelDefinition.h" />
@@ -189,14 +178,6 @@
     <ClInclude Include="src\game\lighting\LightChunk.h" />
     <ClInclude Include="src\game\lighting\LightChunkStorage.h" />
     <ClInclude Include="src\game\lighting\LightColorSampler.h" />
-    <ClInclude Include="src\gfx\render\chunk\ShadowPipelines.h" />
-    <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
-    <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
-    <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
-    <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
-    <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
-    <ClInclude Include="src\gfx\texture\Skybox.h" />
-    <ClInclude Include="src\gfx\render\billboard\BillboardBatch.h" />
     <ClInclude Include="src\game\entity\EntityDefinitionRegistry.h" />
     <ClInclude Include="src\game\entity\EntityFactory.h" />
     <ClInclude Include="src\game\entity\EntityParser.h" />
@@ -205,13 +186,6 @@
     <ClInclude Include="src\game\entity\ModelComponent.h" />
     <ClInclude Include="src\game\entity\RenderComponent.h" />
     <ClInclude Include="src\game\World.h" />
-    <ClInclude Include="src\gfx\entity\EntityRenderData.h" />
-    <ClInclude Include="src\gfx\render\billboard\BillboardInstance.h" />
-    <ClInclude Include="src\gfx\render\billboard\BillboardPipelines.h" />
-    <ClInclude Include="src\gfx\render\billboard\BillboardRenderBucket.h" />
-    <ClInclude Include="src\gfx\render\billboard\BillboardRenderer.h" />
-    <ClInclude Include="src\gfx\render\ModelInstanceData.h" />
-    <ClInclude Include="src\gfx\render\ModelRenderer.h" />
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\CameraShake.h" />
     <ClInclude Include="src\core\InputGlfw.h" />
@@ -240,28 +214,47 @@
     <ClInclude Include="src\game\voxel\Chunk.h" />
     <ClInclude Include="src\game\voxel\ChunkManager.h" />
     <ClInclude Include="src\game\voxel\Voxel.h" />
-    <ClInclude Include="src\gfx\block\Animation.h" />
-    <ClInclude Include="src\gfx\block\AnimationParser.h" />
-    <ClInclude Include="src\gfx\block\PreviewRenderer.h" />
-    <ClInclude Include="src\gfx\block\RenderData.h" />
-    <ClInclude Include="src\gfx\block\RenderGroupRegistry.h" />
-    <ClInclude Include="src\gfx\block\Surface.h" />
-    <ClInclude Include="src\gfx\block\SurfaceRegistry.h" />
-    <ClInclude Include="src\gfx\block\UvBuffer.h" />
-    <ClInclude Include="src\gfx\entity\EntityRenderSystem.h" />
-    <ClInclude Include="src\gfx\mesh\IndexedMesh.h" />
-    <ClInclude Include="src\gfx\texture\MaterialManager.h" />
-    <ClInclude Include="src\gfx\mesh\Mesh.h" />
-    <ClInclude Include="src\gfx\mesh\Model.h" />
-    <ClInclude Include="src\gfx\mesh\ModelCache.h" />
-    <ClInclude Include="src\gfx\mesh\ModelLoader.h" />
-    <ClInclude Include="src\gfx\mesh\TranslucentMesh.h" />
+    <ClInclude Include="src\gfx\common\mesh\IndexedMesh.h" />
+    <ClInclude Include="src\gfx\common\mesh\Mesh.h" />
+    <ClInclude Include="src\gfx\common\mesh\Model.h" />
+    <ClInclude Include="src\gfx\common\mesh\ModelCache.h" />
+    <ClInclude Include="src\gfx\common\mesh\ModelLoader.h" />
+    <ClInclude Include="src\gfx\common\mesh\TranslucentMesh.h" />
+    <ClInclude Include="src\gfx\common\shader\ShaderCompiler.h" />
+    <ClInclude Include="src\gfx\common\shader\ShaderIncluder.h" />
+    <ClInclude Include="src\gfx\common\texture\Atlas.h" />
+    <ClInclude Include="src\gfx\common\texture\ImageRegionAllocator.h" />
+    <ClInclude Include="src\gfx\common\texture\MaterialManager.h" />
+    <ClInclude Include="src\gfx\common\texture\Skybox.h" />
+    <ClInclude Include="src\gfx\common\texture\SpriteSheet.h" />
+    <ClInclude Include="src\gfx\common\texture\SpriteSheetParser.h" />
+    <ClInclude Include="src\gfx\common\texture\TextureCache.h" />
+    <ClInclude Include="src\gfx\common\texture\TextureLoader.h" />
+    <ClInclude Include="src\gfx\common\texture\TextureManager.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardBatch.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardInstance.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardPipelines.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardRenderBucket.h" />
+    <ClInclude Include="src\gfx\render\billboard\BillboardRenderer.h" />
+    <ClInclude Include="src\gfx\render\block\BlockAnimation.h" />
+    <ClInclude Include="src\gfx\render\block\BlockAnimationParser.h" />
+    <ClInclude Include="src\gfx\render\block\BlockPreviewRenderer.h" />
+    <ClInclude Include="src\gfx\render\block\BlockRenderData.h" />
+    <ClInclude Include="src\gfx\render\block\BlockRenderGroupRegistry.h" />
+    <ClInclude Include="src\gfx\render\block\BlockSurface.h" />
+    <ClInclude Include="src\gfx\render\block\BlockSurfaceRegistry.h" />
+    <ClInclude Include="src\gfx\render\block\BlockUvBuffer.h" />
     <ClInclude Include="src\gfx\render\chunk\ChunkMeshBuilder.h" />
     <ClInclude Include="src\gfx\render\chunk\ChunkMeshes.h" />
     <ClInclude Include="src\gfx\render\chunk\ChunkRenderer.h" />
     <ClInclude Include="src\gfx\render\chunk\ChunkRenderPipelines.h" />
+    <ClInclude Include="src\gfx\render\chunk\ChunkShadowPipelines.h" />
+    <ClInclude Include="src\gfx\render\entity\EntityRenderData.h" />
+    <ClInclude Include="src\gfx\render\entity\EntityRenderSystem.h" />
     <ClInclude Include="src\gfx\render\GameDataBinding.h" />
+    <ClInclude Include="src\gfx\render\ModelInstanceData.h" />
     <ClInclude Include="src\gfx\render\ModelPipeline.h" />
+    <ClInclude Include="src\gfx\render\ModelRenderer.h" />
     <ClInclude Include="src\gfx\render\particle\BlockDebrisEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\ExplosionEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\Particle.h" />
@@ -269,26 +262,24 @@
     <ClInclude Include="src\gfx\render\particle\ParticleEngine.h" />
     <ClInclude Include="src\gfx\render\particle\ParticleInstance.h" />
     <ClInclude Include="src\gfx\render\RenderLayers.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
+    <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
+    <ClInclude Include="src\gfx\render\ui\Container.h" />
+    <ClInclude Include="src\gfx\render\ui\DescriptorSetRegistry.h" />
+    <ClInclude Include="src\gfx\render\ui\InputRouter.h" />
+    <ClInclude Include="src\gfx\render\ui\LibGui.h" />
+    <ClInclude Include="src\gfx\render\ui\Node.h" />
+    <ClInclude Include="src\gfx\render\ui\NodeBinding.h" />
+    <ClInclude Include="src\gfx\render\ui\NodeParser.h" />
+    <ClInclude Include="src\gfx\render\ui\Page.h" />
+    <ClInclude Include="src\gfx\render\ui\Panel.h" />
+    <ClInclude Include="src\gfx\render\ui\Renderer.h" />
+    <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
+    <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\UniformGameData.h" />
-    <ClInclude Include="src\gfx\texture\Atlas.h" />
-    <ClInclude Include="src\gfx\texture\ImageRegionAllocator.h" />
-    <ClInclude Include="src\gfx\texture\SpriteSheet.h" />
-    <ClInclude Include="src\gfx\texture\SpriteSheetParser.h" />
-    <ClInclude Include="src\gfx\texture\TextureCache.h" />
-    <ClInclude Include="src\gfx\texture\TextureLoader.h" />
-    <ClInclude Include="src\gfx\texture\TextureManager.h" />
-    <ClInclude Include="src\gfx\ui\Container.h" />
-    <ClInclude Include="src\gfx\ui\DescriptorSetRegistry.h" />
-    <ClInclude Include="src\gfx\ui\LibGui.h" />
-    <ClInclude Include="src\gfx\ui\Node.h" />
-    <ClInclude Include="src\gfx\ui\NodeBinding.h" />
-    <ClInclude Include="src\gfx\ui\NodeParser.h" />
-    <ClInclude Include="src\gfx\ui\Page.h" />
-    <ClInclude Include="src\gfx\ui\Panel.h" />
-    <ClInclude Include="src\gfx\ui\Renderer.h" />
-    <ClInclude Include="src\gfx\ui\InputRouter.h" />
-    <ClInclude Include="src\gfx\ui\TriggerDispatcher.h" />
-    <ClInclude Include="src\gfx\ui\Ui.h" />
     <ClInclude Include="src\gfx\UvRegion.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\RenderWorld.h" />
@@ -316,6 +307,7 @@
     <ClInclude Include="src\vkcore\pipeline\Pipeline.h" />
     <ClInclude Include="src\vkcore\pipeline\PipelineLayout.h" />
     <ClInclude Include="src\vkcore\pipeline\RenderPass.h" />
+    <ClInclude Include="src\vkcore\pipeline\ShaderModule.h" />
     <ClInclude Include="src\vkcore\pipeline\SubpassDescription.h" />
     <ClInclude Include="src\vkcore\present\Surface.h" />
     <ClInclude Include="src\vkcore\present\Swapchain.h" />
@@ -398,11 +390,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>include;$(IncludePath)</IncludePath>
-    <LibraryPath>libs/win64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>libs/win64/debug;libs/win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>include;$(IncludePath)</IncludePath>
-    <LibraryPath>libs/win64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>libs/win64/release;libs/win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -450,7 +442,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -470,7 +462,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>

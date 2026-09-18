@@ -20,9 +20,9 @@ void TransferContext::Begin() {
 
 void TransferContext::Flush() {
   cmd_.end();
-  transferQueue_->submit(cmd_.handle());
+  transferQueue_->Submit(cmd_.handle());
 
-  transferQueue_->waitIdle();
+  transferQueue_->WaitIdle();
 
   reservedSlices_.clear();
 

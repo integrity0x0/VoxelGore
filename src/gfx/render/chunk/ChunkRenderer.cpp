@@ -11,15 +11,17 @@ namespace gfx {
 ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
                              const vkcore::DeviceQueue& graphicsQueue,
                              vkcore::MemoryAllocator& memoryAllocator, VkRenderPass renderPass,
-                             const GameDataBinding& gameDataBinding, gm::ChunkManager& chunkManager,
-                             const gm::lighting::Lighting& lighting,
+                             const GameDataBinding& gameDataBinding,
+                             const ShaderCompiler& shaderCompiler,
+                             gm::ChunkManager& chunkManager,
+                             const gm::Lighting& lighting,
                              const gm::BlockManager& blockManager, uint32_t framesInFlightCount)
     : device_(device),
       transferCtxt_(&transferCtxt),
       graphicsQueue_(&graphicsQueue),
       blockManager_(&blockManager),
       chunkManager_(&chunkManager),
-      blockRenderData_(std::make_unique<block::RenderData>(blockManager, device, transferCtxt,
+      blockRenderData_(std::make_unique<BlockRenderData>(blockManager, device, transferCtxt,
                                                            memoryAllocator, framesInFlightCount)),
       meshBuilder_(device, lighting, blockManager, *blockRenderData_, framesInFlightCount),
       framesInFlightCount_(framesInFlightCount) {
@@ -45,7 +47,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
       device_, std::vector<VkDescriptorSetLayoutBinding>{uvBufferBinding, textureBinding});
 
   pipelines_ = std::make_unique<ChunkRenderPipelines>(device_, renderPass, gameDataBinding,
-                                                      *descriptorSetLayout_);
+                                                      *descriptorSetLayout_, shaderCompiler);
 
   // ---------------------------------------------------------------------
   // Descriptor Pool + Sets
@@ -69,7 +71,7 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
   VkPhysicalDeviceProperties deviceProps = device.getPhysicalDevice().getProperties();
   VkDeviceSize minAlign = deviceProps.limits.minUniformBufferOffsetAlignment;
 
-  const std::vector<gfx::block::UvBuffer>& uvBuffers = blockRenderData_->uvBuffers();
+  const std::vector<gfx::BlockUvBuffer>& uvBuffers = blockRenderData_->uvBuffers();
 
   VkDescriptorImageInfo imageInfo = {};
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -126,7 +128,7 @@ void ChunkRenderer::updateDirty(VkCommandBuffer cmd, uint32_t currentFrameInFlig
     meshes_.translucent.erase(pos);
   }
 
-  graphicsQueue_->waitIdle();
+  graphicsQueue_->WaitIdle();
   meshBuilder_.BuildMeshes(cmd, currentFrameInFlight, dirty, chunkManager_->getChunks(), meshes_);
 }
 

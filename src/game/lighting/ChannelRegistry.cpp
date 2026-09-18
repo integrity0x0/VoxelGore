@@ -3,7 +3,7 @@
 #include "ChannelParser.h"
 #include "../../core/PathPrefixes.h"
 
-namespace gm::lighting {
+namespace gm {
 
 namespace {
 constexpr std::string_view kChannelPath = "light_channels/";
@@ -70,4 +70,4 @@ const ChannelDefinition* ChannelRegistry::GetById(ChannelId id) const {
 const ChannelDefinition* ChannelRegistry::GetByName(std::string_view name) const { 
   return GetById(Find(name));
 }
-}  // namespace gm::lighting
+}  // namespace gm

@@ -7,7 +7,7 @@
 #include "../voxel/BlockManager.h"
 #include "BlockLightCache.h"
 
-namespace gm::lighting {
+namespace gm {
 class LightChannel {
  public:
   LightChannel(const ChannelDefinition& definition, LightChunkStorage& storage, ChannelId id,
@@ -37,4 +37,4 @@ class LightChannel {
   ChannelProcessor processor_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

@@ -8,12 +8,13 @@
 #include "../../../vkcore/resource/DescriptorSetLayout.h"
 #include "../GameDataBinding.h"
 #include "../RenderLayers.h"
+#include "../../common/shader/ShaderCompiler.h"
 
 namespace gfx {
 class BillboardPipelines {
  public:
   BillboardPipelines(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                     const GameDataBinding& gameDataBinding);
+                     const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
   void Bind(VkCommandBuffer cmd, RenderLayer renderLayer) const {
     assert(renderLayer < RenderLayer::Count);
@@ -27,13 +28,19 @@ class BillboardPipelines {
   [[nodiscard]] const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
 
  private:
-  vkcore::DescriptorSetLayout BuildTextureSetLayout(const vkcore::Device& device);
-  vkcore::PipelineLayout BuildPipelineLayout(const vkcore::Device& device,
+  [[nodiscard]] vkcore::DescriptorSetLayout BuildTextureSetLayout(const vkcore::Device& device);
+  [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(const vkcore::Device& device,
                                              const GameDataBinding& gameDataBinding);
-  vkcore::Pipeline BuildPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                                 RenderLayer renderLayer);
-  std::array<vkcore::Pipeline, static_cast<size_t>(RenderLayer::Count)> BuildPipelines(
-      const vkcore::Device& device, const vkcore::RenderPass& renderPass);
+
+  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device,
+                                               const vkcore::RenderPass& renderPass,
+                                               const ShaderCompiler& shaderCompiler,
+                                               RenderLayer renderLayer);
+
+  [[nodiscard]] std::array<vkcore::Pipeline, static_cast<size_t>(RenderLayer::Count)>
+  BuildPipelines(
+      const vkcore::Device& device, const vkcore::RenderPass& renderPass, 
+      const ShaderCompiler& shaderCompiler);
 
  private:
   vkcore::DescriptorSetLayout textureSetLayout_;

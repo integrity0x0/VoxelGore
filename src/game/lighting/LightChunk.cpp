@@ -1,6 +1,6 @@
 #include "LightChunk.h"
 
-namespace gm::lighting {
+namespace gm {
 
 
 size_t LightChunk::GetIndex(const glm::ivec3& localPos) {
@@ -28,4 +28,4 @@ void LightChunk::Set(const glm::ivec3& localPos, uint8_t strength) {
   }
 }
 
-}  // namespace gm::lighting
+}  // namespace gm

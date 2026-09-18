@@ -13,7 +13,7 @@ namespace vkcore {
 class Surface {
  public:
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  Surface(const Instance& instance, ANativeWindow* window);
+  BlockSurface(const Instance& instance, ANativeWindow* window);
 #else
   Surface(const Instance& instance, GLFWwindow* window);
 #endif

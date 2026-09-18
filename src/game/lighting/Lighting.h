@@ -9,7 +9,7 @@
 #include "LightChannel.h"
 #include "LightChunkStorage.h"
 
-namespace gm::lighting {
+namespace gm {
 
 class Lighting {
  public:
@@ -45,4 +45,4 @@ class Lighting {
   std::vector<std::unique_ptr<LightChannel>> channels_;
 };
 
-}  // namespace gm::lighting
+}  // namespace gm

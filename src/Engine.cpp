@@ -93,7 +93,7 @@ void Engine::createSurface() {
   LOGI("Creating surface...");
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  surface = std::make_unique<vkcore::Surface>(*instance, app->window);
+  surface = std::make_unique<vkcore::BlockSurface>(*instance, app->window);
 #elif defined(VK_USE_PLATFORM_WIN32_KHR)
   surface = std::make_unique<vkcore::Surface>(*instance, nativeWindow);
 #endif
@@ -337,7 +337,7 @@ bool Engine::beginFrame(uint32_t& imageIndex) {
 }
 
 void Engine::recreateSwapchain() {
-  getGraphicsQueue().waitIdle();
+  getGraphicsQueue().WaitIdle();
 
   framebuffers.clear();
   depthTexture.reset();

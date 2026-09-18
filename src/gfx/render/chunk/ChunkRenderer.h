@@ -13,7 +13,7 @@
 #include "../../../vkcore/resource/DescriptorPool.h"
 #include "../../../vkcore/resource/SampledTexture.h"
 #include "../../../vkcore/resource/Sampler.h"
-#include "../../block/RenderData.h"
+#include "../../render/block/BlockRenderData.h"
 #include "../GameDataBinding.h"
 #include "ChunkMeshBuilder.h"
 #include "ChunkMeshes.h"
@@ -28,7 +28,9 @@ class ChunkRenderer {
   ChunkRenderer(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
                 const vkcore::DeviceQueue& graphicsQueue, vkcore::MemoryAllocator& memoryAllocator,
                 VkRenderPass renderPass, const GameDataBinding& gameDataBinding,
-                gm::ChunkManager& chunkManager, const gm::lighting::Lighting& lighting, const gm::BlockManager& blockManager,
+                const ShaderCompiler& shaderCompiler,
+                gm::ChunkManager& chunkManager, const gm::Lighting& lighting, 
+                const gm::BlockManager& blockManager,
                 uint32_t framesInFlightCount);
 
   ~ChunkRenderer();
@@ -41,7 +43,7 @@ class ChunkRenderer {
 
   Atlas& getAtlas() { return blockRenderData_->atlas(); }
 
-  block::RenderData& blockRenderData() { return *blockRenderData_; }
+  BlockRenderData& blockRenderData() { return *blockRenderData_; }
 
   const vkcore::PipelineLayout& pipelineLayout() { return pipelines_->pipelineLayout(); }
 
@@ -52,7 +54,7 @@ class ChunkRenderer {
   const vkcore::DeviceQueue* graphicsQueue_;
   const gm::BlockManager* blockManager_;
 
-  std::unique_ptr<block::RenderData> blockRenderData_;
+  std::unique_ptr<BlockRenderData> blockRenderData_;
 
   std::unique_ptr<vkcore::DescriptorSetLayout> descriptorSetLayout_;
   std::unique_ptr<ChunkRenderPipelines> pipelines_;

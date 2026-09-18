@@ -3,8 +3,9 @@
 namespace gfx {
 BillboardRenderer::BillboardRenderer(const vkcore::Device& device,
                                      const vkcore::RenderPass& renderPass,
-                                     const GameDataBinding& gameDataBinding)
-    : device_(&device), pipelines_(device, renderPass, gameDataBinding) {}
+                                     const GameDataBinding& gameDataBinding,
+                                     const ShaderCompiler& shaderCompiler)
+    : device_(&device), pipelines_(device, renderPass, gameDataBinding, shaderCompiler) {}
 
 BillboardRenderBucket& BillboardRenderer::CreateBucket(vkcore::BufferAllocator& bufferAllocator,
                                                        const Atlas& atlas, uint32_t framesCount) {

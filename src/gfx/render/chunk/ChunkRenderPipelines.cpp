@@ -5,14 +5,15 @@
 namespace gfx {
 ChunkRenderPipelines::ChunkRenderPipelines(
     const vkcore::Device& device, VkRenderPass renderPass, const GameDataBinding& gameDataBinding,
-    const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout)
+    const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout,
+    const ShaderCompiler& shaderCompiler)
     : device_(&device),
-      pipelineLayout_(MakePipelineLayout(device, gameDataBinding, atlasDescriptorSetLayout)),
-      pipelines_{MakePipeline(renderPass, RenderLayer::Solid),
-                 MakePipeline(renderPass, RenderLayer::Cutout),
-                 MakePipeline(renderPass, RenderLayer::Translucent)} {}
+      pipelineLayout_(BuildPipelineLayout(device, gameDataBinding, atlasDescriptorSetLayout)),
+      pipelines_{BuildPipeline(renderPass, shaderCompiler, RenderLayer::Solid),
+                 BuildPipeline(renderPass, shaderCompiler, RenderLayer::Cutout),
+                 BuildPipeline(renderPass, shaderCompiler, RenderLayer::Translucent)} {}
 
-vkcore::PipelineLayout ChunkRenderPipelines::MakePipelineLayout(
+vkcore::PipelineLayout ChunkRenderPipelines::BuildPipelineLayout(
     const vkcore::Device& device, const GameDataBinding& gameDataBinding,
     const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout) {
   return vkcore::PipelineLayout(
@@ -22,16 +23,22 @@ vkcore::PipelineLayout ChunkRenderPipelines::MakePipelineLayout(
       std::vector<VkPushConstantRange>{});
 }
 
-vkcore::Pipeline ChunkRenderPipelines::MakePipeline(VkRenderPass renderPass,
-                                                    RenderLayer renderLayer) const {
+vkcore::Pipeline ChunkRenderPipelines::BuildPipeline(VkRenderPass renderPass,
+                                                     const ShaderCompiler& shaderCompiler,
+                                                     RenderLayer renderLayer) const {
   bool blendEnabled = (renderLayer == RenderLayer::Translucent);
   bool depthWrite = (renderLayer != RenderLayer::Translucent);
-  std::string shaderPath = (renderLayer != RenderLayer::Cutout) ? "shaders/main.frag.spv"
-                                                                : "shaders/main_cutout.frag.spv";
+  std::string fragmentPath = (renderLayer != RenderLayer::Cutout) ? core::kShadersPrefix + "chunks.frag"
+                                                                  : core::kShadersPrefix + "chunks_cutout.frag";
+  vkcore::ShaderModule vert = CompileShaderModule(
+      shaderCompiler, *device_, core::kShadersPrefix + "chunks.vert", shaderc_vertex_shader);
+
+  vkcore::ShaderModule frag = CompileShaderModule(
+      shaderCompiler, *device_, fragmentPath, shaderc_fragment_shader);
 
   return vkcore::GraphicsPipelineCreator(*device_)
-      .AddShaderStage(core::kAssetsPrefix + "shaders/main.vert.spv", VK_SHADER_STAGE_VERTEX_BIT)
-      .AddShaderStage(core::kAssetsPrefix + shaderPath, VK_SHADER_STAGE_FRAGMENT_BIT)
+      .AddShaderStage(vert, VK_SHADER_STAGE_VERTEX_BIT)
+      .AddShaderStage(frag, VK_SHADER_STAGE_FRAGMENT_BIT)
       .AddVertexBinding(0, sizeof(ChunkMeshBuilder::Vertex), VK_VERTEX_INPUT_RATE_VERTEX)
       .AddVertexAttribute(0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(ChunkMeshBuilder::Vertex, pos))
       .AddVertexAttribute(1, 0, VK_FORMAT_R32G32B32A32_SFLOAT,

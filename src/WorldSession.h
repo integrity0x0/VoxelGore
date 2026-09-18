@@ -28,8 +28,8 @@ class WorldSession {
   BlockManager& blocks() { return *blockManager_; }
   const BlockManager& blocks() const { return *blockManager_; }
 
-  lighting::Lighting& lighting() { return *lighting_; }
-  const lighting::Lighting& lighting() const { return *lighting_; }
+  Lighting& lighting() { return *lighting_; }
+  const Lighting& lighting() const { return *lighting_; }
 
   CollisionResolver& collision() { return *collisionResolver_; }
   EntityFactory& entities() { return *entityFactory_; }
@@ -38,7 +38,7 @@ class WorldSession {
  private:
   std::unique_ptr<World> world_;
   std::unique_ptr<BlockManager> blockManager_;
-  std::unique_ptr<lighting::Lighting> lighting_;
+  std::unique_ptr<Lighting> lighting_;
   std::unique_ptr<EntityDefinitionRegistry> entityDefs_;
   std::unique_ptr<EntityFactory> entityFactory_;
   std::unique_ptr<CollisionResolver> collisionResolver_;

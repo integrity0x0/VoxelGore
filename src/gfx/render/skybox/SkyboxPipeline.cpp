@@ -23,10 +23,16 @@ vkcore::PipelineLayout SkyboxPipeline::BuildDescriptorPipelineLayout(
 }
 
 vkcore::Pipeline SkyboxPipeline::BuildPipeline(const vkcore::Device& device,
-                                               const vkcore::RenderPass& renderPass) {
+                                               const vkcore::RenderPass& renderPass,
+                                               const ShaderCompiler& shaderCompiler) {
+  vkcore::ShaderModule vertex = CompileShaderModule(
+      shaderCompiler, device, core::kShadersPrefix + "skybox.vert", shaderc_vertex_shader);
+  vkcore::ShaderModule fragment = CompileShaderModule(
+      shaderCompiler, device, core::kShadersPrefix + "skybox.frag", shaderc_fragment_shader);
+
   return vkcore::GraphicsPipelineCreator(device)
-      .AddShaderStage(core::kAssetsPrefix + "shaders/skybox.vert.spv", VK_SHADER_STAGE_VERTEX_BIT)
-      .AddShaderStage(core::kAssetsPrefix + "shaders/skybox.frag.spv",
+      .AddShaderStage(vertex, VK_SHADER_STAGE_VERTEX_BIT)
+      .AddShaderStage(fragment,
                       VK_SHADER_STAGE_FRAGMENT_BIT)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
@@ -40,9 +46,10 @@ vkcore::Pipeline SkyboxPipeline::BuildPipeline(const vkcore::Device& device,
 }
 
 SkyboxPipeline::SkyboxPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                               const GameDataBinding& gameDataBinding)
+                               const GameDataBinding& gameDataBinding,
+                               const ShaderCompiler& shaderCompiler)
     : descriptorSetLayout_(BuildDescriptorSetLayout(device)),
       pipelineLayout_(BuildDescriptorPipelineLayout(device, gameDataBinding.descriptorSetLayout())),
-      pipeline_(BuildPipeline(device, renderPass)) {}
+      pipeline_(BuildPipeline(device, renderPass, shaderCompiler)) {}
 
 }  // namespace gfx

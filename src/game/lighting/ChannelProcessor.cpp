@@ -2,7 +2,7 @@
 
 #include <array>
 
-namespace gm::lighting {
+namespace gm {
 
 namespace {
 constexpr auto kNeighbourOffsets = std::to_array<glm::ivec3>({
@@ -82,4 +82,4 @@ void ChannelProcessor::ProcessSpreadQueue() {
   }
 }
 
-}  // namespace gm::lighting
+}  // namespace gm

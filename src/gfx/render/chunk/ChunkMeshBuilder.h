@@ -6,7 +6,7 @@
 #include <cassert>
 #include <vector>
 
-#include "../../block/RenderData.h"
+#include "../block/BlockRenderData.h"
 #include "../RenderLayers.h"
 #include "ChunkMeshes.h"
 #include "../../../game/lighting/Lighting.h"
@@ -22,8 +22,8 @@ class ChunkMeshBuilder {
     uint32_t blockSurfaceId;
   };
 
-  ChunkMeshBuilder(const vkcore::Device& device, const gm::lighting::Lighting& lighting, const gm::BlockManager& blockManager,
-                   block::RenderData& blockRenderData, uint32_t framesCount);
+  ChunkMeshBuilder(const vkcore::Device& device, const gm::Lighting& lighting, const gm::BlockManager& blockManager,
+                   BlockRenderData& blockRenderData, uint32_t framesCount);
 
   void BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame, gm::DirtyChunkSet& dirtyChunks,
                    const gm::ChunksMap& chunksMap, ChunkMeshes& meshes);
@@ -205,9 +205,9 @@ class ChunkMeshBuilder {
 
  private:
   const vkcore::Device* device_;
-  const gm::lighting::Lighting* lighting_;
+  const gm::Lighting* lighting_;
   const gm::BlockManager* blockManager_;
-  block::RenderData* blockRenderData_;
+  BlockRenderData* blockRenderData_;
   
   vkcore::MemoryAllocator memoryAllocator_;
   vkcore::BufferAllocator bufferAllocator_;

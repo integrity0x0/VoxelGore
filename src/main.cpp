@@ -11,13 +11,13 @@
 #include "game/entity/EntityFactory.h"
 #include "game/lighting/Lighting.h"
 #include "game/physics/PhysicsSystem.h"
-#include "gfx/block/PreviewRenderer.h"
-#include "gfx/entity/EntityRenderSystem.h"
+#include "gfx/render/block/BlockPreviewRenderer.h"
+#include "gfx/render/entity/EntityRenderSystem.h"
 #include "gfx/render/billboard/BillboardRenderer.h"
 #include "gfx/render/chunk/ChunkRenderer.h"
 #include "gfx/render/particle/ParticleEngine.h"
-#include "gfx/ui/LibGui.h"
-#include "gfx/texture/Skybox.h"
+#include "gfx/render/ui/LibGui.h"
+#include "gfx/common/texture/Skybox.h"
 #include "gfx/render/skybox/SkyboxRenderer.h"
 
 #include "Game.h"
@@ -25,14 +25,14 @@
 int main() {
   glfwInit();
   try {
-    core::Window::hint(GLFW_RESIZABLE, GLFW_TRUE);
-    core::Window::hint(GLFW_CLIENT_API, GLFW_NO_API);
+    core::Window::Hint(GLFW_RESIZABLE, GLFW_TRUE);
+    core::Window::Hint(GLFW_CLIENT_API, GLFW_NO_API);
     auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha | WTF!!!");
 
     Game game(std::move(window));
-    while (!game.window().shouldClose()) {
+    while (!game.window().IsShouldClose()) {
       glfwPollEvents();
-      if (game.window().isMinimized()) {
+      if (game.window().IsMinimized()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
         continue;
       }

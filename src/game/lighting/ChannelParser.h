@@ -5,11 +5,11 @@
 
 #include "ChannelDefinition.h"
 
-namespace gm::lighting {
+namespace gm {
 class ChannelParser {
  public:
   ChannelParser() = delete;
 
   [[nodiscard]] static std::optional<ChannelDefinition> Parse(std::string_view path);
 };
-}  // namespace gm::lighting
+}  // namespace gm

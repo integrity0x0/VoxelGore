@@ -103,7 +103,7 @@ static const gm::Chunk* ResolveChunk(
   return neighbors[ChunkCubeIndex(chunkOffset)];
 }
 
-glm::vec4 LightSample(const gm::lighting::Lighting& lighting, glm::ivec3 worldPos, uint32_t face,
+glm::vec4 LightSample(const gm::Lighting& lighting, glm::ivec3 worldPos, uint32_t face,
                       uint32_t corner) {
   const CornerSign& sign = kCornerSigns[face * 4u + corner];
 
@@ -118,7 +118,7 @@ glm::vec4 LightSample(const gm::lighting::Lighting& lighting, glm::ivec3 worldPo
 }
 
 
-bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
+bool IsBlocked(BlockRenderData& renderData, const gm::Chunk& self,
                const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
                glm::ivec3 neighborLocalPos, uint32_t sourceVoxelId) {
   const gm::Chunk* target = ResolveChunk(self, neighbors, neighborLocalPos);
@@ -131,9 +131,9 @@ bool IsBlocked(block::RenderData& renderData, const gm::Chunk& self,
 }  // namespace
 
 ChunkMeshBuilder::ChunkMeshBuilder(const vkcore::Device& device,
-                                   const gm::lighting::Lighting& lighting,
+                                   const gm::Lighting& lighting,
                                    const gm::BlockManager& blockManager,
-                                   block::RenderData& blockRenderData, uint32_t framesCount)
+                                   BlockRenderData& blockRenderData, uint32_t framesCount)
     : device_(&device),
       blockManager_(&blockManager),
       lighting_(&lighting),

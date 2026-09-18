@@ -9,7 +9,7 @@ namespace gfx {
 
 class ParticleEngine {
  public:
-  ParticleEngine(Atlas& generalAtlas, block::RenderData& renderData,
+  ParticleEngine(Atlas& generalAtlas, BlockRenderData& renderData,
                  const gm::BlockManager& blockManager, const gm::ChunkManager& chunkManager,
                  BillboardRenderBucket& generalBucket, BillboardRenderBucket& blockBucket);
 
@@ -22,7 +22,7 @@ class ParticleEngine {
  private:
   Atlas* generalAtlas_;
   const gm::ChunkManager* chunkManager_;
-  block::RenderData* blockRenderData_;
+  BlockRenderData* blockRenderData_;
   BillboardRenderBucket* generalBucket_;
   BillboardRenderBucket* blockBucket_;
 

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "../../../core/PathPrefixes.h"
-#include "../../texture/SpriteSheet.h"
+#include "../../common/texture/SpriteSheet.h"
 #include "ParticleEmitter.h"
 
 namespace gfx {

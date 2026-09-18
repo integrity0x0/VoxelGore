@@ -1,6 +1,6 @@
 #include "LightChunkStorage.h"
 
-namespace gm::lighting {
+namespace gm {
 namespace {
 constexpr int32_t kShift = 4;
 static_assert(LightChunk::kLength == 16);
@@ -34,4 +34,4 @@ void LightChunkStorage::SetLight(const glm::ivec3& worldPos, ChannelId id, uint8
   chunk.Set(localPos, strength);
 }
 
-}  // namespace gm::lighting
+}  // namespace gm

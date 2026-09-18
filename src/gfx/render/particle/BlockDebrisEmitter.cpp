@@ -10,15 +10,15 @@ namespace {
 std::mt19937 gRandomEngine{std::random_device{}()};
 std::uniform_real_distribution<float> gDist01(0.0f, 1.0f);
 
-float randFloat01() { return gDist01(gRandomEngine); }
+float RandFloat01() { return gDist01(gRandomEngine); }
 
-float randRange(float lo, float hi) { return lo + randFloat01() * (hi - lo); }
+float RandRange(float lo, float hi) { return lo + RandFloat01() * (hi - lo); }
 
-glm::vec3 randRange(const glm::vec3& lo, const glm::vec3& hi) {
-  return {randRange(lo.x, hi.x), randRange(lo.y, hi.y), randRange(lo.z, hi.z)};
+glm::vec3 RandRange(const glm::vec3& lo, const glm::vec3& hi) {
+  return {RandRange(lo.x, hi.x), RandRange(lo.y, hi.y), RandRange(lo.z, hi.z)};
 }
 
-gm::Block::Face pickFace(gm::BlockDebrisConfig::Face mode) {
+gm::Block::Face PickFace(gm::BlockDebrisConfig::Face mode) {
   using Face = gm::Block::Face;
 
   switch (mode) {
@@ -28,21 +28,21 @@ gm::Block::Face pickFace(gm::BlockDebrisConfig::Face mode) {
       return Face::Bottom;
     case gm::BlockDebrisConfig::Face::Side: {
       static constexpr Face kSides[4] = {Face::North, Face::South, Face::West, Face::East};
-      return kSides[static_cast<int>(randFloat01() * 4)];
+      return kSides[static_cast<int>(RandFloat01() * 4)];
     }
     case gm::BlockDebrisConfig::Face::Random:
     default: {
       static constexpr Face kAll[6] = {Face::North, Face::South, Face::West,
                                        Face::East,  Face::Top,   Face::Bottom};
-      return kAll[static_cast<int>(randFloat01() * 6)];
+      return kAll[static_cast<int>(RandFloat01() * 6)];
     }
   }
 }
 
-bool isObstacle(const glm::ivec3& pos, const gm::ChunkManager& chunkManager) {
+bool IsObstacle(const glm::ivec3& pos, const gm::ChunkManager& chunkManager) {
   return chunkManager.hasVoxel(pos) && chunkManager.getVoxel(pos)->id != 0;
 }
-void resolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chunkManager) {
+void ResolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chunkManager) {
   static constexpr float kSettleVelocity = 0.05f;
   if (p.settled_) return;
 
@@ -54,7 +54,7 @@ void resolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chu
     glm::vec3 next = p.pos;
     next[axis] += delta[axis];
 
-    if (isObstacle(glm::ivec3(glm::floor(next)), chunkManager)) {
+    if (IsObstacle(glm::ivec3(glm::floor(next)), chunkManager)) {
       p.velocity[axis] *= -p.bounceFactor;
 
       if (axis == 1 && wasFalling) hitGround = true;
@@ -71,7 +71,7 @@ void resolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chu
 
 }  // namespace
 
-BlockDebrisEmitter::BlockDebrisEmitter(block::RenderData& renderData,
+BlockDebrisEmitter::BlockDebrisEmitter(BlockRenderData& renderData,
                                        const gm::BlockManager& blockManager,
                                        const gm::ChunkManager& chunkManager)
     : renderData_(&renderData), blockManager_(&blockManager), chunkManager_(&chunkManager) {}
@@ -87,29 +87,29 @@ void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
   if (config.count == 0) return;
 
   for (uint32_t i = 0; i < config.count; ++i) {
-    gm::Block::Face face = pickFace(config.face);
+    gm::Block::Face face = PickFace(config.face);
     const UvRegion& region = renderData_->ExtractRegion(blockId, face);
 
     float uRange = region.max.x - region.min.x;
     float vRange = region.max.y - region.min.y;
 
-    float sizeX = randRange(config.size.x, config.size.y);
-    float sizeY = randRange(config.size.x, config.size.y);
+    float sizeX = RandRange(config.size.x, config.size.y);
+    float sizeY = RandRange(config.size.x, config.size.y);
 
     float uSize = std::min(uRange, uRange * (sizeX / kBlockSize));
     float vSize = std::min(vRange, vRange * (sizeY / kBlockSize));
 
-    float uMin = region.min.x + randFloat01() * (uRange - uSize);
-    float vMin = region.min.y + randFloat01() * (vRange - vSize);
+    float uMin = region.min.x + RandFloat01() * (uRange - uSize);
+    float vMin = region.min.y + RandFloat01() * (vRange - vSize);
     float uMax = uMin + uSize;
     float vMax = vMin + vSize;
 
-    glm::vec3 velocity = randRange(config.velocityMin, config.velocityMax);
-    float life = randRange(config.lifetime.x, config.lifetime.y);
-    float rotation = randRange(config.rotationSpeed.x, config.rotationSpeed.y);
+    glm::vec3 velocity = RandRange(config.velocityMin, config.velocityMax);
+    float life = RandRange(config.lifetime.x, config.lifetime.y);
+    float rotation = RandRange(config.rotationSpeed.x, config.rotationSpeed.y);
 
-    glm::vec3 pos = position + glm::vec3(randRange(-0.1f, 0.1f), randRange(-0.1f, 0.1f),
-                                         randRange(-0.1f, 0.1f));
+    glm::vec3 pos = position + glm::vec3(RandRange(-0.1f, 0.1f), RandRange(-0.1f, 0.1f),
+                                         RandRange(-0.1f, 0.1f));
 
     Particle particle;
     particle.atlasType = Particle::AtlasType::Terrain;
@@ -135,7 +135,7 @@ void BlockDebrisEmitter::updateParticles(float dt) {
   for (auto& p : particles_) {
     p.velocity += p.acceleration * dt;
 
-    resolveParticleCollision(p, dt, *chunkManager_);
+    ResolveParticleCollision(p, dt, *chunkManager_);
     // else p.pos += p.velocity * dt;
 
     p.life -= dt;
