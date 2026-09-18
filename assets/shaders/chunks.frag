@@ -16,7 +16,10 @@ layout(location = 0) out vec4 oFragColor;
 layout(binding = 1, set = 1) uniform sampler2DArray uTexture;
 
 void main() {
-    oFragColor = texture(uTexture, vec3(iVert.uv, iVert.arrayLayer));
-    oFragColor.rgb *= iVert.light;
-    oFragColor.rgb = mix(iVert.fogColor, oFragColor.rgb, iVert.fog);
+  oFragColor = texture(uTexture, vec3(iVert.uv, iVert.arrayLayer));э
+#ifdef CUTOUT_LAYER 
+  if (oFragColor.a < 0.5f) discard;
+#endif
+  oFragColor.rgb *= iVert.light;
+  oFragColor.rgb = mix(iVert.fogColor, oFragColor.rgb, iVert.fog);
 }
