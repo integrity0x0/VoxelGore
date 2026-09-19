@@ -29,6 +29,12 @@ class Lighting {
 
   [[nodiscard]] glm::vec4 GetColor(const glm::ivec3& pos) const;
 
+  [[nodiscard]] const LightChunkStorage& storage() const { return storage_; };
+
+  [[nodiscard]] const std::vector<std::unique_ptr<LightChannel>>& channels() const {
+    return channels_;
+  }
+
  private:
   [[nodiscard]] LightChannel& RequireChannel(ChannelId id);
 
@@ -43,6 +49,9 @@ class Lighting {
 
   LightChannel sun_;
   std::vector<std::unique_ptr<LightChannel>> channels_;
+
+  mutable glm::ivec3 lastCachedPos_ = glm::ivec3(0);
+  mutable const LightChunkStorage::ChunkData* lastCachedChunks_ = nullptr;
 };
 
 }  // namespace gm

@@ -35,7 +35,7 @@ int main() {
       if (game.window().IsMinimized()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
         continue;
-      }
+      }   
       game.Frame();
     }
   } catch (const std::exception& e) {

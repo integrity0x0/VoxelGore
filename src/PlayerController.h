@@ -38,8 +38,6 @@ class PlayerController {
   HitboxComponent& hitbox();
   const HitboxComponent& hitbox() const;
 
-  glm::vec3 forward() const;
-
  private:
   WorldSession* session_;
   Entity playerEntity_;

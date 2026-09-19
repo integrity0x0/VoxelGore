@@ -5,6 +5,7 @@
 #include "../../../core/PathPrefixes.h"
 #include "../../../vkcore/pipeline/GraphicsPipelineCreator.h"
 #include "BillboardInstance.h"
+#include "../../common/shader/ShaderDefinitions.h"
 
 namespace gfx {
 
@@ -33,14 +34,14 @@ vkcore::Pipeline BillboardPipelines::BuildPipeline(const vkcore::Device& device,
   bool depthWriteEnable = (renderLayer != RenderLayer::Translucent);
   bool colorBlendEnable = (renderLayer == RenderLayer::Translucent);
 
-  std::string fragmentPath = (renderLayer != RenderLayer::Cutout)
-                                 ? core::kShadersPrefix + "billboard.frag"
-                                 : core::kShadersPrefix + "billboard_cutout.frag";
-
-  vkcore::ShaderModule vertex = CompileShaderModule(
-      shaderCompiler, device, core::kShadersPrefix + "billboard.vert", shaderc_vertex_shader);
-  vkcore::ShaderModule fragment =
-      CompileShaderModule(shaderCompiler, device, fragmentPath, shaderc_fragment_shader);
+  ShaderDefinitions definitions = (renderLayer != RenderLayer::Cutout)
+                                      ? ShaderDefinitions{}
+                                      : ShaderDefinitions{{kShaderCutoutLayerDefinition, "1"}};
+  
+  vkcore::ShaderModule vertex = CompileShaderModule(shaderCompiler, device, core::kShadersPrefix + "billboard.vert",
+                          shaderc_vertex_shader, definitions);
+  vkcore::ShaderModule fragment = CompileShaderModule(shaderCompiler, device, core::kShadersPrefix + "billboard.frag",
+                          shaderc_fragment_shader, definitions);
 
 
 

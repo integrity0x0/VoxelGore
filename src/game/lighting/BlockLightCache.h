@@ -90,7 +90,6 @@ class BlockLightCache {
       sparse_.resize(static_cast<size_t>(blockId + 1), kInvalidIndex);
     }
   }
-
  private:
   const BlockManager* blockManager_;
   ChannelRegistry* registry_;

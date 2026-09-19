@@ -19,6 +19,9 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
   textureManager_ =
       std::make_unique<TextureManager>(device, engine.transferContext(), memoryAllocator);
 
+  shadowCtxt_ = std::make_unique<ShadowContext>(device, memoryAllocator);
+  shaderCompiler_->AddDefinition("SHADOWS_ENABLED", "1");
+
   skyboxRenderer_ =
       std::make_unique<SkyboxRenderer>(device, engine.bufferAllocator(), engine.transferContext(),
                                        engine.getRenderPass(), *gameDataBinding_, *shaderCompiler_);
@@ -46,7 +49,8 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
 
   chunkRenderer_ = std::make_unique<ChunkRenderer>(
       device, engine.transferContext(), engine.getGraphicsQueue(), memoryAllocator,
-      engine.getRenderPass().handle(), *gameDataBinding_, *shaderCompiler_, session.world().chunks(),
+      engine.getRenderPass(), *gameDataBinding_, shadowCtxt_.get(), *shaderCompiler_,
+      session.world().chunks(),
       session.lighting(), session.blocks(), engine.getFramesInFlightCount());
 
   billboardRenderer_ =
@@ -68,7 +72,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {
-  chunkRenderer_->updateDirty(cmd, frameIndex);
+  chunkRenderer_->UpdateDirty(cmd, frameIndex);
 }
 
 void RenderWorld::UpdateParticles(float dt, uint32_t frameIndex) {
@@ -77,21 +81,22 @@ void RenderWorld::UpdateParticles(float dt, uint32_t frameIndex) {
 
 void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
                                  float screenH) {
-  glm::mat4 view = camera.GetView();
+  glm::mat4 view = camera.view();
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;
+
+  const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.4f, -1.0f, -0.3f));
+  shadowCtxt_->UpdateLightMatrix(sunDir, camera.pos());
 
   UniformGameData data{};
   data.proj = proj;
   data.view = view;
   data.projView = proj * view;
-  data.cameraPos = camera.position;
-  data.cameraDir = /* forward from camera */ glm::normalize(
-      glm::vec3(cosf(glm::radians(camera.pitch)) * cosf(glm::radians(camera.yaw)),
-                sinf(glm::radians(camera.pitch)),
-                cosf(glm::radians(camera.pitch)) * sinf(glm::radians(camera.yaw))));
+  data.cameraPos = camera.pos();
+  data.cameraDir = camera.forward();
   data.ambientColor = glm::vec3(0.05f, 0.065f, 0.12f);
   data.fogDensity = 0.015f;
+  data.lightProjView = shadowCtxt_->lightViewProj();
 
   gameDataBinding_->Update(frameIndex, data);
 }
@@ -103,11 +108,11 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
   entityRenderSystem_->Render(session_->components(), *modelRenderer_, *generalBucket_,
                               session_->world(), frameIndex);
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.position, RenderLayer::Solid);
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.position, RenderLayer::Cutout);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Solid);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Cutout);
 
-  billboardRenderer_->Render(cmd, camera.position, RenderLayer::Solid, frameIndex);
-  billboardRenderer_->Render(cmd, camera.position, RenderLayer::Cutout, frameIndex);
+  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Solid, frameIndex);
+  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Cutout, frameIndex);
 
   modelPipeline_->Bind(cmd);
   modelRenderer_->Render(cmd, frameIndex);
@@ -115,8 +120,8 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
   skyboxRenderer_->BindPipeline(cmd);
   skyboxRenderer_->Draw(cmd, *nightSkybox_);
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.position, RenderLayer::Translucent);
-  billboardRenderer_->Render(cmd, camera.position, RenderLayer::Translucent, frameIndex);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Translucent);
+  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Translucent, frameIndex);
 }
 
 }  // namespace gfx

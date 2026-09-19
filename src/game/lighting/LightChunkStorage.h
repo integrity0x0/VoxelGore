@@ -46,7 +46,7 @@ class LightChunkStorage {
     }
 
     if (!chunk.channels[id]) {
-      chunk.channels[id] = std::make_unique<LightChunk>();
+      chunk.channels[id] = std::make_unique<LightChunk>(chunkPos);
     }
 
     return *chunk.channels[id];
@@ -61,6 +61,15 @@ class LightChunkStorage {
     glm::ivec3 chunkPos;
     SplitWorldPos(worldPos, chunkPos, outLocalPos);
 
+    const auto it = chunks_.find(chunkPos);
+    if (it == chunks_.end()) {
+      return nullptr;
+    }
+
+    return &it->second;
+  }
+
+  [[nodiscard]] const LightChunkStorage::ChunkData* GetChunkData(const glm::ivec3& chunkPos) const {
     const auto it = chunks_.find(chunkPos);
     if (it == chunks_.end()) {
       return nullptr;

@@ -11,7 +11,7 @@ class ShadowPass final : public vkcore::RenderPass {
   explicit ShadowPass(const vkcore::Device& device);
 
  private:
-  static vkcore::RenderPass Build(const vkcore::Device& device);
+  [[nodiscard]] vkcore::RenderPass Build(const vkcore::Device& device);
 };
 
 }  // namespace gfx

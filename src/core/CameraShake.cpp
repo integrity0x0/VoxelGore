@@ -13,7 +13,7 @@ void CameraShake::Update(float dt, glm::vec3 horizontalVelocity, bool grounded) 
   }
 
   float target = walking ? 1.0f : 0.0f;
-  intensity = glm::mix(intensity, target, glm::clamp(dt * 8.0f, 0.0f, 1.0f));
+  intensity = glm::mix(intensity, target, dt * 8.0f);
 }
 
 glm::vec3 CameraShake::getPositionOffset() const {

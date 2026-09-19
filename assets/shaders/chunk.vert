@@ -15,6 +15,10 @@ layout(location = 0) out VertexData {
   mediump vec3 light;
   mediump float fog;
   mediump vec3 fogColor;
+
+#ifdef SHADOWS_ENABLED
+  highp vec4 shadowCoord;
+#endif
 } oVert;
 
 #include "UniformGameData.glsl"
@@ -28,25 +32,7 @@ layout(binding = 0, set = 1) uniform BlockUvBuffer {
   UvRegion regions[512];
 } uUv;
 
-const vec2 CUBE_UVS[24] = vec2[](
-    // 0: -Z
-    vec2(1.0, 1.0), vec2(0.0, 0.0), vec2(0.0, 1.0), vec2(1.0, 0.0),
-
-    // 1: +Z
-    vec2(0.0, 1.0), vec2(1.0, 1.0), vec2(1.0, 0.0), vec2(0.0, 0.0),
-
-    // 2: -X
-    vec2(1.0, 0.0), vec2(0.0, 0.0), vec2(0.0, 1.0), vec2(1.0, 1.0),
-
-    // 3: +X
-    vec2(0.0, 0.0), vec2(1.0, 1.0), vec2(1.0, 0.0), vec2(0.0, 1.0),
-
-    // 4: -Y
-    vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0),
-
-    // 5: +Y
-    vec2(0.0, 0.0), vec2(1.0, 1.0), vec2(1.0, 0.0), vec2(0.0, 1.0)
-);
+#include "cube_uvs.glsl"
 
 void main() {
   uint uvIndex = aFaceIndex * 4u + aCornerIndex;
@@ -80,6 +66,13 @@ void main() {
 
   oVert.fog = clamp(fogFactor, 0.0, 1.0);
   oVert.fogColor = uGameData.ambientColor;
+
+#ifdef SHADOWS_ENABLED
+  vec4 lightSpacePos = uGameData.lightProjView * worldPos;
+
+  oVert.shadowCoord = lightSpacePos / lightSpacePos.w;
+  oVert.shadowCoord.xy = oVert.shadowCoord.xy * 0.5 + 0.5;
+#endif
 
   gl_Position = uGameData.projView * worldPos;
 }

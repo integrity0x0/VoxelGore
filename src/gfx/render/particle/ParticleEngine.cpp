@@ -42,6 +42,8 @@ void ParticleEngine::WriteParticles(std::span<const Particle> particles, uint32_
     instance.size = particle.size;
     instance.uvMinMax = particle.uvMinMax;
     instance.layer = particle.layer;
+    instance.color = particle.color;
+
     //instance.color =
        // particle.ignoreLighting
           //  ? particle.color

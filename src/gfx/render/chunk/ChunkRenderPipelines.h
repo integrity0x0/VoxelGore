@@ -15,6 +15,7 @@ class ChunkRenderPipelines {
  public:
   ChunkRenderPipelines(const vkcore::Device& device, VkRenderPass renderPass,
                        const GameDataBinding& gameDataBinding,
+                       const vkcore::DescriptorSetLayout* shadowLayout,
                        const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout,
                        const ShaderCompiler& shaderCompiler);
 
@@ -24,7 +25,8 @@ class ChunkRenderPipelines {
 
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(
-      const vkcore::Device& device, const GameDataBinding& gameDataBinding,
+      const vkcore::Device& device, const GameDataBinding& gameDataBinding, 
+      const vkcore::DescriptorSetLayout* shadowLayout,
       const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout);
 
   [[nodiscard]] vkcore::Pipeline BuildPipeline(VkRenderPass renderPass,

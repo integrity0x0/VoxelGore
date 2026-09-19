@@ -31,7 +31,7 @@ class ChunkShadowPipelines {
 
   [[nodiscard]] vkcore::Pipeline BuildPipeline(VkRenderPass shadowRenderPass,
                                                const ShaderCompiler& shaderCompiler,
-                                               ShadowLayer layer) const;
+                                               ShadowLayer layer);
  private:
   const vkcore::Device* device_;
   vkcore::PipelineLayout pipelineLayout_;

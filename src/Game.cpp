@@ -201,7 +201,7 @@ bool Game::Frame() {
 
   engine_->BeginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
   SetViewportAndScissor(cmd);
-
+  render_->RenderShadowPass(cmd, frame);
   render_->Render(cmd, dt_, frame, player_->camera());
 
   if (ui_) ui_->Render(cmd);

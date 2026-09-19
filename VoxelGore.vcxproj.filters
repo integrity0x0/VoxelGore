@@ -7,23 +7,23 @@
     <None Include="assets\shaders\model.frag" />
     <None Include="assets\shaders\skybox.vert" />
     <None Include="assets\shaders\skybox.frag" />
-    <None Include="assets\shaders\billboard_cutout.frag" />
     <None Include="assets\shaders\blockPreview.frag" />
     <None Include="assets\shaders\blockPreview.vert" />
     <None Include="assets\shaders\crosshair.frag" />
     <None Include="assets\shaders\crosshair.vert" />
-    <None Include="assets\shaders\chunks.frag" />
-    <None Include="assets\shaders\chunks.vert" />
-    <None Include="assets\shaders\chunks_cutout.frag" />
     <None Include="assets\shaders\billboard.frag" />
     <None Include="assets\shaders\billboard.vert" />
     <None Include="assets\shaders\ui.frag" />
     <None Include="assets\shaders\ui.vert" />
-    <None Include="assets\shaders\main_depth.vert" />
-    <None Include="assets\shaders\main_depth.frag" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
     <None Include="src\gfx\render\block\faceVertices.inl" />
+    <None Include="assets\shaders\chunks.frag" />
+    <None Include="assets\shaders\chunks.vert" />
+    <None Include="assets\shaders\chunks_cutout.frag" />
+    <None Include="assets\shaders\main_depth.frag" />
+    <None Include="assets\shaders\main_depth.vert" />
+    <None Include="assets\shaders\billboard_cutout.frag" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -97,7 +97,6 @@
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
-    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
     <ClCompile Include="src\WorldSession.cpp" />
     <ClCompile Include="src\PlayerController.cpp" />
     <ClCompile Include="src\RenderWorld.cpp" />
@@ -155,11 +154,12 @@
     <ClCompile Include="src\gfx\render\block\BlockRenderData.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockSurfaceRegistry.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockUvBuffer.cpp" />
+    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
+    <ClCompile Include="src\core\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
     <ClInclude Include="src\game\entity\ComponentStorage.h" />
-    <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\CameraShake.h" />
     <ClInclude Include="src\core\InputGlfw.h" />
     <ClInclude Include="src\core\InputState.h" />
@@ -251,7 +251,6 @@
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\util\containers.h" />
     <ClInclude Include="src\game\lighting\LightChannel.h" />
-    <ClInclude Include="src\game\lighting\LightColorSampler.h" />
     <ClInclude Include="src\WorldSession.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\RenderWorld.h" />
@@ -324,5 +323,8 @@
     <ClInclude Include="src\gfx\render\block\BlockSurface.h" />
     <ClInclude Include="src\gfx\render\block\BlockSurfaceRegistry.h" />
     <ClInclude Include="src\gfx\render\block\BlockUvBuffer.h" />
+    <ClInclude Include="src\core\Camera.h" />
+    <ClInclude Include="src\game\lighting\LightColorSampler.h" />
+    <ClInclude Include="src\gfx\common\shader\ShaderDefinitions.h" />
   </ItemGroup>
 </Project>

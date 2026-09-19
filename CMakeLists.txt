@@ -84,6 +84,7 @@ set(SOURCE_FILES
         src/vkcore/pipeline/Framebuffer.cpp
         src/vkcore/pipeline/PipelineLayout.cpp
         src/vkcore/pipeline/GraphicsPipelineCreator.cpp
+        src/vkcore/pipeline/ShaderModule.cpp
 
         # vkcore - resources
         src/vkcore/resource/DescriptorSetLayout.cpp
@@ -108,9 +109,8 @@ set(SOURCE_FILES
         src/core/InputAndroid.cpp
         src/core/CameraShake.cpp
         src/core/InputState.cpp
-
+        src/core/Camera.cpp
         # game
-        src/game/World.cpp
         src/game/entity/EntityParser.cpp
         src/game/entity/EntityFactory.cpp
         src/game/entity/EntityDefinitionRegistry.cpp
@@ -123,13 +123,19 @@ set(SOURCE_FILES
         src/game/voxel/BlockManager.cpp
         src/game/physics/CollisionResolver.cpp
 
-        src/game/lighting/LightChannelProcessor.cpp
+        src/game/lighting/ChannelProcessor.cpp
         src/game/lighting/Lighting.cpp
+        src/game/lighting/LighChunk.cpp
+        src/game/lighting/LightChunkStorage.cpp
+        src/game/lighting/ChannelParser.cpp 
+        src/game/lighting/ChannelRegistry.cpp 
+        src/game/lighting/BlockLightCache.cpp 
 
         src/game/LibControl.cpp
 
         # gfx
-
+        src/gfx/common/ShaderCompiler.cpp
+        src/gfx/common/ShaderIncluder.cpp
         src/gfx/common/mesh/Mesh.cpp
         src/gfx/common/mesh/TranslucentMesh.cpp
         src/gfx/common/mesh/Model.cpp
@@ -145,13 +151,13 @@ set(SOURCE_FILES
         src/gfx/common/texture/TextureManager.cpp
         src/gfx/common/texture/MaterialManager.cpp
 
-        src/gfx/render/block/SurfaceRegistry.cpp
-        src/gfx/render/block/Animation.cpp
-        src/gfx/render/block/AnimationParser.cpp
-        src/gfx/render/block/UvBuffer.cpp
-        src/gfx/render/block/PreviewRenderer.cpp
-        src/gfx/render/block/RenderData.cpp
-        src/gfx/render/block/RenderGroupRegistry.cpp
+        src/gfx/render/block/BlockSurfaceRegistry.cpp
+        src/gfx/render/block/BlockAnimation.cpp
+        src/gfx/render/block/BlockAnimationParser.cpp
+        src/gfx/render/block/BlockUvBuffer.cpp
+        src/gfx/render/block/BlockPreviewRenderer.cpp
+        src/gfx/render/block/BlockRenderData.cpp
+        src/gfx/render/block/BlockRenderGroupRegistry.cpp
 
         src/gfx/render/billboard/BillboardBatch.cpp
         src/gfx/render/billboard/BillboardPipelines.cpp
@@ -232,7 +238,8 @@ target_link_libraries(VoxelGore PRIVATE
         android
         log
         dl
-        vulkan
+        vulkan    
+
         # Standard math
         m
 
@@ -241,6 +248,9 @@ target_link_libraries(VoxelGore PRIVATE
 
         # LuaJIT
         ${LUAJIT_LIBRARY}
+
+        # shaderc
+        shaderc
 )
 
 # ============================================================
@@ -250,7 +260,7 @@ target_link_libraries(VoxelGore PRIVATE
 target_compile_definitions(VoxelGore PRIVATE
 
         VK_USE_PLATFORM_ANDROID_KHR
-        #VK_NO_PROTOTYPES
+        VK_NO_PROTOTYPES
 
         GLM_ENABLE_EXPERIMENTAL
         GLM_FORCE_DEPTH_ZERO_TO_ONE

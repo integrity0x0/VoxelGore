@@ -17,6 +17,8 @@
 #include "gfx/common/texture/Skybox.h"
 #include "gfx/common/texture/TextureManager.h"
 #include "gfx/common/shader/ShaderCompiler.h"
+#include "gfx/Settings.h"
+#include "gfx/render/shadow/ShadowContext.h"
 
 class Engine;
 
@@ -36,7 +38,10 @@ class RenderWorld {
                       float screenH);
 
   void Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex, const core::Camera& camera);
-
+  void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
+    gameDataBinding_->Bind(cmd, frameIndex);
+    chunkRenderer_->RenderShadow(cmd, frameIndex);
+  }
   ChunkRenderer& chunks() { return *chunkRenderer_; }
   ParticleEngine& particles() { return *particleEngine_; }
   TextureManager& textures() { return *textureManager_; }
@@ -53,6 +58,7 @@ class RenderWorld {
   std::unique_ptr<ShaderCompiler> shaderCompiler_;
   std::unique_ptr<GameDataBinding> gameDataBinding_;
   std::unique_ptr<TextureManager> textureManager_;
+  std::unique_ptr<ShadowContext> shadowCtxt_;
   std::unique_ptr<ChunkRenderer> chunkRenderer_;
   std::unique_ptr<gfx::Atlas> billboardsAtlas_;
   std::unique_ptr<BillboardRenderer> billboardRenderer_;

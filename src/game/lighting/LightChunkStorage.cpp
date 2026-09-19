@@ -2,14 +2,14 @@
 
 namespace gm {
 namespace {
-constexpr int32_t kShift = 4;
 static_assert(LightChunk::kLength == 16);
 constexpr int32_t kMask = static_cast<int32_t>(LightChunk::kLength) - 1;
 }  // namespace
 
 void LightChunkStorage::SplitWorldPos(const glm::ivec3& worldPos, glm::ivec3& outChunkPos,
                                       glm::ivec3& outLocalPos) {
-  outChunkPos = glm::ivec3(worldPos.x >> kShift, worldPos.y >> kShift, worldPos.z >> kShift);
+  outChunkPos = glm::ivec3(worldPos.x >> LightChunk::kLengthBits, worldPos.y >> LightChunk::kLengthBits,
+                 worldPos.z >> LightChunk::kLengthBits);
 
   outLocalPos = glm::ivec3(worldPos.x & kMask, worldPos.y & kMask, worldPos.z & kMask);
 }

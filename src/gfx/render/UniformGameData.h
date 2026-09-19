@@ -17,6 +17,8 @@ struct UniformGameData {
 
   alignas(16) glm::vec3 ambientColor;  // offset 224
   float fogDensity = 0.0f;             // offset 236
+
+  alignas(16) glm::mat4 lightProjView;
 };
 
 }  // namespace gfx

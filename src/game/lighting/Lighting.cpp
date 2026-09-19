@@ -139,14 +139,29 @@ void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
 
 glm::vec4 Lighting::GetColor(const glm::ivec3& pos) const {
   glm::ivec3 localPos;
-  const auto* chunk = storage_.GetChunkData(pos, localPos);
+
+  const LightChunkStorage::ChunkData* chunk = nullptr;
+
+  if (lastCachedChunks_ != nullptr && glm::all(glm::equal(pos >> 4, lastCachedPos_))) {
+    chunk = lastCachedChunks_;
+
+    localPos = pos & 15;
+  } else {
+    chunk = storage_.GetChunkData(pos, localPos);
+
+    lastCachedPos_ = pos >> 4;
+    lastCachedChunks_ = chunk;
+  }
+
   if (chunk == nullptr) {
     return glm::vec4(0.0f);
   }
 
   const auto& lights = chunk->channels;
 
-  float sun = lights[kSunId] ? lights[kSunId]->Get(localPos) / 15.0f : 0.0f;
+  const float sun =
+      lights[kSunId] ? static_cast<float>(lights[kSunId]->Get(localPos)) / 15.0f : 0.0f;
+
   glm::vec3 color(0.0f);
 
   for (ChannelId id = 0; id < channels_.size(); ++id) {

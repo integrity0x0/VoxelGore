@@ -30,12 +30,6 @@ const HitboxComponent& PlayerController::hitbox() const {
   return *session_->components().Storage<HitboxComponent>().Get(playerEntity_.id);
 }
 
-glm::vec3 PlayerController::forward() const {
-  const float yaw = glm::radians(camera_.yaw);
-  const float pitch = glm::radians(camera_.pitch);
-  return glm::normalize(glm::vec3(cosf(pitch) * cosf(yaw), sinf(pitch), cosf(pitch) * sinf(yaw)));
-}
-
 void PlayerController::HandleInput(core::Window& window, ControlState& control,
                                    bool& cursorLocked) {
   auto& input = window.input();
@@ -72,8 +66,8 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
 void PlayerController::UpdateMovement(ControlState& control, float /*dt*/) {
   auto& hb = hitbox();
 
-  glm::vec3 flatForward(cosf(glm::radians(camera_.yaw)), 0.0f, sinf(glm::radians(camera_.yaw)));
-  glm::vec3 flatRight = glm::normalize(glm::cross(flatForward, camera_.up));
+  glm::vec3 flatForward(cosf(glm::radians(camera_.yaw())), 0.0f, sinf(glm::radians(camera_.yaw())));
+  glm::vec3 flatRight = glm::normalize(glm::cross(flatForward, camera_.up()));
   glm::vec3 moveDir = flatForward * static_cast<float>(control.move.z) +
                       flatRight * static_cast<float>(control.move.x);
 
@@ -92,12 +86,13 @@ void PlayerController::UpdateMovement(ControlState& control, float /*dt*/) {
 void PlayerController::UpdateCamera(float dt) {
   auto& hb = hitbox();
   cameraShake_.Update(dt, hb.vel * glm::vec3(1, 0, 1), hb.grounded);
-  camera_.position =
-      hb.pos + glm::vec3(0.0f, kEyeHeight, 0.0f) * 0.5f + cameraShake_.getPositionOffset();
+  camera_.SetPos(
+      hb.pos + glm::vec3(0.0f, kEyeHeight, 0.0f) * 0.5f + cameraShake_.getPositionOffset());
 }
 
 void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* particles) {
-  auto hit = session.collision().Raycast(camera_.position, forward(), session.components(),
+  auto hit =
+      session.collision().Raycast(camera_.pos(), camera_.forward(), session.components(),
                                          kReachDistance);
   if (!hit) return;
 
@@ -110,7 +105,7 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
     glm::vec3 dir = hb->pos - hitbox().pos;
     dir.y = 0.0f;
     if (glm::length2(dir) < 0.0001f) {
-      dir = forward();
+      dir = camera_.forward();
       dir.y = 0.0f;
     }
     dir = glm::normalize(dir);
@@ -133,7 +128,8 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
 }
 
 void PlayerController::TryPlace(WorldSession& session, uint32_t blockId) {
-  auto hit = session.collision().Raycast(camera_.position, forward(), session.components(),
+  auto hit =
+      session.collision().Raycast(camera_.pos(), camera_.forward(), session.components(),
                                          kReachDistance);
   if (!hit) return;
 

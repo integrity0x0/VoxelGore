@@ -8,10 +8,11 @@ namespace gm {
 
 class LightChunk {
  public:
-  static constexpr uint32_t kLength = 16u;
-  static constexpr uint32_t kVolume = kLength * kLength * kLength;
+  explicit LightChunk(const glm::ivec3& pos) : pos_(pos) { data_.fill(0); }
 
-  explicit LightChunk() { data_.fill(0); }
+  static constexpr uint32_t kLengthBits = 4u;
+  static constexpr uint32_t kLength = 1u << kLengthBits;
+  static constexpr uint32_t kVolume = kLength * kLength * kLength;
 
   [[nodiscard]] uint8_t Get(const glm::ivec3& localPos) const;
 
@@ -23,7 +24,9 @@ class LightChunk {
 
   static [[nodiscard]] size_t GetIndex(const glm::ivec3& localPos);
 
+  const glm::ivec3& pos() const { return pos_; }
  private:
   std::array<uint8_t, kVolume / 2ull> data_;
+  glm::ivec3 pos_;
 };
 }  // namespace gm

@@ -1,5 +1,8 @@
 #include "ChunkShadowPipelines.h"
 
+#include <array>
+
+#include "../../common/shader/ShaderDefinitions.h"
 #include "../../../core/PathPrefixes.h"
 
 namespace gfx {
@@ -19,23 +22,23 @@ vkcore::PipelineLayout ChunkShadowPipelines::BuildPipelineLayout(
     const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout) {
   return vkcore::PipelineLayout(
       device,
-      std::vector<const vkcore::DescriptorSetLayout*>{&gameDataBinding.descriptorSetLayout(),
-                                                      &atlasDescriptorSetLayout},
+      std::to_array<const vkcore::DescriptorSetLayout*>({&gameDataBinding.descriptorSetLayout(),
+                                                      &atlasDescriptorSetLayout}),
       std::vector<VkPushConstantRange>{});
 }
 
 vkcore::Pipeline ChunkShadowPipelines::BuildPipeline(VkRenderPass shadowRenderPass,
                                                      const ShaderCompiler& shaderCompiler,
-                                                     ShadowLayer layer) const {
-
+                                                     ShadowLayer layer) {
   const bool isCutout = (layer == ShadowLayer::Cutout);
 
-  vkcore::ShaderModule vert = CompileShaderModule(
-      shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.vert", shaderc_vertex_shader);
-  vkcore::ShaderModule frag = CompileShaderModule(
-      shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.frag", shaderc_vertex_shader);
+  ShaderDefinitions definitions =
+      (isCutout) ? ShaderDefinitions{} : ShaderDefinitions{{kShaderCutoutLayerDefinition, "1"}};
 
-
+  vkcore::ShaderModule vert = CompileShaderModule(shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.vert",
+                          shaderc_vertex_shader, definitions);
+  vkcore::ShaderModule frag = CompileShaderModule(shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.frag",
+                          shaderc_vertex_shader, definitions);
 
   return vkcore::GraphicsPipelineCreator(*device_)
       .AddShaderStage(vert, VK_SHADER_STAGE_VERTEX_BIT)

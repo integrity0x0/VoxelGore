@@ -44,17 +44,16 @@
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
     <ClCompile Include="src\game\lighting\LightChunk.cpp" />
     <ClCompile Include="src\game\lighting\LightChunkStorage.cpp" />
-    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
     <ClCompile Include="src\game\entity\EntityDefinitionRegistry.cpp" />
     <ClCompile Include="src\game\entity\EntityFactory.cpp" />
     <ClCompile Include="src\game\entity\EntityParser.cpp" />
-    <ClCompile Include="src\game\World.cpp" />
     <ClCompile Include="src\core\CameraShake.cpp" />
     <ClCompile Include="src\core\InputGlfw.cpp" />
     <ClCompile Include="src\core\InputState.cpp" />
@@ -110,6 +109,7 @@
     <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEngine.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
@@ -221,6 +221,7 @@
     <ClInclude Include="src\gfx\common\mesh\ModelLoader.h" />
     <ClInclude Include="src\gfx\common\mesh\TranslucentMesh.h" />
     <ClInclude Include="src\gfx\common\shader\ShaderCompiler.h" />
+    <ClInclude Include="src\gfx\common\shader\ShaderDefinitions.h" />
     <ClInclude Include="src\gfx\common\shader\ShaderIncluder.h" />
     <ClInclude Include="src\gfx\common\texture\Atlas.h" />
     <ClInclude Include="src\gfx\common\texture\ImageRegionAllocator.h" />
@@ -262,6 +263,7 @@
     <ClInclude Include="src\gfx\render\particle\ParticleEngine.h" />
     <ClInclude Include="src\gfx\render\particle\ParticleInstance.h" />
     <ClInclude Include="src\gfx\render\RenderLayers.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowContext.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
@@ -280,6 +282,7 @@
     <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\UniformGameData.h" />
+    <ClInclude Include="src\gfx\Settings.h" />
     <ClInclude Include="src\gfx\UvRegion.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\RenderWorld.h" />
