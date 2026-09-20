@@ -33,6 +33,9 @@
     <None Include="assets\shaders\billboard.frag" />
     <None Include="assets\shaders\billboard.vert" />
     <None Include="assets\shaders\billboard_cutout.frag" />
+    <None Include="assets\shaders\model_shadow.frag" />
+    <None Include="assets\shaders\model_shadow.vert" />
+    <None Include="assets\shaders\shadow.glsl" />
     <None Include="assets\shaders\skybox.frag" />
     <None Include="assets\shaders\skybox.vert" />
     <None Include="assets\shaders\model.frag" />
@@ -103,8 +106,9 @@
     <ClCompile Include="src\gfx\render\entity\EntityRenderData.cpp" />
     <ClCompile Include="src\gfx\render\entity\EntityRenderSystem.cpp" />
     <ClCompile Include="src\gfx\render\GameDataBinding.cpp" />
-    <ClCompile Include="src\gfx\render\ModelPipeline.cpp" />
-    <ClCompile Include="src\gfx\render\ModelRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelShadowPipeline.cpp" />
     <ClCompile Include="src\gfx\render\particle\BlockDebrisEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEmitter.cpp" />
@@ -253,9 +257,10 @@
     <ClInclude Include="src\gfx\render\entity\EntityRenderData.h" />
     <ClInclude Include="src\gfx\render\entity\EntityRenderSystem.h" />
     <ClInclude Include="src\gfx\render\GameDataBinding.h" />
-    <ClInclude Include="src\gfx\render\ModelInstanceData.h" />
-    <ClInclude Include="src\gfx\render\ModelPipeline.h" />
-    <ClInclude Include="src\gfx\render\ModelRenderer.h" />
+    <ClInclude Include="src\gfx\render\model\ModelInstanceData.h" />
+    <ClInclude Include="src\gfx\render\model\ModelPipeline.h" />
+    <ClInclude Include="src\gfx\render\model\ModelRenderer.h" />
+    <ClInclude Include="src\gfx\render\model\ModelShadowPipeline.h" />
     <ClInclude Include="src\gfx\render\particle\BlockDebrisEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\ExplosionEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\Particle.h" />
@@ -437,7 +442,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -457,7 +462,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

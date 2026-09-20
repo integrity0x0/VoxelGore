@@ -24,7 +24,8 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
       blockRenderData_(std::make_unique<BlockRenderData>(blockManager, device, transferCtxt,
                                                          memoryAllocator, framesCount)),
       meshBuilder_(device, lighting, blockManager, *blockRenderData_, framesCount),
-      framesInFlightCount_(framesCount) {
+      framesInFlightCount_(framesCount),
+      shadowCtxt_(shadowCtxt) {
 
   if (shadowCtxt) {
     pipelines_ = std::make_unique<ChunkRenderPipelines>(
@@ -89,6 +90,9 @@ void ChunkRenderer::Render(VkCommandBuffer cmd, float dt, uint32_t currentFrame,
   const vkcore::DescriptorSet& set = blockRenderData_->descriptorSet(currentFrame);
   set.Bind(cmd, pipelineLayout().handle(), kBlockRenderDataSetIndex);
 
+  if (shadowCtxt_) {
+    shadowCtxt_->descriptorSet().Bind(cmd, pipelineLayout().handle(), 2);
+  }
   switch (renderLayer) {
     case RenderLayer::Solid: {
       pipelines_->Bind(cmd, RenderLayer::Solid);

@@ -12,11 +12,19 @@ vkcore::DescriptorPool MaterialManager::BuildDescriptorPool(const vkcore::Device
                                 32u);
 }
 
-MaterialManager::MaterialManager(const vkcore::Device& device,
-                                 const vkcore::DescriptorSetLayout& descriptorSetLayout,
-                                 TextureManager& textureManager)
+vkcore::DescriptorSetLayout MaterialManager::BuildDescriptorSetLayout(
+    const vkcore::Device& device) {
+  VkDescriptorSetLayoutBinding bindingImage = {};
+  bindingImage.binding = 0;
+  bindingImage.descriptorCount = 1u;
+  bindingImage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+  bindingImage.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+  return vkcore::DescriptorSetLayout(device, std::to_array({bindingImage}));
+}
+
+MaterialManager::MaterialManager(const vkcore::Device& device, TextureManager& textureManager)
     : device_(&device),
-      descriptorSetLayout_(&descriptorSetLayout),
+      descriptorSetLayout_(BuildDescriptorSetLayout(device)),
       textureManager_(&textureManager),
       descriptorPool_(BuildDescriptorPool(device)) {}
 
@@ -26,7 +34,7 @@ const MaterialManager::Material* MaterialManager::Require(std::string_view key) 
   const auto* texture = textureManager_->Require(key);
   if (!texture) return nullptr;
 
-  auto descriptorSet = descriptorPool_.Allocate(*descriptorSetLayout_);
+  auto descriptorSet = descriptorPool_.Allocate(descriptorSetLayout_);
 
   VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
   write.descriptorCount = 1u;

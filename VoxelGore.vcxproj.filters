@@ -24,6 +24,9 @@
     <None Include="assets\shaders\main_depth.frag" />
     <None Include="assets\shaders\main_depth.vert" />
     <None Include="assets\shaders\billboard_cutout.frag" />
+    <None Include="assets\shaders\shadow.glsl" />
+    <None Include="assets\shaders\model_shadow.vert" />
+    <None Include="assets\shaders\model_shadow.frag" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -87,7 +90,6 @@
     <ClCompile Include="src\vkcore\sync\Fence.cpp" />
     <ClCompile Include="src\vkcore\sync\Semaphore.cpp" />
     <ClCompile Include="src\vkcore\resource\DescriptorAllocator.cpp" />
-    <ClCompile Include="src\game\World.cpp" />
     <ClCompile Include="src\game\entity\EntityFactory.cpp" />
     <ClCompile Include="src\game\entity\EntityParser.cpp" />
     <ClCompile Include="src\game\entity\EntityDefinitionRegistry.cpp" />
@@ -145,8 +147,8 @@
     <ClCompile Include="src\gfx\render\ui\Page.cpp" />
     <ClCompile Include="src\gfx\render\ui\Renderer.cpp" />
     <ClCompile Include="src\gfx\render\GameDataBinding.cpp" />
-    <ClCompile Include="src\gfx\render\ModelPipeline.cpp" />
-    <ClCompile Include="src\gfx\render\ModelRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelRenderer.cpp" />
     <ClCompile Include="src\gfx\common\shader\ShaderIncluder.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockAnimation.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockAnimationParser.cpp" />
@@ -154,8 +156,9 @@
     <ClCompile Include="src\gfx\render\block\BlockRenderData.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockSurfaceRegistry.cpp" />
     <ClCompile Include="src\gfx\render\block\BlockUvBuffer.cpp" />
-    <ClCompile Include="src\game\lighting\LightColorSampler.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
+    <ClCompile Include="src\gfx\render\model\ModelShadowPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -308,9 +311,9 @@
     <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\GameDataBinding.h" />
-    <ClInclude Include="src\gfx\render\ModelInstanceData.h" />
-    <ClInclude Include="src\gfx\render\ModelPipeline.h" />
-    <ClInclude Include="src\gfx\render\ModelRenderer.h" />
+    <ClInclude Include="src\gfx\render\model\ModelInstanceData.h" />
+    <ClInclude Include="src\gfx\render\model\ModelPipeline.h" />
+    <ClInclude Include="src\gfx\render\model\ModelRenderer.h" />
     <ClInclude Include="src\gfx\render\RenderLayers.h" />
     <ClInclude Include="src\gfx\render\UniformGameData.h" />
     <ClInclude Include="src\gfx\UvRegion.h" />
@@ -326,5 +329,8 @@
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\game\lighting\LightColorSampler.h" />
     <ClInclude Include="src\gfx\common\shader\ShaderDefinitions.h" />
+    <ClInclude Include="src\gfx\render\shadow\ShadowContext.h" />
+    <ClInclude Include="src\gfx\Settings.h" />
+    <ClInclude Include="src\gfx\render\model\ModelShadowPipeline.h" />
   </ItemGroup>
 </Project>

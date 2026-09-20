@@ -5,11 +5,11 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
                                                 vkcore::MemoryAllocator& memoryAllocator,
                                                 const VkExtent2D& resolution) {
   VkSamplerCreateInfo samplerCI = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
-  samplerCI.maxLod = 1.0f;
+  samplerCI.maxLod = 0.0f;
   samplerCI.addressModeU = samplerCI.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
   samplerCI.compareEnable = VK_TRUE;
   samplerCI.compareOp = VK_COMPARE_OP_LESS;
-
+  samplerCI.magFilter = samplerCI.minFilter = VK_FILTER_LINEAR;
   VkImageCreateInfo imageCI = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
   imageCI.extent = {.width = resolution.width, .height = resolution.height, .depth = 1};
   imageCI.usage = kTextureUsage;

@@ -1,31 +1,27 @@
 #include "ModelPipeline.h"
 
-#include "../../core/PathPrefixes.h"
-#include "../common/mesh/Model.h"
+#include "../../../core/PathPrefixes.h"
+#include "../../common/mesh/Model.h"
 #include "ModelInstanceData.h"
 
 namespace gfx {
 ModelPipeline::ModelPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
-                             const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderModule)
-    : descriptorSetLayout_(BuildDescriptorSetLayout(device)),
-      pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout())),
-      pipeline_(BuildPipeline(device, renderPass, shaderModule)) {}
-
-vkcore::DescriptorSetLayout ModelPipeline::BuildDescriptorSetLayout(const vkcore::Device& device) {
-  VkDescriptorSetLayoutBinding bindingImage = {};
-  bindingImage.binding = 0;
-  bindingImage.descriptorCount = 1u;
-  bindingImage.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-  bindingImage.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-  return vkcore::DescriptorSetLayout(device, std::to_array({bindingImage}));
-}
+                             const GameDataBinding& gameDataBinding,
+                             const vkcore::DescriptorSetLayout& materialSetLayout,
+                             const ShadowContext* shadowCtxt, const ShaderCompiler& shaderCompiler)
+    : pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout(), materialSetLayout, shadowCtxt)),
+      pipeline_(BuildPipeline(device, renderPass, shaderCompiler)) {}
 
 vkcore::PipelineLayout ModelPipeline::BuildPipelineLayout(
-    const vkcore::Device& device, const vkcore::DescriptorSetLayout& gameDataBindingLayout) {
-  return vkcore::PipelineLayout(device, std::to_array<const vkcore::DescriptorSetLayout*>({
-                                            &gameDataBindingLayout,
-                                            &descriptorSetLayout_,
-                                        }));
+    const vkcore::Device& device, const vkcore::DescriptorSetLayout& gameDataSetLayout,
+    const vkcore::DescriptorSetLayout& materialSetLayout, const ShadowContext* shadowCtxt) {
+  std::vector<const vkcore::DescriptorSetLayout*> layouts = {
+    &gameDataSetLayout, &materialSetLayout
+  };
+
+  if (shadowCtxt) layouts.emplace_back(&shadowCtxt->descriptorSetLayout());
+
+  return vkcore::PipelineLayout(device, layouts);
 }
 
 vkcore::Pipeline ModelPipeline::BuildPipeline(const vkcore::Device& device,
@@ -67,5 +63,5 @@ vkcore::Pipeline ModelPipeline::BuildPipeline(const vkcore::Device& device,
       .Build(pipelineLayout_.handle(), renderPass.handle());
 }
 
-void ModelPipeline::Bind(VkCommandBuffer cmd) { pipeline_.Bind(cmd); }
+void ModelPipeline::Bind(VkCommandBuffer cmd) const { pipeline_.Bind(cmd); }
 }  // namespace gfx

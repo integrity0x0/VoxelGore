@@ -14,7 +14,7 @@ vkcore::RenderPass ShadowPass::Build(const vkcore::Device& device) {
   depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-
+  
   vkcore::SubpassDescription subpass;
   subpass.depthStencilRef = {
       0,

@@ -55,7 +55,7 @@ class ChunkRenderer {
   const vkcore::Device& device_;
   vkcore::TransferContext* transferCtxt_;
   const vkcore::DeviceQueue* graphicsQueue_;
-
+  const ShadowContext* shadowCtxt_;
   std::unique_ptr<BlockRenderData> blockRenderData_;
 
   std::unique_ptr<ChunkRenderPipelines> pipelines_;

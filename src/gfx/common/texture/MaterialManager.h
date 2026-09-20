@@ -22,19 +22,18 @@ class MaterialManager {
         : texture(texture), descriptorSet(std::move(descriptorSet)) {}
   };
 
-  MaterialManager(const vkcore::Device& device,
-                  const vkcore::DescriptorSetLayout& descriptorSetLayout,
-                  TextureManager& textureManager);
+  MaterialManager(const vkcore::Device& device, TextureManager& textureManager);
 
   [[nodiscard]] const Material* Require(std::string_view key);
   [[nodiscard]] const Material* Find(std::string_view key) const;
-
+  [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const { return descriptorSetLayout_; }
  private:
-  vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device);
-
+  [[nodiscard]] vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device);
+  [[nodiscard]] vkcore::DescriptorSetLayout BuildDescriptorSetLayout(const vkcore::Device& device);
+ private:
   const vkcore::Device* device_;
-  const vkcore::DescriptorSetLayout* descriptorSetLayout_;
   TextureManager* textureManager_;
+  vkcore::DescriptorSetLayout descriptorSetLayout_;
   vkcore::DescriptorPool descriptorPool_;
 
   std::unordered_map<std::string, std::unique_ptr<Material>, util::StringHash, std::equal_to<>>

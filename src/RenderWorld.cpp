@@ -38,26 +38,27 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
                                             skyboxRenderer_->descriptorSetLayout(), nightPaths, 4u)
                                    .value());
 
-  modelPipeline_ = std::make_unique<ModelPipeline>(device, engine.getRenderPass(),
-                                                   *gameDataBinding_, *shaderCompiler_);
-  modelCache_ = std::make_unique<ModelCache>(
-      device, engine.transferContext(), engine.bufferAllocator(), modelPipeline_->pipelineLayout(),
-      modelPipeline_->descriptorSetLayout(), *textureManager_, engine.getFramesInFlightCount());
+  modelCache_ =
+      std::make_unique<ModelCache>(device, engine.transferContext(), engine.bufferAllocator(),
+                                   *textureManager_, engine.getFramesInFlightCount());
 
   modelRenderer_ = std::make_unique<ModelRenderer>(
-      device, engine.bufferAllocator(), *modelPipeline_, engine.getFramesInFlightCount());
+      device, engine.bufferAllocator(), engine.getRenderPass(), *gameDataBinding_,
+      modelCache_->materialSetLayout(), shadowCtxt_.get(),
+      *shaderCompiler_,
+      engine.getFramesInFlightCount());
 
   chunkRenderer_ = std::make_unique<ChunkRenderer>(
       device, engine.transferContext(), engine.getGraphicsQueue(), memoryAllocator,
       engine.getRenderPass(), *gameDataBinding_, shadowCtxt_.get(), *shaderCompiler_,
-      session.world().chunks(),
-      session.lighting(), session.blocks(), engine.getFramesInFlightCount());
+      session.world().chunks(), session.lighting(), session.blocks(),
+      engine.getFramesInFlightCount());
 
-  billboardRenderer_ =
-      std::make_unique<BillboardRenderer>(device, engine.getRenderPass(), *gameDataBinding_, *shaderCompiler_);
+  billboardRenderer_ = std::make_unique<BillboardRenderer>(device, engine.getRenderPass(),
+                                                           *gameDataBinding_, *shaderCompiler_);
 
   billboardsAtlas_ = std::make_unique<Atlas>(device, engine.transferContext(), memoryAllocator,
-                                                 glm::ivec2{4096, 4096}, 4u);
+                                             glm::ivec2{4096, 4096}, 4u);
 
   generalBucket_ = &billboardRenderer_->CreateBucket(engine.bufferAllocator(), *billboardsAtlas_,
                                                      engine.getFramesInFlightCount());
@@ -85,10 +86,11 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;
 
-  const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.4f, -1.0f, -0.3f));
+  const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.6f, -0.35f, -0.5f));
+
   shadowCtxt_->UpdateLightMatrix(sunDir, camera.pos());
 
-  UniformGameData data{};
+  UniformGameData data = {};
   data.proj = proj;
   data.view = view;
   data.projView = proj * view;
@@ -97,7 +99,7 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
   data.ambientColor = glm::vec3(0.05f, 0.065f, 0.12f);
   data.fogDensity = 0.015f;
   data.lightProjView = shadowCtxt_->lightViewProj();
-
+  data.lightDir = shadowCtxt_->lightDir();
   gameDataBinding_->Update(frameIndex, data);
 }
 
@@ -105,16 +107,12 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
                          const core::Camera& camera) {
   gameDataBinding_->Bind(cmd, frameIndex);
 
-  entityRenderSystem_->Render(session_->components(), *modelRenderer_, *generalBucket_,
-                              session_->world(), frameIndex);
-
   chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Solid);
   chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Cutout);
 
   billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Solid, frameIndex);
   billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Cutout, frameIndex);
 
-  modelPipeline_->Bind(cmd);
   modelRenderer_->Render(cmd, frameIndex);
 
   skyboxRenderer_->BindPipeline(cmd);
@@ -122,6 +120,22 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
 
   chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Translucent);
   billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Translucent, frameIndex);
+}
+
+void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
+  gameDataBinding_->Bind(cmd, frameIndex);
+  if (shadowCtxt_) {
+    shadowCtxt_->Begin(cmd);
+    modelRenderer_->RenderShadow(cmd, frameIndex);
+    chunkRenderer_->RenderShadow(cmd, frameIndex);
+    shadowCtxt_->End(cmd);
+  }
+}
+
+void RenderWorld::CollectEntities(uint32_t frameIndex) {
+  entityRenderSystem_->Render(session_->components(), *modelRenderer_, *generalBucket_,
+                              session_->world(), session_->lighting(), frameIndex);
+  modelRenderer_->UploadInstances(frameIndex);
 }
 
 }  // namespace gfx

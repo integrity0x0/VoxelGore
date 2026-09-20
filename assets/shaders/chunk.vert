@@ -1,4 +1,4 @@
-#version 450
+#version 460
 
 precision highp float;
 precision highp int;
@@ -17,6 +17,7 @@ layout(location = 0) out VertexData {
   mediump vec3 fogColor;
 
 #ifdef SHADOWS_ENABLED
+  flat uint shadowEnabled;
   highp vec4 shadowCoord;
 #endif
 } oVert;
@@ -34,6 +35,15 @@ layout(binding = 0, set = 1) uniform BlockUvBuffer {
 
 #include "cube_uvs.glsl"
 
+const vec3 kFaceNormals[6] = vec3[](
+  vec3( 0,  0, -1),
+  vec3( 0,  0,  1),
+  vec3(-1,  0,  0),
+  vec3( 1,  0,  0),
+  vec3( 0, -1,  0),
+  vec3( 0,  1, 0)
+);
+
 void main() {
   uint uvIndex = aFaceIndex * 4u + aCornerIndex;
   vec2 localUV = CUBE_UVS[uvIndex];
@@ -46,8 +56,9 @@ void main() {
   oVert.uv = mix(uvMin, uvMax, localUV);
   oVert.arrayLayer = float(region.arrayLayer);
 
-  vec3 sunLight = uGameData.ambientColor * aLight.a;
+  vec3 faceNormal = kFaceNormals[aFaceIndex];
 
+  vec3 sunLight = uGameData.ambientColor * aLight.a;
   oVert.light = clamp(aLight.rgb + sunLight, 0.0, 1.0);
 
   const float GAMMA = 0.6;
@@ -68,10 +79,18 @@ void main() {
   oVert.fogColor = uGameData.ambientColor;
 
 #ifdef SHADOWS_ENABLED
-  vec4 lightSpacePos = uGameData.lightProjView * worldPos;
+  float lightFacing = dot(faceNormal, -uGameData.lightDir);
+  oVert.shadowEnabled = uint(lightFacing > 0.0);
 
-  oVert.shadowCoord = lightSpacePos / lightSpacePos.w;
-  oVert.shadowCoord.xy = oVert.shadowCoord.xy * 0.5 + 0.5;
+  if (oVert.shadowEnabled != 0) {
+    vec3 offsetWorldPos = worldPos.xyz + faceNormal * 0.4;
+
+    vec4 lightSpacePos =
+        uGameData.lightProjView * vec4(offsetWorldPos, 1.0);
+
+    oVert.shadowCoord = lightSpacePos / lightSpacePos.w;
+    oVert.shadowCoord.xy = oVert.shadowCoord.xy * 0.5 + 0.5;
+  }
 #endif
 
   gl_Position = uGameData.projView * worldPos;

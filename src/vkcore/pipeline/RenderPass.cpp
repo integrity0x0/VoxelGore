@@ -14,7 +14,7 @@ RenderPass::RenderPass(const Device& device, std::span<const VkAttachmentDescrip
   std::vector<VkSubpassDescription> builtSubpasses;
   builtSubpasses.reserve(subpasses_.size());
   for (const auto& sp : subpasses_) {
-    builtSubpasses.push_back(sp.build());
+    builtSubpasses.push_back(sp.Build());
   }
 
   VkRenderPassCreateInfo renderPassCI = {VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO};
@@ -45,6 +45,22 @@ void RenderPass::Begin(VkCommandBuffer cmd, const Framebuffer& framebuffer, VkRe
   beginInfo.pClearValues = clearValues.empty() ? nullptr : clearValues.data();
 
   device_->dispatchTable().vkCmdBeginRenderPass(cmd, &beginInfo, contents);
+
+  VkViewport viewport{};
+  viewport.x = 0.0f;
+  viewport.y = 0.0f;
+  viewport.width = static_cast<float>(4096);
+  viewport.height = static_cast<float>(4096);
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
+
+  device_->dispatchTable().vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+  VkRect2D scissor{};
+  scissor.offset = {0, 0};
+  scissor.extent = {4096, 4096};
+
+  device_->dispatchTable().vkCmdSetScissor(cmd, 0, 1, &scissor);
 }
 
 void RenderPass::End(VkCommandBuffer cmd) const {

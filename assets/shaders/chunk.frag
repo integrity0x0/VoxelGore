@@ -11,6 +11,7 @@ layout(location = 0) in VertexData {
   mediump vec3 fogColor;
 
 #ifdef SHADOWS_ENABLED
+  flat uint shadowEnabled;
   highp vec4 shadowCoord;
 #endif
 } iVert;
@@ -23,17 +24,7 @@ layout(binding = 1, set = 1) uniform sampler2DArray uTexture;
 
 layout(binding = 0, set = 2) uniform sampler2DShadow uShadowMap;
 
-const vec3 kShadowColor = vec3(0.05);
-
-float SampleShadow(vec4 shadowCoord) {
-  if (shadowCoord.x < 0.0 || shadowCoord.x > 1.0 ||
-      shadowCoord.y < 0.0 || shadowCoord.y > 1.0 ||
-      shadowCoord.z < 0.0 || shadowCoord.z > 1.0) {
-    return 1.0;
-  }
-
-  return texture(uShadowMap, shadowCoord.xyz);
-}
+#include "shadow.glsl"
 
 #endif
 
@@ -49,12 +40,18 @@ void main() {
 #endif
 
 #ifdef SHADOWS_ENABLED
-  const float shadow = SampleShadow(iVert.shadowCoord);
+  if (iVert.shadowEnabled != 0) {
+    const float shadow = CalcShadow(
+        uShadowMap,
+        iVert.shadowCoord);
 
-  oFragColor.rgb *= mix(
-      kShadowColor,
-      vec3(1.0),
-      shadow);
+    oFragColor.rgb *= mix(
+        kShadowColor,
+        vec3(1.0),
+        shadow);
+  } else {
+    oFragColor.rgb *= kShadowColor;
+  }
 #endif
 
   oFragColor.rgb *= iVert.light;

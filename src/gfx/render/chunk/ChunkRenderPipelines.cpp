@@ -61,7 +61,7 @@ vkcore::Pipeline ChunkRenderPipelines::BuildPipeline(VkRenderPass renderPass,
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, depthWrite)
-      .setCullMode(VK_CULL_MODE_NONE)
+      .setCullMode(VK_CULL_MODE_BACK_BIT)
       .Build(pipelineLayout_.handle(), renderPass);
 }
 

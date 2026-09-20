@@ -38,7 +38,7 @@ vkcore::Pipeline ChunkShadowPipelines::BuildPipeline(VkRenderPass shadowRenderPa
   vkcore::ShaderModule vert = CompileShaderModule(shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.vert",
                           shaderc_vertex_shader, definitions);
   vkcore::ShaderModule frag = CompileShaderModule(shaderCompiler, *device_, core::kShadersPrefix + "chunk_shadow.frag",
-                          shaderc_vertex_shader, definitions);
+                          shaderc_fragment_shader, definitions);
 
   return vkcore::GraphicsPipelineCreator(*device_)
       .AddShaderStage(vert, VK_SHADER_STAGE_VERTEX_BIT)
@@ -51,11 +51,10 @@ vkcore::Pipeline ChunkShadowPipelines::BuildPipeline(VkRenderPass shadowRenderPa
       .AddVertexAttribute(3, 0, VK_FORMAT_R8_UINT, offsetof(ChunkMeshBuilder::Vertex, cornerIndex))
       .AddVertexAttribute(4, 0, VK_FORMAT_R32_UINT,
                           offsetof(ChunkMeshBuilder::Vertex, blockSurfaceId))
-      .AddColorBlendAttachment(false)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, true)
-      .setCullMode(VK_CULL_MODE_FRONT_BIT)
+      .setCullMode(VK_CULL_MODE_BACK_BIT)
       .Build(pipelineLayout_.handle(), shadowRenderPass);
 }
 

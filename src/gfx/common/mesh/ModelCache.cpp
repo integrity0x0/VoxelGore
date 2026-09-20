@@ -6,16 +6,12 @@ namespace gfx {
 
 ModelCache::ModelCache(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
                        vkcore::BufferAllocator& bufferAllocator,
-                       const vkcore::PipelineLayout& pipelineLayout,
-                       const vkcore::DescriptorSetLayout& descriptorSetLayout,
                        TextureManager& textureManager, uint32_t framesCount)
     : device_(&device),
       transferCtxt_(&transferCtxt),
       bufferAllocator_(&bufferAllocator),
-      pipelineLayout_(&pipelineLayout),
-      descriptorSetLayout_(&descriptorSetLayout),
       framesCount_(framesCount),
-      materialCache_(device, descriptorSetLayout, textureManager) {}
+      materialCache_(device, textureManager) {}
 
 ModelId ModelCache::Require(std::string_view path) {
   auto it = pathToId_.find(path);

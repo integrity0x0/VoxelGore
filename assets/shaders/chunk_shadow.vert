@@ -1,4 +1,4 @@
-#version 450
+#version 460
 
 precision highp float;
 precision highp int;
@@ -23,14 +23,14 @@ layout(binding = 0, set = 1) uniform BlockUvBuffer {
 #ifdef CUTOUT_LAYER
 layout(location = 0) out VertexData {
   mediump vec2 uv;
-  mediump flat float layer;
+  mediump flat float arrayLayer;
 } oVert;
 
 #include "cube_uvs.glsl"
 #endif
 
 void main() {
-  gl_Position = uGameData.projView * vec4(aPos, 1.0);
+  gl_Position = uGameData.lightProjView * vec4(aPos, 1.0);
 #ifdef CUTOUT_LAYER
   uint uvIndex = aFaceIndex * 4u + aCornerIndex;
   vec2 localUV = CUBE_UVS[uvIndex];

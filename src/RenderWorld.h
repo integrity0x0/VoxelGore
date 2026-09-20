@@ -7,8 +7,8 @@
 #include "core/Camera.h"
 #include "gfx/render/GameDataBinding.h"
 #include "gfx/common/mesh/ModelCache.h"
-#include "gfx/render/ModelPipeline.h"
-#include "gfx/render/ModelRenderer.h"
+#include "gfx/render/model/ModelPipeline.h"
+#include "gfx/render/model/ModelRenderer.h"
 #include "gfx/render/entity/EntityRenderSystem.h"
 #include "gfx/render/billboard/BillboardRenderer.h"
 #include "gfx/render/chunk/ChunkRenderer.h"
@@ -38,10 +38,8 @@ class RenderWorld {
                       float screenH);
 
   void Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex, const core::Camera& camera);
-  void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
-    gameDataBinding_->Bind(cmd, frameIndex);
-    chunkRenderer_->RenderShadow(cmd, frameIndex);
-  }
+  void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex);
+
   ChunkRenderer& chunks() { return *chunkRenderer_; }
   ParticleEngine& particles() { return *particleEngine_; }
   TextureManager& textures() { return *textureManager_; }
@@ -51,6 +49,8 @@ class RenderWorld {
 
   ShaderCompiler& shaderCompiler() { return *shaderCompiler_; }
   const ShaderCompiler& shaderCompiler() const { return *shaderCompiler_; }
+
+  void CollectEntities(uint32_t frameIndex);
 
  private:
   Engine* engine_;
@@ -65,7 +65,6 @@ class RenderWorld {
   BillboardRenderBucket* generalBucket_ = nullptr;
   BillboardRenderBucket* blockBucket_ = nullptr;
   std::unique_ptr<ParticleEngine> particleEngine_;
-  std::unique_ptr<ModelPipeline> modelPipeline_;
   std::unique_ptr<ModelCache> modelCache_;
   std::unique_ptr<ModelRenderer> modelRenderer_;
   std::unique_ptr<EntityRenderSystem> entityRenderSystem_;

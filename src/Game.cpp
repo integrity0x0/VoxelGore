@@ -197,11 +197,12 @@ bool Game::Frame() {
   const float screenW = static_cast<float>(engine_->extent().width);
   const float screenH = static_cast<float>(engine_->extent().height);
   render_->UpdateGameData(frame, player_->camera(), screenW, screenH);
+  render_->CollectEntities(frame);
   render_->UpdateParticles(dt_, frame);
 
+  render_->RenderShadowPass(cmd, frame);
   engine_->BeginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
   SetViewportAndScissor(cmd);
-  render_->RenderShadowPass(cmd, frame);
   render_->Render(cmd, dt_, frame, player_->camera());
 
   if (ui_) ui_->Render(cmd);

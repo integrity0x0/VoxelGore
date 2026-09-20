@@ -10,13 +10,14 @@ ShadowContext::ShadowContext(const vkcore::Device& device, vkcore::MemoryAllocat
       map_(device, allocator, pass_, resolution),
       descriptorSetLayout_(BuildDescriptorSetLayout(device)),
       descriptorPool_(BuildDescriptorPool(device)),
-      descriptorSet_(descriptorPool_.Allocate(descriptorSetLayout_)) {
-  VkDescriptorImageInfo imageInfo{};
-  imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      descriptorSet_(descriptorPool_.Allocate(descriptorSetLayout_)),
+      resolution_(resolution) {
+  VkDescriptorImageInfo imageInfo = {};
+  imageInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
   imageInfo.imageView = map_.texture().imageView().handle();
   imageInfo.sampler = map_.texture().sampler().handle();
 
-  VkWriteDescriptorSet write{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
+  VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
   write.dstSet = descriptorSet_.handle();
   write.dstBinding = 0;
   write.dstArrayElement = 0;
@@ -28,7 +29,7 @@ ShadowContext::ShadowContext(const vkcore::Device& device, vkcore::MemoryAllocat
 }
 
 vkcore::DescriptorSetLayout ShadowContext::BuildDescriptorSetLayout(const vkcore::Device& device) {
-  VkDescriptorSetLayoutBinding shadowMapBinding{};
+  VkDescriptorSetLayoutBinding shadowMapBinding = {};
   shadowMapBinding.binding = 0;
   shadowMapBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
   shadowMapBinding.descriptorCount = 1;
@@ -51,8 +52,8 @@ void ShadowContext::UpdateLightMatrix(const glm::vec3& lightDir, const glm::vec3
 
   glm::mat4 view = glm::lookAt(eye, focusPoint, up);
   glm::mat4 proj = glm::ortho(-kOrthoHalfExtent, kOrthoHalfExtent, -kOrthoHalfExtent,
-                              kOrthoHalfExtent, 0.1f, kOrthoHalfExtent * 2.0f);
-  proj[1][1] *= -1;
+                              kOrthoHalfExtent, -kOrthoHalfExtent, kOrthoHalfExtent * 2.0f);
+  proj[1][1] *= -1; 
 
   lightViewProj_ = proj * view;
 }

@@ -7,7 +7,8 @@
 #include "../../../game/entity/HealthSystem.h"
 #include "../../../game/physics/HitboxComponent.h"
 #include "../../../game/voxel/ChunkManager.h"
-#include "../ModelRenderer.h"
+#include "../../../game/lighting/Lighting.h"
+#include "../model/ModelRenderer.h"
 #include "../billboard/BillboardRenderer.h"
 #include "EntityRenderData.h"
 
@@ -19,6 +20,7 @@ class EntityRenderSystem {
 
   void Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
               BillboardRenderBucket& billboardRenderBucket, const gm::World& world,
+              const gm::Lighting& lighting,
               uint32_t currentFrame);
 
  private:

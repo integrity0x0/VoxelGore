@@ -14,8 +14,8 @@ struct SubpassDescription {
   std::optional<VkAttachmentReference> depthStencilRef;
   std::vector<uint32_t> preserveIndices;
 
-  VkSubpassDescription build() const {
-    VkSubpassDescription desc{};
+  [[nodiscard]] VkSubpassDescription Build() const {
+    VkSubpassDescription desc = {};
     desc.pipelineBindPoint = bindPoint;
     desc.colorAttachmentCount = static_cast<uint32_t>(colorRefs.size());
     desc.pColorAttachments = colorRefs.empty() ? nullptr : colorRefs.data();

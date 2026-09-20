@@ -14,8 +14,8 @@ namespace gfx {
 class ModelCache {
  public:
   ModelCache(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,
-             vkcore::BufferAllocator& bufferAllocator, const vkcore::PipelineLayout& pipelineLayout,
-             const vkcore::DescriptorSetLayout& descriptorSetLayout, TextureManager& textureManager,
+             vkcore::BufferAllocator& bufferAllocator,
+             TextureManager& textureManager,
              uint32_t framesCount);
 
   [[nodiscard]] ModelId Require(std::string_view path);
@@ -41,12 +41,14 @@ class ModelCache {
     return Get(it->second);
   }
 
+  [[nodiscard]] const vkcore::DescriptorSetLayout& materialSetLayout() const {
+    return materialCache_.descriptorSetLayout();
+  }
+
  private:
   const vkcore::Device* device_;
   vkcore::TransferContext* transferCtxt_;
   vkcore::BufferAllocator* bufferAllocator_;
-  const vkcore::PipelineLayout* pipelineLayout_;
-  const vkcore::DescriptorSetLayout* descriptorSetLayout_;
   uint32_t framesCount_;
 
   std::vector<Model> models_;

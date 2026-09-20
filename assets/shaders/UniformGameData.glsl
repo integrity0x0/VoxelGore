@@ -13,4 +13,6 @@ layout(binding = 0, set = 0) uniform UniformGameData {
     float fogDensity;
 
     mat4 lightProjView;
+    vec3 lightDir;
+    float _pad2;
 } uGameData;

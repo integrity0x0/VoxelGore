@@ -6,7 +6,8 @@ EntityRenderSystem::EntityRenderSystem(ModelCache& modelCache, Atlas& generalAtl
 
 void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
                                 BillboardRenderBucket& billboardRenderBucket,
-                                const gm::World& world, uint32_t currentFrame) {
+                                const gm::World& world, const gm::Lighting& lighting,
+                                uint32_t currentFrame) {
   static constexpr glm::vec3 kHurtColor = glm::vec3(1.0f, 0.15f, 0.15f);
 
   auto& renderStorage = registry.Storage<gm::RenderComponent>();
@@ -28,10 +29,14 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
 
     const glm::vec3 pos = hitbox->pos;
 
-    //glm::vec3 color = Render.ignoreLighting ? glm::vec3(1.0f)
-                                   //         : world.chunks().getLightColor(
-                                        //          glm::ivec3(pos), glm::vec3(0.08f, 0.10f, 0.18f));
-    glm::vec3 color(1.0f);
+    glm::vec4 lightColor =
+        Render.ignoreLighting ? glm::vec4(1.0f) : lighting.GetColor(glm::ivec3(pos));
+    static glm::vec3 ambientColor(0.08f, 0.10f, 0.18f);
+
+    glm::vec3 color = glm::vec3(lightColor) + lightColor.a * ambientColor; 
+
+    color = glm::clamp(color, 0.0f, 1.0f);
+
     if (!Render.ignoreHurtColor && healthStorage.Contains(id) &&
         healthStorage.Get(id)->hurtFlash > 0.0f) {
       color *= kHurtColor;
