@@ -10,7 +10,8 @@ ModelRenderer::ModelRenderer(const vkcore::Device& device, vkcore::BufferAllocat
                              const vkcore::DescriptorSetLayout& materialSetLayout,
                              const ShadowContext* shadowCtxt, const ShaderCompiler& shaderCompiler,
                              uint32_t framesCount)
-    : device_(&device), bufferAllocator_(&bufferAllocator), pipeline_(device, renderPass, gameDataBinding, materialSetLayout, shadowCtxt, shaderCompiler) {
+    : device_(&device), bufferAllocator_(&bufferAllocator), pipeline_(device, renderPass, gameDataBinding, materialSetLayout, shadowCtxt, shaderCompiler),
+      shadowCtxt_(shadowCtxt) {
   frames_.reserve(framesCount);
 
   if (shadowCtxt) {
@@ -80,6 +81,7 @@ void ModelRenderer::DrawGroups(VkCommandBuffer cmd, uint32_t frameIndex,
 
 void ModelRenderer::Render(VkCommandBuffer cmd, uint32_t frameIndex) {
   pipeline_.Bind(cmd);
+  shadowCtxt_->descriptorSet().Bind(cmd, pipeline_.pipelineLayout().handle(), 2);
   DrawGroups(cmd, frameIndex, pipeline_.pipelineLayout());
 
   groups_.clear();

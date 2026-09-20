@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../game/voxel/ChunkManager.h"
+#include "../../../game/lighting/Lighting.h"
 #include "../billboard/BillboardRenderBucket.h"
 #include "BlockDebrisEmitter.h"
 #include "ExplosionEmitter.h"
@@ -10,7 +11,8 @@ namespace gfx {
 class ParticleEngine {
  public:
   ParticleEngine(Atlas& generalAtlas, BlockRenderData& renderData,
-                 const gm::BlockManager& blockManager, const gm::ChunkManager& chunkManager,
+                 const gm::BlockManager& blockManager, const gm::ChunkManager& chunkManager, 
+                 const gm::Lighting& lighting,
                  BillboardRenderBucket& generalBucket, BillboardRenderBucket& blockBucket);
 
   void SpawnExplosion(const glm::vec3& position, float power = 4.0f);
@@ -22,6 +24,7 @@ class ParticleEngine {
  private:
   Atlas* generalAtlas_;
   const gm::ChunkManager* chunkManager_;
+  const gm::Lighting* lighting_;
   BlockRenderData* blockRenderData_;
   BillboardRenderBucket* generalBucket_;
   BillboardRenderBucket* blockBucket_;

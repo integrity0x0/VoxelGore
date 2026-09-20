@@ -136,7 +136,6 @@ void BlockDebrisEmitter::updateParticles(float dt) {
     p.velocity += p.acceleration * dt;
 
     ResolveParticleCollision(p, dt, *chunkManager_);
-    // else p.pos += p.velocity * dt;
 
     p.life -= dt;
     p.rotation += p.angularVelocity * dt;

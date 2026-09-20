@@ -111,7 +111,6 @@
     <ClCompile Include="src\gfx\render\model\ModelShadowPipeline.cpp" />
     <ClCompile Include="src\gfx\render\particle\BlockDebrisEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
-    <ClCompile Include="src\gfx\render\particle\ParticleEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEngine.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />

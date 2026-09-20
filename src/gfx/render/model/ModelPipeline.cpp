@@ -9,7 +9,8 @@ ModelPipeline::ModelPipeline(const vkcore::Device& device, const vkcore::RenderP
                              const GameDataBinding& gameDataBinding,
                              const vkcore::DescriptorSetLayout& materialSetLayout,
                              const ShadowContext* shadowCtxt, const ShaderCompiler& shaderCompiler)
-    : pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout(), materialSetLayout, shadowCtxt)),
+    : 
+      pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout(), materialSetLayout, shadowCtxt)),
       pipeline_(BuildPipeline(device, renderPass, shaderCompiler)) {}
 
 vkcore::PipelineLayout ModelPipeline::BuildPipelineLayout(

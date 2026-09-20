@@ -5,10 +5,12 @@ namespace gfx {
 ParticleEngine::ParticleEngine(Atlas& generalAtlas, BlockRenderData& blockRenderData,
                                const gm::BlockManager& blockManager,
                                const gm::ChunkManager& chunkManager,
+                               const gm::Lighting& lighting,
                                BillboardRenderBucket& generalBucket,
                                BillboardRenderBucket& blockBucket)
     : generalAtlas_(&generalAtlas),
       chunkManager_(&chunkManager),
+      lighting_(&lighting),
       blockRenderData_(&blockRenderData),
       generalBucket_(&generalBucket),
       blockBucket_(&blockBucket),
@@ -32,8 +34,9 @@ BillboardRenderBucket& ParticleEngine::BucketFor(const Particle& particle) {
       return *generalBucket_;
   }
 }
-
 void ParticleEngine::WriteParticles(std::span<const Particle> particles, uint32_t currentFrame) {
+  static glm::vec3 ambientColor(0.08f, 0.10f, 0.18f);
+
   for (const Particle& particle : particles) {
     BillboardInstance instance;
 
@@ -42,13 +45,15 @@ void ParticleEngine::WriteParticles(std::span<const Particle> particles, uint32_
     instance.size = particle.size;
     instance.uvMinMax = particle.uvMinMax;
     instance.layer = particle.layer;
-    instance.color = particle.color;
 
-    //instance.color =
-       // particle.ignoreLighting
-          //  ? particle.color
-           // : particle.color *
-            //      glm::vec4(chunkManager_->getLightColor(glm::ivec3(particle.pos)), 1.0f);
+    glm::vec4 lightColor =
+        particle.ignoreLighting ? glm::vec4(1.0f) : lighting_->GetColor(glm::ivec3(particle.pos));
+
+    glm::vec3 color = glm::vec3(lightColor) + lightColor.a * ambientColor;
+    color = glm::clamp(color, 0.0f, 1.0f);
+
+    instance.color = glm::vec4(color, 1.0f);
+
     BucketFor(particle).Submit(instance, particle.renderLayer, currentFrame);
   }
 }

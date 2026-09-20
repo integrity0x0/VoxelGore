@@ -47,6 +47,7 @@ class ModelRenderer {
   const vkcore::Device* device_;
   vkcore::BufferAllocator* bufferAllocator_;
   ModelPipeline pipeline_;
+  const ShadowContext* shadowCtxt_;
   std::optional<ModelShadowPipeline> shadowPipeline_;
   std::vector<FrameData> frames_;
 

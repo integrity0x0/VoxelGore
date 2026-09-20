@@ -67,7 +67,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
 
   particleEngine_ = std::make_unique<ParticleEngine>(
       *billboardsAtlas_, chunkRenderer_->blockRenderData(), session.blocks(),
-      session.world().chunks(), *generalBucket_, *blockBucket_);
+      session.world().chunks(), session.lighting(), *generalBucket_, *blockBucket_);
 
   entityRenderSystem_ = std::make_unique<EntityRenderSystem>(*modelCache_, *billboardsAtlas_);
 }

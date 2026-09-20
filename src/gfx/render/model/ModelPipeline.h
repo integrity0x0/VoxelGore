@@ -32,6 +32,7 @@ class ModelPipeline {
                                                const ShaderCompiler& shaderCompiler);
 
  private:
+  const ShadowContext* shadowCtxt_;
   vkcore::PipelineLayout pipelineLayout_;
   vkcore::Pipeline pipeline_;
 };
