@@ -24,7 +24,7 @@ class BlockDebrisEmitter final : public ParticleEmitter {
   const gm::BlockManager* blockManager_;
   const gm::ChunkManager* chunkManager_;
 
-  void updateParticles(float dt) override;
+  void UpdateParticles(float dt) override;
 };
 
 }  // namespace gfx

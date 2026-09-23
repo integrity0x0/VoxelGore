@@ -40,27 +40,34 @@ struct CornerSign {
 
 static std::array<CornerSign, 24> BuildCornerSigns() {
   std::array<CornerSign, 24> signs{};
+
   for (uint32_t face = 0; face < 6u; ++face) {
     for (uint32_t corner = 0; corner < 4u; ++corner) {
       uint32_t idx = face * 4u + corner;
+
       const glm::vec3& p = kFaceVertices[idx].pos;
+
       float rightDot = glm::dot(p, glm::vec3(kFaceRight[face]));
       float upDot = glm::dot(p, glm::vec3(kFaceUp[face]));
+
       signs[idx].right = rightDot > 0.0f ? 1 : -1;
       signs[idx].up = upDot > 0.0f ? 1 : -1;
     }
   }
+
   return signs;
 }
 
 static const std::array<CornerSign, 24> kCornerSigns = BuildCornerSigns();
 
 static constexpr int32_t kChunkCubeLen = 3;
+
 static constexpr size_t kChunkCubeVolume =
     static_cast<size_t>(kChunkCubeLen) * kChunkCubeLen * kChunkCubeLen;
 
 static uint32_t ChunkCubeIndex(glm::ivec3 offset) {
   offset += glm::ivec3(1);
+
   return static_cast<uint32_t>((offset.x * kChunkCubeLen + offset.y) * kChunkCubeLen + offset.z);
 }
 
@@ -72,6 +79,7 @@ static std::array<const gm::Chunk*, kChunkCubeVolume> CollectNeighbors(
     for (int32_t dy = -1; dy <= 1; ++dy) {
       for (int32_t dz = -1; dz <= 1; ++dz) {
         glm::ivec3 offset(dx, dy, dz);
+
         const auto& it = chunksMap.find(pos + offset);
 
         neighbors[ChunkCubeIndex(offset)] = (it == chunksMap.end()) ? nullptr : it->second.get();
@@ -86,16 +94,22 @@ static const gm::Chunk* ResolveChunk(
     const gm::Chunk& self, const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
     glm::ivec3& localPos) {
   glm::ivec3 chunkOffset(0);
+
   chunkOffset.x =
       localPos.x < 0 ? -1 : (localPos.x >= static_cast<int32_t>(gm::Chunk::kLength) ? 1 : 0);
+
   chunkOffset.y =
       localPos.y < 0 ? -1 : (localPos.y >= static_cast<int32_t>(gm::Chunk::kLength) ? 1 : 0);
+
   chunkOffset.z =
       localPos.z < 0 ? -1 : (localPos.z >= static_cast<int32_t>(gm::Chunk::kLength) ? 1 : 0);
 
-  if (chunkOffset == glm::ivec3(0)) return &self;
+  if (chunkOffset == glm::ivec3(0)) {
+    return &self;
+  }
 
   int32_t len = static_cast<int32_t>(gm::Chunk::kLength);
+
   localPos.x = (localPos.x % len + len) % len;
   localPos.y = (localPos.y % len + len) % len;
   localPos.z = (localPos.z % len + len) % len;
@@ -103,35 +117,84 @@ static const gm::Chunk* ResolveChunk(
   return neighbors[ChunkCubeIndex(chunkOffset)];
 }
 
-glm::vec4 LightSample(const gm::Lighting& lighting, glm::ivec3 worldPos, uint32_t face,
-                      uint32_t corner) {
+static bool IsLightBlocking(const gm::Chunk& self,
+                            const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
+                            const gm::BlockManager& blockManager, glm::ivec3 worldPos) {
+  const glm::ivec3 chunkOrigin = self.pos() * static_cast<int32_t>(gm::Chunk::kLength);
+
+  glm::ivec3 localPos = worldPos - chunkOrigin;
+
+  const gm::Chunk* target = ResolveChunk(self, neighbors, localPos);
+
+  if (!target) {
+    return true;
+  }
+
+  const gm::Voxel& voxel = target->GetVoxel(localPos);
+
+  if (!voxel.id) {
+    return false;
+  }
+
+  const gm::Block* block = blockManager.block(voxel.id);
+
+  if (!block) {
+    return true;
+  }
+
+  return !block->isPassingLight();
+}
+
+glm::vec4 LightSample(const gm::Chunk& self,
+                      const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
+                      const gm::BlockManager& blockManager, const gm::Lighting& lighting,
+                      glm::ivec3 worldPos, uint32_t face, uint32_t corner) {
   const CornerSign& sign = kCornerSigns[face * 4u + corner];
 
   const glm::ivec3 facePos = worldPos + kFaceNormals[face];
+
   const glm::ivec3 rightOffset = kFaceRight[face] * static_cast<int32_t>(sign.right);
+
   const glm::ivec3 upOffset = kFaceUp[face] * static_cast<int32_t>(sign.up);
 
-  return (lighting.GetColor(facePos) + lighting.GetColor(facePos + upOffset) +
-          lighting.GetColor(facePos + rightOffset) +
-          lighting.GetColor(facePos + rightOffset + upOffset)) *
-         0.25f;
-}
+  const glm::ivec3 rightPos = facePos + rightOffset;
+  const glm::ivec3 upPos = facePos + upOffset;
+  const glm::ivec3 cornerPos = rightPos + upOffset;
 
+  const glm::vec4 faceLight = lighting.GetColor(facePos);
+  const glm::vec4 upLight = lighting.GetColor(upPos);
+  const glm::vec4 rightLight = lighting.GetColor(rightPos);
+
+  const bool rightBlocked = IsLightBlocking(self, neighbors, blockManager, rightPos);
+
+  const bool upBlocked = IsLightBlocking(self, neighbors, blockManager, upPos);
+
+  if (rightBlocked && upBlocked) {
+    return (faceLight + upLight + rightLight) / 3.0f;
+  }
+
+  const glm::vec4 cornerLight = lighting.GetColor(cornerPos);
+
+  return (faceLight + upLight + rightLight + cornerLight) * 0.25f;
+}
 
 bool IsBlocked(BlockRenderData& renderData, const gm::Chunk& self,
                const std::array<const gm::Chunk*, kChunkCubeVolume>& neighbors,
                glm::ivec3 neighborLocalPos, uint32_t sourceVoxelId) {
   const gm::Chunk* target = ResolveChunk(self, neighbors, neighborLocalPos);
-  if (!target) return true;
+
+  if (!target) {
+    return true;
+  }
 
   uint32_t neighborId = target->GetVoxel(neighborLocalPos).id;
+
   return renderData.renderGroupId(neighborId) == renderData.renderGroupId(sourceVoxelId);
 }
 
 }  // namespace
 
-ChunkMeshBuilder::ChunkMeshBuilder(const vkcore::Device& device,
-                                   const gm::Lighting& lighting,
+ChunkMeshBuilder::ChunkMeshBuilder(const vkcore::Device& device, const gm::Lighting& lighting,
                                    const gm::BlockManager& blockManager,
                                    BlockRenderData& blockRenderData, uint32_t framesCount)
     : device_(&device),
@@ -158,14 +221,17 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
   }
 
   std::array<Vertex, 4> vertices;
+
   for (uint32_t corner = 0; corner < 4u; ++corner) {
     vertices[corner] = kFaceVertices[face * 4u + corner];
+
     vertices[corner].pos += worldOffset;
     vertices[corner].color = cornerColors[corner];
     vertices[corner].blockSurfaceId = surfaceId;
   }
 
   std::array<uint32_t, 6> localIndices;
+
   for (uint32_t i = 0; i < 6u; ++i) {
     localIndices[i] = kFaceIndices[face * 6u + i];
   }
@@ -174,7 +240,11 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
 
   if (renderLayer == RenderLayer::Translucent) {
     std::array<uint32_t, 6> globalIndices;
-    for (size_t i = 0; i < 6u; ++i) globalIndices[i] = baseVertex + localIndices[i];
+
+    for (size_t i = 0; i < 6u; ++i) {
+      globalIndices[i] = baseVertex + localIndices[i];
+    }
+
     staging.AddTranslucentQuad(worldOffset, globalIndices);
   }
 
@@ -201,6 +271,7 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
   vertexRegion.srcOffset = stream.VertexSrcOffset();
   vertexRegion.dstOffset = vertexBuffer.offset();
   vertexRegion.size = stream.VertexBytes();
+
   device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), vertexBuffer.handle(), 1,
                                            &vertexRegion);
 
@@ -208,6 +279,7 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
   indexRegion.srcOffset = stream.IndexSrcOffset();
   indexRegion.dstOffset = indexBuffer.offset();
   indexRegion.size = stream.IndexBytes();
+
   device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), indexBuffer.handle(), 1,
                                            &indexRegion);
 
@@ -218,7 +290,10 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
 std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBuffer cmd,
                                                                      StagingInfo& staging) {
   MeshStream& stream = staging.layer(RenderLayer::Translucent);
-  if (stream.empty()) return std::nullopt;
+
+  if (stream.empty()) {
+    return std::nullopt;
+  }
 
   vkcore::BufferSlice vertexBuffer = bufferAllocator_.Allocate(
       stream.VertexBytes(), VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -228,6 +303,7 @@ std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBu
   vertexRegion.srcOffset = stream.VertexSrcOffset();
   vertexRegion.dstOffset = vertexBuffer.offset();
   vertexRegion.size = stream.VertexBytes();
+
   device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), vertexBuffer.handle(), 1,
                                            &vertexRegion);
 
@@ -240,6 +316,7 @@ std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBu
 bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
                                   const gm::ChunksMap& chunksMap, const gm::Chunk& chunk) {
   using clock = std::chrono::steady_clock;
+
   const auto t0 = clock::now();
 
   auto neighbors = CollectNeighbors(chunksMap, chunk.pos());
@@ -249,24 +326,30 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
       for (uint32_t y = 0; y < gm::Chunk::kLength; y++) {
         for (uint32_t z = 0; z < gm::Chunk::kLength; z++) {
           glm::ivec3 localPos(x, y, z);
+
           const gm::Voxel& v = chunk.GetVoxel(localPos);
 
-          if (!v.id) continue;
+          if (!v.id) {
+            continue;
+          }
 
           const gm::Block* block = blockManager_->block(v.id);
 
-          if (IsBlocked(*blockRenderData_, chunk, neighbors, localPos + kFaceNormals[face], v.id))
+          if (IsBlocked(*blockRenderData_, chunk, neighbors, localPos + kFaceNormals[face], v.id)) {
             continue;
+          }
 
           RenderLayer renderLayer = ToRenderLayer(block->renderLayer());
-          if (renderLayer >= RenderLayer::Count) continue;
+
+          if (renderLayer >= RenderLayer::Count) {
+            continue;
+          }
 
           uint32_t blockSurfaceId =
               block ? blockRenderData_->surfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0;
 
           std::array<glm::vec4, 4> cornerColors;
 
-          // было: if (block || block->isIgnoreLighting())  ← баг (UB + логика наоборот)
           if (!block || block->isIgnoreLighting()) {
             cornerColors.fill(glm::vec4(1.0f));
           } else {
@@ -274,7 +357,8 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
                 localPos + chunk.pos() * static_cast<int>(gm::Chunk::kLength);
 
             for (uint32_t corner = 0; corner < 4u; ++corner) {
-              cornerColors[corner] = LightSample(*lighting_, worldPos, face, corner);
+              cornerColors[corner] =
+                  LightSample(chunk, neighbors, *blockManager_, *lighting_, worldPos, face, corner);
             }
           }
 
@@ -283,8 +367,11 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
 
           if (!AddFace(staging, face, worldOffset, blockSurfaceId, cornerColors, renderLayer)) {
             const auto t1 = clock::now();
+
             const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+
             printf("BuildChunk (failed): %.3f ms\n", ms);
+
             return false;
           }
         }
@@ -293,7 +380,9 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
   }
 
   const auto t1 = clock::now();
+
   const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+
   printf("BuildChunk: %.3f ms\n", ms);
 
   return true;
@@ -303,13 +392,16 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
                                    gm::DirtyChunkSet& dirtyChunks, const gm::ChunksMap& chunksMap,
                                    ChunkMeshes& meshes) {
   StagingInfo& staging = stagingInfos_[currentFrame];
+
   staging.Reset();
 
   auto it = dirtyChunks.begin();
+
   while (it != dirtyChunks.end()) {
     const glm::ivec3& pos = *it;
 
     auto chunkIt = chunksMap.find(pos);
+
     if (chunkIt == chunksMap.end() || chunkIt->second->IsEmpty()) {
       it = dirtyChunks.erase(it);
       continue;
@@ -317,7 +409,9 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
 
     const gm::Chunk& chunk = *chunkIt->second;
 
-    if (!BuildChunk(cmd, staging, chunksMap, chunk)) break;
+    if (!BuildChunk(cmd, staging, chunksMap, chunk)) {
+      break;
+    }
 
     if (auto mesh = MakeMeshLayer(cmd, staging, RenderLayer::Solid)) {
       meshes.solid.emplace(pos, std::move(*mesh));
@@ -332,6 +426,7 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
     }
 
     staging.CommitChunk();
+
     it = dirtyChunks.erase(it);
   }
 }

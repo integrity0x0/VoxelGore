@@ -196,7 +196,7 @@ bool Game::Frame() {
 
   const float screenW = static_cast<float>(engine_->extent().width);
   const float screenH = static_cast<float>(engine_->extent().height);
-  render_->UpdateGameData(frame, player_->camera(), screenW, screenH);
+  render_->UpdateGameData(frame, player_->camera(), screenW, screenH, session_->enviroment());
   render_->CollectEntities(frame);
   render_->UpdateParticles(dt_, frame);
 

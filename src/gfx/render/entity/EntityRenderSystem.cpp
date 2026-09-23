@@ -7,6 +7,7 @@ EntityRenderSystem::EntityRenderSystem(ModelCache& modelCache, Atlas& generalAtl
 void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
                                 BillboardRenderBucket& billboardRenderBucket,
                                 const gm::World& world, const gm::Lighting& lighting,
+                                const gm::Enviroment& enviroment,
                                 uint32_t currentFrame) {
   static constexpr glm::vec3 kHurtColor = glm::vec3(1.0f, 0.15f, 0.15f);
 
@@ -33,7 +34,7 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
         Render.ignoreLighting ? glm::vec4(1.0f) : lighting.GetColor(glm::ivec3(pos));
     static glm::vec3 ambientColor(0.08f, 0.10f, 0.18f);
 
-    glm::vec3 color = glm::vec3(lightColor) + lightColor.a * ambientColor; 
+    glm::vec3 color = glm::vec3(lightColor) + lightColor.a * enviroment.GetColor(); 
 
     color = glm::clamp(color, 0.0f, 1.0f);
 

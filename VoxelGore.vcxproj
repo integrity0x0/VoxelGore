@@ -47,6 +47,7 @@
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\Enviroment.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\shaders\UniformGameData.glsl" />
+    <ClInclude Include="src\game\Enviroment.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\game\lighting\ChannelDefinition.h" />
@@ -400,8 +402,8 @@
     <LibraryPath>libs/win64/debug;libs/win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>include;$(IncludePath)</IncludePath>
-    <LibraryPath>libs/win64/release;libs/win64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Eugene\Documents\GitHub\VoxelGore\include;include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Eugene\Documents\GitHub\VoxelGore\libs;libs/win64/release;libs/win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -67,7 +67,8 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
 
   particleEngine_ = std::make_unique<ParticleEngine>(
       *billboardsAtlas_, chunkRenderer_->blockRenderData(), session.blocks(),
-      session.world().chunks(), session.lighting(), *generalBucket_, *blockBucket_);
+      session.world().chunks(), session.lighting(), session.enviroment(), *generalBucket_,
+      *blockBucket_);
 
   entityRenderSystem_ = std::make_unique<EntityRenderSystem>(*modelCache_, *billboardsAtlas_);
 }
@@ -81,7 +82,7 @@ void RenderWorld::UpdateParticles(float dt, uint32_t frameIndex) {
 }
 
 void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
-                                 float screenH) {
+                                 float screenH, const gm::Enviroment& enviroment) {
   glm::mat4 view = camera.view();
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;
@@ -96,7 +97,7 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
   data.projView = proj * view;
   data.cameraPos = camera.pos();
   data.cameraDir = camera.forward();
-  data.ambientColor = glm::vec3(0.05f, 0.065f, 0.12f);
+  data.ambientColor = enviroment.GetColor();  // glm::vec3(0.05f, 0.065f, 0.12f);
   data.fogDensity = 0.015f;
   data.lightProjView = shadowCtxt_->lightViewProj();
   data.lightDir = shadowCtxt_->lightDir();
@@ -134,7 +135,8 @@ void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
 
 void RenderWorld::CollectEntities(uint32_t frameIndex) {
   entityRenderSystem_->Render(session_->components(), *modelRenderer_, *generalBucket_,
-                              session_->world(), session_->lighting(), frameIndex);
+                              session_->world(), session_->lighting(), session_->enviroment(),
+                              frameIndex);
   modelRenderer_->UploadInstances(frameIndex);
 }
 

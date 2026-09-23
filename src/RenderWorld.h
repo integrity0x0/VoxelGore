@@ -35,7 +35,7 @@ class RenderWorld {
   void UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex);
   void UpdateParticles(float dt, uint32_t frameIndex);
   void UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
-                      float screenH);
+                      float screenH, const gm::Enviroment& enviroment);
 
   void Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex, const core::Camera& camera);
   void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex);

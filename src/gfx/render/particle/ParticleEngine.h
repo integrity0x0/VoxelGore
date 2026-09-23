@@ -5,14 +5,15 @@
 #include "../billboard/BillboardRenderBucket.h"
 #include "BlockDebrisEmitter.h"
 #include "ExplosionEmitter.h"
+#include "../../../game/Enviroment.h"
 
 namespace gfx {
 
 class ParticleEngine {
  public:
   ParticleEngine(Atlas& generalAtlas, BlockRenderData& renderData,
-                 const gm::BlockManager& blockManager, const gm::ChunkManager& chunkManager, 
-                 const gm::Lighting& lighting,
+                 const gm::BlockManager& blockManager, const gm::ChunkManager& chunkManager,
+                 const gm::Lighting& lighting, const gm::Enviroment& enviroment,
                  BillboardRenderBucket& generalBucket, BillboardRenderBucket& blockBucket);
 
   void SpawnExplosion(const glm::vec3& position, float power = 4.0f);
@@ -25,6 +26,7 @@ class ParticleEngine {
   Atlas* generalAtlas_;
   const gm::ChunkManager* chunkManager_;
   const gm::Lighting* lighting_;
+  const gm::Enviroment* enviroment_;
   BlockRenderData* blockRenderData_;
   BillboardRenderBucket* generalBucket_;
   BillboardRenderBucket* blockBucket_;

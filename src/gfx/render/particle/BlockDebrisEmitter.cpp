@@ -39,36 +39,6 @@ gm::Block::Face PickFace(gm::BlockDebrisConfig::Face mode) {
   }
 }
 
-bool IsObstacle(const glm::ivec3& pos, const gm::ChunkManager& chunkManager) {
-  return chunkManager.hasVoxel(pos) && chunkManager.getVoxel(pos)->id != 0;
-}
-void ResolveParticleCollision(Particle& p, float dt, const gm::ChunkManager& chunkManager) {
-  static constexpr float kSettleVelocity = 0.05f;
-  if (p.settled_) return;
-
-  glm::vec3 delta = p.velocity * dt;
-  bool wasFalling = p.velocity.y < 0.0f;
-  bool hitGround = false;
-
-  for (int axis = 0; axis < 3; ++axis) {
-    glm::vec3 next = p.pos;
-    next[axis] += delta[axis];
-
-    if (IsObstacle(glm::ivec3(glm::floor(next)), chunkManager)) {
-      p.velocity[axis] *= -p.bounceFactor;
-
-      if (axis == 1 && wasFalling) hitGround = true;
-      continue;
-    }
-    p.pos[axis] = next[axis];
-  }
-
-  if (hitGround && std::abs(p.velocity.y) < kSettleVelocity) {
-    p.velocity = glm::vec3(0.0f);
-    p.settled_ = true;
-  }
-}
-
 }  // namespace
 
 BlockDebrisEmitter::BlockDebrisEmitter(BlockRenderData& renderData,
@@ -131,7 +101,7 @@ void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
   }
 }
 
-void BlockDebrisEmitter::updateParticles(float dt) {
+void BlockDebrisEmitter::UpdateParticles(float dt) {
   for (auto& p : particles_) {
     p.velocity += p.acceleration * dt;
 
@@ -146,6 +116,6 @@ void BlockDebrisEmitter::updateParticles(float dt) {
                    particles_.end());
 }
 
-void BlockDebrisEmitter::Update(float dt) { updateParticles(dt); }
+void BlockDebrisEmitter::Update(float dt) { UpdateParticles(dt); }
 
 }  // namespace gfx

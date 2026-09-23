@@ -18,4 +18,5 @@ libs
 x64
 VoxelGore
 .vs
-VoxelGore.vcxproj.user
+VoxelGore.vcxproj.user 
+out

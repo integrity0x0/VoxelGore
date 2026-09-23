@@ -1,10 +1,10 @@
-#pragma once
+#pragma once 
 
 #include <stdint.h>
 
 namespace gfx {
 struct Settings {
-  uint32_t anisotropyLevel = 4;
-  bool enableShadows = false;
+  bool shadowsEnable;
+  uint32_t anisotropyLevel;
 };
 }  // namespace gfx

@@ -48,7 +48,7 @@ void main() {
     oFragColor.rgb *= mix(
         kShadowColor,
         vec3(1.0),
-        shadow);
+       shadow);
   } else {
     oFragColor.rgb *= kShadowColor;
   }

@@ -10,6 +10,7 @@
 #include "../../../game/lighting/Lighting.h"
 #include "../model/ModelRenderer.h"
 #include "../billboard/BillboardRenderer.h"
+#include "../../../game/Enviroment.h"
 #include "EntityRenderData.h"
 
 namespace gfx {
@@ -20,7 +21,7 @@ class EntityRenderSystem {
 
   void Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
               BillboardRenderBucket& billboardRenderBucket, const gm::World& world,
-              const gm::Lighting& lighting,
+              const gm::Lighting& lighting, const gm::Enviroment& enviroment, 
               uint32_t currentFrame);
 
  private:

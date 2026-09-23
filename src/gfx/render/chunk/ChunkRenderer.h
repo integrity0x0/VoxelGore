@@ -21,8 +21,8 @@
 #include "ChunkMeshBuilder.h"
 #include "ChunkMeshes.h"
 #include "ChunkRenderPipelines.h"
-#include "glm/glm.hpp"
-#include "glm/gtx/norm.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
 
 namespace gfx {
 

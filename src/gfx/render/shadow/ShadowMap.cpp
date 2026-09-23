@@ -1,4 +1,4 @@
-#include "ShadowMap.h"
+ #include "ShadowMap.h"
 
 namespace gfx {
 vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device, 
@@ -7,7 +7,7 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
   VkSamplerCreateInfo samplerCI = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
   samplerCI.maxLod = 0.0f;
   samplerCI.addressModeU = samplerCI.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
-  samplerCI.compareEnable = VK_TRUE;
+  samplerCI.compareEnable = VK_TRUE; 
   samplerCI.compareOp = VK_COMPARE_OP_LESS;
   samplerCI.magFilter = samplerCI.minFilter = VK_FILTER_LINEAR;
   VkImageCreateInfo imageCI = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
@@ -31,6 +31,7 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
 
 ShadowMap::ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
                      const ShadowPass& shadowPass, const VkExtent2D& resolution)
-    : texture_(CreateTexture(device, memoryAllocator, resolution)), framebuffer_(shadowPass.MakeFramebuffer(&texture_.imageView(), resolution)) {
+    : texture_(CreateTexture(device, memoryAllocator, resolution)),
+      framebuffer_(shadowPass.MakeFramebuffer(&texture_.imageView(), resolution))  {
 }
 }  // namespace gfx

@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="VoxelGore.vcxproj" Id="d086f03b-8d0c-4e05-84f0-bfd93cbd08a1" />
+</Solution>

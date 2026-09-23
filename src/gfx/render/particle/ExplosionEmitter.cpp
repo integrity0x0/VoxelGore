@@ -113,7 +113,7 @@ void ExplosionEmitter::Update(float dt) {
     p.uvMinMax = glm::vec4(uv.min.x, uv.min.y, uv.max.x, uv.max.y);
   }
 
-  updateParticles(dt);
+  UpdateParticles(dt);
 }
 
 }  // namespace gfx

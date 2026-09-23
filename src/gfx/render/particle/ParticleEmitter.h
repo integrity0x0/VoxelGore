@@ -22,7 +22,7 @@ class ParticleEmitter {
  protected:
   std::vector<Particle> particles_;
 
-  virtual void updateParticles(float dt) {
+  virtual void UpdateParticles(float dt) {
     for (auto& p : particles_) {
       p.velocity += p.acceleration * dt;
       p.pos += p.velocity * dt;

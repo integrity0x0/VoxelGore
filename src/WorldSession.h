@@ -11,6 +11,7 @@
 #include "game/physics/CollisionResolver.h"
 #include "game/physics/PhysicsSystem.h"
 #include "game/voxel/BlockManager.h"
+#include "game/Enviroment.h"
 
 namespace gm {
 
@@ -35,6 +36,7 @@ class WorldSession {
   EntityFactory& entities() { return *entityFactory_; }
   gm::ComponentRegistry& components() { return world_->components(); }
 
+  const gm::Enviroment& enviroment() const { return *enviroment_; }
  private:
   std::unique_ptr<World> world_;
   std::unique_ptr<BlockManager> blockManager_;
@@ -44,7 +46,7 @@ class WorldSession {
   std::unique_ptr<CollisionResolver> collisionResolver_;
   std::unique_ptr<PhysicsSystem> physicsSystem_;
   std::unique_ptr<HealthSystem> healthSystem_;
-
+  std::unique_ptr<Enviroment> enviroment_;
 };
 
 }  // namespace gm

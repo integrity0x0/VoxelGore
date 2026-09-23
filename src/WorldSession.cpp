@@ -32,6 +32,8 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
   physicsSystem_ = std::make_unique<PhysicsSystem>(*collisionResolver_);
   healthSystem_ = std::make_unique<HealthSystem>();
 
+  enviroment_ = std::make_unique<Enviroment>();
+
   entityDefs_->Register(assetsPrefix + "entities/barrel.json");
   entityDefs_->Register(assetsPrefix + "entities/integrity.json");
 }

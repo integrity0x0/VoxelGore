@@ -6,11 +6,13 @@ ParticleEngine::ParticleEngine(Atlas& generalAtlas, BlockRenderData& blockRender
                                const gm::BlockManager& blockManager,
                                const gm::ChunkManager& chunkManager,
                                const gm::Lighting& lighting,
+                               const gm::Enviroment& enviroment,
                                BillboardRenderBucket& generalBucket,
                                BillboardRenderBucket& blockBucket)
     : generalAtlas_(&generalAtlas),
       chunkManager_(&chunkManager),
       lighting_(&lighting),
+      enviroment_(&enviroment),
       blockRenderData_(&blockRenderData),
       generalBucket_(&generalBucket),
       blockBucket_(&blockBucket),
@@ -35,7 +37,7 @@ BillboardRenderBucket& ParticleEngine::BucketFor(const Particle& particle) {
   }
 }
 void ParticleEngine::WriteParticles(std::span<const Particle> particles, uint32_t currentFrame) {
-  static glm::vec3 ambientColor(0.08f, 0.10f, 0.18f);
+  static glm::vec3 ambientColor = enviroment_->GetColor();
 
   for (const Particle& particle : particles) {
     BillboardInstance instance;

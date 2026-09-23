@@ -8,6 +8,7 @@
 #include "ChannelRegistry.h"
 #include "LightChannel.h"
 #include "LightChunkStorage.h"
+#include "../Enviroment.h"
 
 namespace gm {
 
@@ -19,7 +20,7 @@ class Lighting {
   Lighting(ChunkManager& chunkManager, const BlockManager& blockManager)
       : chunkManager_(&chunkManager),
         blockManager_(&blockManager),
-        registry_(ChannelDefinition(kSunName, glm::vec3(1.0f))),
+        registry_(ChannelDefinition(kSunName, {}/*unused*/)),
         blockCache_(blockManager, registry_),
         sun_(*registry_.GetByName(kSunName), storage_, kSunId, blockCache_, *chunkManager_,
              *blockManager_) {}
