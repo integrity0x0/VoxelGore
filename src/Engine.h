@@ -67,8 +67,7 @@ class Engine {
   bool IsRenderable() const;
 
  private:
-  static constexpr uint32_t framesInFlight = 5u;
-
+  static constexpr uint32_t framesInFlight = 1;
   void loadLibrary();
   void createInstance();
   void createSurface();
@@ -84,9 +83,6 @@ class Engine {
   void createCommandPool();
   void createTransferCtxt();
   void createCommandBuffers();
-  VkFormat findDepthFormat() const;
-  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling,
-                               VkFormatFeatureFlags features) const;
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   android_app* app = nullptr;
@@ -119,7 +115,7 @@ class Engine {
   std::unique_ptr<vkcore::MemoryAllocator> memoryAllocator_;
   std::unique_ptr<vkcore::BufferAllocator> bufferAllocator_;
   std::unique_ptr<vkcore::Texture> depthTexture;
-  VkFormat depthFormat = VK_FORMAT_D16_UNORM;
+  VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
 
   uint32_t currentFrame = 0;
 

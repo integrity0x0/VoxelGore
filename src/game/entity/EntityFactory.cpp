@@ -3,6 +3,7 @@
 #include "../physics/HitboxComponent.h"
 #include "HealthComponent.h"
 #include "RenderComponent.h"
+#include "BleedComponent.h"
 
 namespace gm {
 
@@ -46,6 +47,10 @@ Entity EntityFactory::Create(std::string_view definitionId, const glm::vec3& pos
                                                                .current = definition->health->start,
                                                                .max = definition->health->max,
                                                            });
+  }
+
+  if (definition->bleeding) {
+    components_->Storage<BleedComponent>().Add(entity.id, BleedComponent{});
   }
 
   return entity;

@@ -448,7 +448,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;DISABLE_VVLS;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -468,7 +468,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;DISABLE_VVLS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;DISABLE_VVLS;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;DISABLE_VVLS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

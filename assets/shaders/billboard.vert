@@ -40,8 +40,7 @@ void main() {
         + cameraUp    * (corner.y * aSize.y);
 
     gl_Position = uGameData.proj * uGameData.view * vec4(worldPos, 1.0);
-
-    // Интерполяция UV с инверсией V для Vulkan
+    
     float u = mix(aUvMinMax.x, aUvMinMax.z, corner.x + 0.5);
     float v = mix(aUvMinMax.y, aUvMinMax.w, 1.0 - (corner.y + 0.5));
     oVert.uv = vec2(u, v);

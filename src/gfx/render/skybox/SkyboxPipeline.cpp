@@ -39,7 +39,7 @@ vkcore::Pipeline SkyboxPipeline::BuildPipeline(const vkcore::Device& device,
       .AddVertexBinding(0, sizeof(SkyboxVertex))  
       .AddVertexAttribute(0, 0, VK_FORMAT_R32G32B32_SFLOAT, 0)
       .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
-      .setCullMode(VK_CULL_MODE_BACK_BIT)
+      .setCullMode(VK_CULL_MODE_NONE)
       .setDepthTest(true, false, VK_COMPARE_OP_LESS_OR_EQUAL)
       .AddColorBlendAttachment(false)
       .Build(pipelineLayout_.handle(), renderPass.handle());

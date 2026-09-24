@@ -1,11 +1,15 @@
 #include "PlayerController.h"
 
+#ifndef __ANDROID__
 #include <GLFW/glfw3.h>
+#include "core/Window.h"
+#endif
+
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "core/Window.h"
 #include "gfx/render/particle/ParticleEngine.h"
 #include "WorldSession.h"
+#include "game/entity/BleedComponent.h"
 
 
 namespace gm {
@@ -30,6 +34,7 @@ const HitboxComponent& PlayerController::hitbox() const {
   return *session_->components().Storage<HitboxComponent>().Get(playerEntity_.id);
 }
 
+#ifndef __ANDROID__
 void PlayerController::HandleInput(core::Window& window, ControlState& control,
                                    bool& cursorLocked) {
   auto& input = window.input();
@@ -62,6 +67,7 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
     camera_.Rotate(state.cursorDeltaX(), state.cursorDeltaY());
   }
 }
+#endif
 
 void PlayerController::UpdateMovement(ControlState& control, float /*dt*/) {
   auto& hb = hitbox();
@@ -99,8 +105,16 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
   if (hit->entity.id != kInvalidEntityId) {
     auto* hb = session.components().Storage<HitboxComponent>().Get(hit->entity.id);
     auto* hl = session.components().Storage<HealthComponent>().Get(hit->entity.id);
+    auto* bleed = session.components().Storage<BleedComponent>().Get(hit->entity.id);
     if (!hb) return;
     if (hl) hl->Damage(10.0f);
+
+    if (bleed) {
+      bleed->damage = 10.0f;
+      bleed->hurted = true;
+      bleed->pos = hit->pos;
+      bleed->normal = hit->normal;
+    }
 
     glm::vec3 dir = hb->pos - hitbox().pos;
     dir.y = 0.0f;

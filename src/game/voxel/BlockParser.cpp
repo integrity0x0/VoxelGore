@@ -49,7 +49,7 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
 
   block.setDebrisConfig(BlockDebrisParser::parseFromBlockJson(j));
   block.setRenderGroup(j.value("renderGroup", "opaque"));
-  block.setObstacle(j.value("obstacle", false));
+  block.setObstacle(j.value("obstacle", true));
   block.setPassingLight(j.value("passingLight", false));
   block.setHardness(j.value("hardness", 0.0f));
   block.setFriction(j.value("friction", 15.0f));

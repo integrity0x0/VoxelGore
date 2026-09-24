@@ -4,7 +4,7 @@ namespace vkcore {
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 
-BlockSurface::BlockSurface(const Instance& instance, ANativeWindow* window) : instance_(&instance) {
+Surface::Surface(const Instance& instance, ANativeWindow* window) : instance_(&instance) {
   if (!window) {
     throw std::runtime_error("Surface: ANativeWindow* is null");
   }
@@ -28,7 +28,7 @@ BlockSurface::BlockSurface(const Instance& instance, ANativeWindow* window) : in
       androidTable.vkCreateAndroidSurfaceKHR(instance_->handle(), &surfaceCI, nullptr, &surfaceRaw);
   SystemError::Check(result, "Surface: vkCreateAndroidSurfaceKHR failed");
 
-  setupDeleter(surfaceRaw);
+  SetupDeleter(surfaceRaw);
 }
 
 #else
@@ -42,12 +42,12 @@ Surface::Surface(const Instance& instance, GLFWwindow* window) : instance_(&inst
   VkResult result = glfwCreateWindowSurface(instance_->handle(), window, nullptr, &surfaceRaw);
   SystemError::Check(result, "Surface: glfwCreateWindowSurface failed");
 
-  setupDeleter(surfaceRaw);
+  SetupDeleter(surfaceRaw);
 }
 
 #endif
 
-void Surface::setupDeleter(VkSurfaceKHR surfaceRaw) {
+void Surface::SetupDeleter(VkSurfaceKHR surfaceRaw) {
   const auto& dispatchTable = instance_->getDispatchTable();
 
   if (!dispatchTable.surfaceTable.has_value()) {

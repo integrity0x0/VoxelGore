@@ -13,7 +13,7 @@ namespace vkcore {
 class Surface {
  public:
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  BlockSurface(const Instance& instance, ANativeWindow* window);
+  Surface(const Instance& instance, ANativeWindow* window);
 #else
   Surface(const Instance& instance, GLFWwindow* window);
 #endif
@@ -24,7 +24,7 @@ class Surface {
   [[nodiscard]] const Instance& getInstance() const noexcept;
 
  private:
-  void setupDeleter(VkSurfaceKHR surfaceRaw);
+  void SetupDeleter(VkSurfaceKHR surfaceRaw);
 
   const Instance* instance_;
   UniqueSurfaceKHR surface_;

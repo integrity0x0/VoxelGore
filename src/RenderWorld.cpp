@@ -138,7 +138,7 @@ void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
 }
 
 void RenderWorld::CollectEntities(uint32_t frameIndex) {
-  entityRenderSystem_->Render(session_->components(), *modelRenderer_, *generalBucket_,
+  entityRenderSystem_->Render(session_->components(), *modelRenderer_, *particleEngine_, *generalBucket_,
                               session_->world(), session_->lighting(), session_->enviroment(),
                               frameIndex);
   modelRenderer_->UploadInstances(frameIndex);

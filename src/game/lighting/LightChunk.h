@@ -18,13 +18,13 @@ class LightChunk {
 
   void Set(const glm::ivec3& localPos, uint8_t value);
 
-  const std::array<uint8_t, kVolume / 2ull>& data() const {
+  [[nodiscard]] const std::array<uint8_t, kVolume / 2ull>& data() const {
     return data_;
   }
 
-  static [[nodiscard]] size_t GetIndex(const glm::ivec3& localPos);
+  [[nodiscard]] static size_t GetIndex(const glm::ivec3& localPos);
 
-  const glm::ivec3& pos() const { return pos_; }
+  [[nodiscard]] const glm::ivec3& pos() const { return pos_; }
  private:
   std::array<uint8_t, kVolume / 2ull> data_;
   glm::ivec3 pos_;

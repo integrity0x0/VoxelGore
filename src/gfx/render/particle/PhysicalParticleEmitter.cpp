@@ -7,8 +7,11 @@ PhysicalParticleEmitter::PhysicalParticleEmitter(const gm::ChunkManager& chunkMa
     : chunkManager_(&chunkManager), blockManager_(&blockManager) {}
 
 bool PhysicalParticleEmitter::IsObstacle(const glm::ivec3& pos) const {
-  std::optional<gm::Voxel> vox = chunkManager_->getVoxel(pos);
-  return vox && blockManager_->block(vox->id) && blockManager_->block(vox->id)->isObstacle();
+  const auto vox = chunkManager_->getVoxel(pos);
+  if (!vox || !vox->id) return false;
+
+  const gm::Block* block = blockManager_->block(vox->id);
+  return block && block->isObstacle();
 }
 
 void PhysicalParticleEmitter::ResolveCollision(Particle& p, float dt) {
@@ -40,9 +43,11 @@ void PhysicalParticleEmitter::ResolveCollision(Particle& p, float dt) {
 
 void PhysicalParticleEmitter::UpdateParticles(float dt) {
   for (auto& p : particles_) {
-    ResolveCollision(p, dt);
     p.life -= dt;
     p.rotation += p.angularVelocity * dt;
+    p.velocity += p.acceleration * dt;
+    ResolveCollision(p, dt);
+
   }
 
   particles_.erase(std::remove_if(particles_.begin(), particles_.end(),

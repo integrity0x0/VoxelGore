@@ -11,20 +11,7 @@
 #include <optional>
 
 #include "Engine.h"
-#include "core/Camera.h"
-#include "core/CameraShake.h"
-#include "core/InputAndroid.h"
-#include "core/PathPrefixes.h"
-#include "game/LibControl.h"
-#include "game/World.h"
-#include "game/entity/EntityFactory.h"
-#include "game/lighting/Lighting.h"
-#include "game/physics/PhysicsSystem.h"
-#include "gfx/block/PreviewRenderer.h"
-#include "gfx/entity/EntityRenderSystem.h"
-#include "gfx/render/chunk/ChunkRenderer.h"
-#include "gfx/render/particle/ParticleEngine.h"
-#include "gfx/ui/LibGui.h"
+#include "Game.h"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "VoxelGore", __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "VoxelGore", __VA_ARGS__)

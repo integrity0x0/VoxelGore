@@ -20,6 +20,6 @@ layout(location = 0) out Vertex {
 void main() {
   mat4 view = mat4(mat3(uGameData.view));
   gl_Position = uGameData.proj * view * vec4(aPos, 1.0f);
-  gl_Position.z = gl_Position.w;
+  gl_Position.z = gl_Position.w * (1.0 - 1e-5);
   oVert.uv = aPos;
 }

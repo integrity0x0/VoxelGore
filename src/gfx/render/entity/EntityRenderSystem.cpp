@@ -5,6 +5,7 @@ EntityRenderSystem::EntityRenderSystem(ModelCache& modelCache, Atlas& generalAtl
     : renderData_(modelCache, generalAtlas) {}
 
 void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
+                                ParticleEngine& particleEngine,
                                 BillboardRenderBucket& billboardRenderBucket,
                                 const gm::World& world, const gm::Lighting& lighting,
                                 const gm::Enviroment& enviroment,
@@ -14,6 +15,7 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
   auto& renderStorage = registry.Storage<gm::RenderComponent>();
   auto& hitboxStorage = registry.Storage<gm::HitboxComponent>();
   auto& healthStorage = registry.Storage<gm::HealthComponent>();
+  auto& bleedStorage = registry.Storage<gm::BleedComponent>();
 
   const auto& entities = renderStorage.denseEntities();
   auto& components = renderStorage.denseComponents();
@@ -79,6 +81,12 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
         billboardRenderBucket.Submit(instance, ToRenderLayer(Render.renderLayer), currentFrame);
         break;
       }
+    }
+
+    auto* bleed = bleedStorage.Get(id);
+    if (bleed && bleed->hurted) {
+      particleEngine.SpawnBlood(bleed->pos, bleed->normal, bleed->damage);
+      bleed->hurted = false;
     }
   }
 }

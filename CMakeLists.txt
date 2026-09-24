@@ -24,8 +24,13 @@ set(LUAJIT_LIBRARY
         "${CMAKE_SOURCE_DIR}/libs/android/libluajit.a"
 )
 
+set(SHADERC_LIBRARY
+        "${CMAKE_SOURCE_DIR}/libs/android/libshaderc_combined.a"
+)
+
 message(STATUS "LuaJIT include: ${LUAJIT_INCLUDE_DIR}")
 message(STATUS "LuaJIT library: ${LUAJIT_LIBRARY}")
+message(STATUS "Shaderc library: ${SHADERC_LIBRARY}")
 
 # ============================================================
 # Native App Glue
@@ -52,7 +57,7 @@ set(SOURCE_FILES
         src/WorldSession.cpp
         src/RenderWorld.cpp
         src/PlayerController.cpp
-     
+
         # Engine
         src/Engine.cpp
 
@@ -110,6 +115,7 @@ set(SOURCE_FILES
         src/core/CameraShake.cpp
         src/core/InputState.cpp
         src/core/Camera.cpp
+
         # game
         src/game/entity/EntityParser.cpp
         src/game/entity/EntityFactory.cpp
@@ -123,19 +129,20 @@ set(SOURCE_FILES
         src/game/voxel/BlockManager.cpp
         src/game/physics/CollisionResolver.cpp
 
+        src/game/Enviroment.cpp
         src/game/lighting/ChannelProcessor.cpp
         src/game/lighting/Lighting.cpp
-        src/game/lighting/LighChunk.cpp
+        src/game/lighting/LightChunk.cpp
         src/game/lighting/LightChunkStorage.cpp
-        src/game/lighting/ChannelParser.cpp 
-        src/game/lighting/ChannelRegistry.cpp 
-        src/game/lighting/BlockLightCache.cpp 
+        src/game/lighting/ChannelParser.cpp
+        src/game/lighting/ChannelRegistry.cpp
+        src/game/lighting/BlockLightCache.cpp
 
         src/game/LibControl.cpp
 
         # gfx
-        src/gfx/common/ShaderCompiler.cpp
-        src/gfx/common/ShaderIncluder.cpp
+        src/gfx/common/shader/ShaderCompiler.cpp
+        src/gfx/common/shader/ShaderIncluder.cpp
         src/gfx/common/mesh/Mesh.cpp
         src/gfx/common/mesh/TranslucentMesh.cpp
         src/gfx/common/mesh/Model.cpp
@@ -150,6 +157,7 @@ set(SOURCE_FILES
         src/gfx/common/texture/TextureCache.cpp
         src/gfx/common/texture/TextureManager.cpp
         src/gfx/common/texture/MaterialManager.cpp
+        src/gfx/common/texture/Skybox.cpp
 
         src/gfx/render/block/BlockSurfaceRegistry.cpp
         src/gfx/render/block/BlockAnimation.cpp
@@ -157,7 +165,13 @@ set(SOURCE_FILES
         src/gfx/render/block/BlockUvBuffer.cpp
         src/gfx/render/block/BlockPreviewRenderer.cpp
         src/gfx/render/block/BlockRenderData.cpp
-        src/gfx/render/block/BlockRenderGroupRegistry.cpp
+
+        src/gfx/render/skybox/SkyboxPipeline.cpp
+        src/gfx/render/skybox/SkyboxRenderer.cpp
+
+        src/gfx/render/shadow/ShadowContext.cpp
+        src/gfx/render/shadow/ShadowMap.cpp
+        src/gfx/render/shadow/ShadowPass.cpp
 
         src/gfx/render/billboard/BillboardBatch.cpp
         src/gfx/render/billboard/BillboardPipelines.cpp
@@ -168,16 +182,20 @@ set(SOURCE_FILES
         src/gfx/render/chunk/ChunkMeshBuilder.cpp
         src/gfx/render/chunk/ChunkRenderer.cpp
         src/gfx/render/chunk/ChunkRenderPipelines.cpp
+        src/gfx/render/chunk/ChunkShadowPipelines.cpp
+
         src/gfx/render/entity/EntityRenderData.cpp
         src/gfx/render/entity/EntityRenderSystem.cpp
-        src/gfx/render/ModelPipeline.cpp
-        src/gfx/render/ModelRenderer.cpp
+        src/gfx/render/model/ModelPipeline.cpp
+        src/gfx/render/model/ModelRenderer.cpp
+        src/gfx/render/model/ModelShadowPipeline.cpp
 
-        src/gfx/render/particle/ParticleEmitter.cpp
         src/gfx/render/particle/ParticleEngine.cpp
         src/gfx/render/particle/BlockDebrisEmitter.cpp
         src/gfx/render/particle/ExplosionEmitter.cpp
-        
+        src/gfx/render/particle/BloodEmitter.cpp
+        src/gfx/render/particle/PhysicalParticleEmitter.cpp
+
         # UI
         src/gfx/render/ui/Node.cpp
         src/gfx/render/ui/Container.cpp
@@ -191,6 +209,9 @@ set(SOURCE_FILES
         # scripting
         src/script/LuaState.cpp
         src/script/LuaScript.cpp
+
+        #util
+        src/util/files.cpp
 
         # third_party
         third_party/tinyxml2.cpp
@@ -238,7 +259,7 @@ target_link_libraries(VoxelGore PRIVATE
         android
         log
         dl
-        vulkan    
+        vulkan
 
         # Standard math
         m
@@ -249,8 +270,8 @@ target_link_libraries(VoxelGore PRIVATE
         # LuaJIT
         ${LUAJIT_LIBRARY}
 
-        # shaderc
-        shaderc
+        # Shaderc
+        ${SHADERC_LIBRARY}
 )
 
 # ============================================================
@@ -274,7 +295,7 @@ target_compile_definitions(VoxelGore PRIVATE
 
         DISABLE_VVLS
 )
- 
+
 # ============================================================
 # Output
 # ============================================================

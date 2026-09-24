@@ -1,46 +1,53 @@
+#include <atomic>
 #include <chrono>
 #include <iostream>
 #include <thread>
 
 #include "Engine.h"
-#include "core/Camera.h"
-#include "core/CameraShake.h"
-#include "core/PathPrefixes.h"
-#include "core/Window.h"
-#include "game/LibControl.h"
-#include "game/entity/EntityFactory.h"
-#include "game/lighting/Lighting.h"
-#include "game/physics/PhysicsSystem.h"
-#include "gfx/render/block/BlockPreviewRenderer.h"
-#include "gfx/render/entity/EntityRenderSystem.h"
-#include "gfx/render/billboard/BillboardRenderer.h"
-#include "gfx/render/chunk/ChunkRenderer.h"
-#include "gfx/render/particle/ParticleEngine.h"
-#include "gfx/render/ui/LibGui.h"
-#include "gfx/common/texture/Skybox.h"
-#include "gfx/render/skybox/SkyboxRenderer.h"
-
 #include "Game.h"
 
 int main() {
   glfwInit();
+
+  std::atomic<uint64_t> frameCount{0};
+  std::atomic<bool> running{true};
+
+  std::thread fpsThread([&]() {
+    while (running.load(std::memory_order_relaxed)) {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+
+      const uint64_t fps = frameCount.exchange(0, std::memory_order_relaxed);
+
+      std::cout << "FPS: " << fps << '\n';
+    }
+  });
+
   try {
     core::Window::Hint(GLFW_RESIZABLE, GLFW_TRUE);
     core::Window::Hint(GLFW_CLIENT_API, GLFW_NO_API);
-    auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha | WTF!!!");
+
+    auto window = std::make_unique<core::Window>(1280, 720, "VoxelGore v0.10-alpha");
 
     Game game(std::move(window));
+
     while (!game.window().IsShouldClose()) {
       glfwPollEvents();
+
       if (game.window().IsMinimized()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
         continue;
-      }   
+      }
+
       game.Frame();
+      frameCount.fetch_add(1, std::memory_order_relaxed);
     }
   } catch (const std::exception& e) {
     std::cerr << "[ERROR] " << e.what() << "\n";
   }
+
+  running.store(false, std::memory_order_relaxed);
+  fpsThread.join();
+
   glfwTerminate();
   return 0;
 }

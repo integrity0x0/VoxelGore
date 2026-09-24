@@ -71,7 +71,7 @@ class Block {
 
  private:
   uint32_t id_;
-  bool obstacle_ = false;
+  bool obstacle_ = true;
   bool passingLight_ = false;
   float hardness_ = 0.0f;
   glm::ivec3 emission_ = {};

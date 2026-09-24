@@ -1,10 +1,12 @@
 #pragma once
 
-#include <atomic>
 #include <chrono>
 #include <memory>
 #include <optional>
+
+#ifdef __ANDROID__
 #include <unordered_map>
+#endif
 
 #include "Engine.h"
 #include "PlayerController.h"
@@ -15,6 +17,7 @@
 #include "gfx/render/block/BlockPreviewRenderer.h"
 #include "gfx/render/ui/LibGui.h"
 #include "gfx/render/ui/Ui.h"
+#include "script/LuaState.h"
 
 #ifdef __ANDROID__
 struct android_app;
@@ -42,6 +45,13 @@ class Game {
  private:
   void Init();
   void SetViewportAndScissor(VkCommandBuffer cmd);
+  void UpdateInput();
+#ifdef __ANDROID__
+  void UpdateInput(const std::unordered_map<int32_t, core::Pointer>& touches);
+#endif
+  void UpdateUiSize();
+  bool HandleResize();
+  void UpdatePlatform();
 
 #ifndef __ANDROID__
   std::unique_ptr<core::Window> window_;
@@ -64,9 +74,12 @@ class Game {
   gm::ControlState controlState_;
   bool cursorLocked_ = true;
 
-  std::chrono::high_resolution_clock::time_point lastFrameTime_{};
-  std::chrono::high_resolution_clock::time_point lastFpsTime_{};
+  VkExtent2D uiExtent_{};
+
+  std::chrono::steady_clock::time_point lastFrameTime_{};
+  std::chrono::steady_clock::time_point lastFpsTime_{};
   float dt_ = 0.0f;
+  float frameTime_ = 0.0f;
   int frameCount_ = 0;
   int fpsFrames_ = 0;
 };

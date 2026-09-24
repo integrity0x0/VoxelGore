@@ -93,7 +93,7 @@ void Engine::createSurface() {
   LOGI("Creating surface...");
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  surface = std::make_unique<vkcore::BlockSurface>(*instance, app->window);
+  surface = std::make_unique<vkcore::Surface>(*instance, app->window);
 #elif defined(VK_USE_PLATFORM_WIN32_KHR)
   surface = std::make_unique<vkcore::Surface>(*instance, nativeWindow);
 #endif
@@ -119,16 +119,15 @@ void Engine::createLogicalDevice() {
 
   vkcore::DeviceCreator creator(*physDevice, *instance);
 
-  // graphics всегда первая очередь -> индекс 0
   creator.addQueue(*indices.graphics);
   graphicsQueueIndex = 0;
 
   if (indices.present.has_value() && indices.present != indices.graphics) {
-    // present family отличается от graphics -> отдельная запись, индекс 1
+
     creator.addQueue(*indices.present);
     presentQueueIndex = 1;
   } else if (indices.present.has_value()) {
-    // одна и та же family — используем ту же очередь
+
     presentQueueIndex = graphicsQueueIndex;
   } else {
     throw std::runtime_error("No present queue family found");
@@ -268,6 +267,7 @@ void Engine::createSyncObjects() {
   for (uint32_t i = 0; i < imageCount; ++i) {
     renderFinishedSemaphores.emplace_back(*device);
   }
+
 }
 
 void Engine::createCommandPool() {
@@ -340,8 +340,7 @@ bool Engine::beginFrame(uint32_t& imageIndex) {
 }
 
 void Engine::recreateSwapchain() {
-  getGraphicsQueue().WaitIdle();
-
+  device->WaitIdle();
   framebuffers.clear();
   depthTexture.reset();
   swapchain.reset();
@@ -350,6 +349,7 @@ void Engine::recreateSwapchain() {
   createDepthResources();
   createFramebuffers();
 }
+
 void Engine::destroySurface() {
   device->WaitIdle();
   framebuffers.clear();

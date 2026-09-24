@@ -29,7 +29,7 @@ struct Particle {
   bool collision;
   bool settled_ = false;
 
-  glm::vec4 color;
+  glm::vec4 color = glm::vec4(1.0f);
 
   float life;
   float maxLife;

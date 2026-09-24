@@ -17,9 +17,11 @@ class ParticleEngine {
                  const gm::Lighting& lighting, const gm::Enviroment& enviroment,
                  BillboardRenderBucket& generalBucket, BillboardRenderBucket& blockBucket);
 
-  void SpawnExplosion(const glm::vec3& position, float power = 4.0f);
+  void SpawnExplosion(const glm::vec3& pos, float power = 4.0f);
 
-  void SpawnBlockDebris(uint32_t blockId, const glm::vec3& position);
+  void SpawnBlockDebris(uint32_t blockId, const glm::vec3& pos);
+
+  void SpawnBlood(const glm::vec3& pos, const glm::vec3& normal, float damage);
 
   void Update(float dt, uint32_t currentFrame);
 
