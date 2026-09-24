@@ -1,41 +1,57 @@
 #include "BloodEmitter.h"
 
+#include <random>
+
 namespace gfx {
-BloodEmitter::BloodEmitter(const gm::BlockManager& blockManager,
+
+namespace {
+
+std::mt19937 gRandomEngine{std::random_device{}()};
+std::uniform_real_distribution<float> gDist01(0.0f, 1.0f);
+
+float RandFloat01() { return gDist01(gRandomEngine); }
+
+float RandRange(float lo, float hi) { return lo + RandFloat01() * (hi - lo); }
+
+glm::vec3 RandRange(const glm::vec3& lo, const glm::vec3& hi) {
+  return {RandRange(lo.x, hi.x), RandRange(lo.y, hi.y), RandRange(lo.z, hi.z)};
+}
+
+}  // namespace
+
+
+BloodEmitter::BloodEmitter(const Atlas& atlas, const gm::BlockManager& blockManager,
                            const gm::ChunkManager& chunkManager) 
-    : blockManager_(&blockManager),
-      chunkManager_(&chunkManager) {}
+    : PhysicalParticleEmitter(chunkManager, blockManager),
+      blockManager_(&blockManager),
+      chunkManager_(&chunkManager) {
+  const AtlasRegion* reg = atlas.Find("blank");
 
-bool BloodEmitter::IsObstacle(const glm::ivec3& pos) {
-  return chunkManager.hasVoxel(pos) && chunkManager.getVoxel(pos)->id != 0;
-}
-
-void BloodEmitter::ResolveParticleCollision(Particle& p, float dt) {
-  static constexpr float kSettleVelocity = 0.05f;
-  if (p.settled_) return;
-
-  glm::vec3 delta = p.velocity * dt;
-  bool wasFalling = p.velocity.y < 0.0f;
-  bool hitGround = false;
-
-  for (int axis = 0; axis < 3; ++axis) {
-    glm::vec3 next = p.pos;
-    next[axis] += delta[axis];
-
-    if (IsObstacle(glm::ivec3(glm::floor(next)), chunkManager)) {
-      p.velocity[axis] *= -p.bounceFactor;
-
-      if (axis == 1 && wasFalling) hitGround = true;
-      continue;
-    }
-    p.pos[axis] = next[axis];
+  if (!reg) {
+    throw std::runtime_error("BloodEmitter: Unable to find a blank texture");
   }
 
-  if (hitGround && std::abs(p.velocity.y) < kSettleVelocity) {
-    p.velocity = glm::vec3(0.0f);
-    p.settled_ = true;
-  }
+  blankRegion_ = reg->toUv();
 }
 
 
+void BloodEmitter::Spawn(const glm::vec3& pos, const glm::vec3& normal, float damage) {
+  size_t count = static_cast<size_t>(damage * kCountPerDamage);
+  for (size_t i = 0; i < count; ++i) {
+    Particle particle;
+    particle.maxLife = RandRange(kMinLife, kMaxLife);
+    particle.acceleration = glm::vec3(0.0f, -25.3f, 0.0f);
+    particle.atlasType = gfx::Particle::AtlasType::General;
+    particle.bounceFactor = 0.0f;
+    particle.color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    particle.size = glm::vec2(0.15f);
+    particle.uvMinMax = glm::vec4(blankRegion_.min, blankRegion_.max);
+    particle.layer = static_cast<float>(blankRegion_.arrayLayer);
+    particles_.emplace_back(particle);
+  }
+}
+
+void BloodEmitter::Update(float dt) {
+  UpdateParticles(dt);
+}
 }  // namespace gfx

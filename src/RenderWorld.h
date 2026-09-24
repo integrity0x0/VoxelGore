@@ -53,6 +53,8 @@ class RenderWorld {
   void CollectEntities(uint32_t frameIndex);
 
  private:
+  static inline std::string kBlankTexturePath = core::kAssetsPrefix + "images/blank.png";
+  static constexpr std::string_view kBlankTextureKey = "blank";
   Engine* engine_;
   gm::WorldSession* session_;
   std::unique_ptr<ShaderCompiler> shaderCompiler_;

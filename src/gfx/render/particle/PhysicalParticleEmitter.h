@@ -9,11 +9,12 @@ class PhysicalParticleEmitter : public ParticleEmitter {
  public:
   PhysicalParticleEmitter(const gm::ChunkManager& chunkManager,
                           const gm::BlockManager& blockManager);
- protected:
-  [[nodiscard]] bool IsObstacle(const glm::ivec3& pos);
-  void ResolveCollisions(Particle& p, float dt);
 
- private:
+ protected:
+  [[nodiscard]] bool IsObstacle(const glm::ivec3& pos) const;
+  void ResolveCollision(Particle& p, float dt);
+  void UpdateParticles(float dt) override;
+ protected:
   const gm::ChunkManager* chunkManager_;
   const gm::BlockManager* blockManager_;
 };

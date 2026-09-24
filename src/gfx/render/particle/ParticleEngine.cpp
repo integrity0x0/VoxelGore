@@ -16,8 +16,9 @@ ParticleEngine::ParticleEngine(Atlas& generalAtlas, BlockRenderData& blockRender
       blockRenderData_(&blockRenderData),
       generalBucket_(&generalBucket),
       blockBucket_(&blockBucket),
-      blockDebrisEmitter_(blockRenderData, blockManager, chunkManager),
-      explosionEmitter_(generalAtlas) {}
+      blockDebrisEmitter_(blockRenderData, chunkManager, blockManager),
+      explosionEmitter_(generalAtlas),
+      bloodEmitter_(generalAtlas, blockManager, chunkManager) {}
 
 void ParticleEngine::SpawnBlockDebris(uint32_t blockId, const glm::vec3& position) {
   blockDebrisEmitter_.Spawn(blockId, position);

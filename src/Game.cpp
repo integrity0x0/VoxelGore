@@ -53,9 +53,9 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
 void Game::Init() {
   const vkcore::Device& device = engine_->getDevice();
   // world
-  constexpr uint32_t kWorldW = 3;
+  constexpr uint32_t kWorldW = 1;
   constexpr uint32_t kWorldH = 1;
-  constexpr uint32_t kWorldD = 3;
+  constexpr uint32_t kWorldD = 1;
 
   session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
   render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, core::kAssetsPrefix);
@@ -156,14 +156,13 @@ void Game::SetViewportAndScissor(VkCommandBuffer cmd) {
 bool Game::Frame() {
   player_->HandleInput(*window_, controlState_, cursorLocked_);
 
-  // touch swipe for unlocked cursor
   if (!cursorLocked_ && ui_) {
     auto swipe = ui_->routeTouches(window_->input().getState().pointers());
     player_->camera().Rotate(swipe.deltaX, swipe.deltaY);
   }
 
   uint32_t imageIndex = 0;
-  if (!engine_->beginFrame(imageIndex)) {
+  if (!engine_->beginFrame(imageIndex) || window_->isResized()) {
     engine_->recreateSwapchain();
     return true;
   }

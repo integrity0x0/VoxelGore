@@ -136,6 +136,8 @@ LightChunk* ChannelProcessor::GetNeighborChunk(LightChunk* chunk, const glm::ive
 void ChannelProcessor::Update() {
   ProcessRemoveQueue();
   ProcessSpreadQueue();
+  spreadQueue_ = {};
+  removeQueue_ = {};
 }
 
 void ChannelProcessor::ProcessRemoveQueue() {

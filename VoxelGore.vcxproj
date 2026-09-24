@@ -111,8 +111,10 @@
     <ClCompile Include="src\gfx\render\model\ModelRenderer.cpp" />
     <ClCompile Include="src\gfx\render\model\ModelShadowPipeline.cpp" />
     <ClCompile Include="src\gfx\render\particle\BlockDebrisEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\particle\BloodEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ExplosionEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\ParticleEngine.cpp" />
+    <ClCompile Include="src\gfx\render\particle\PhysicalParticleEmitter.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
@@ -173,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\shaders\UniformGameData.glsl" />
+    <ClInclude Include="src\game\entity\BleedComponent.h" />
     <ClInclude Include="src\game\Enviroment.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
@@ -263,11 +266,13 @@
     <ClInclude Include="src\gfx\render\model\ModelRenderer.h" />
     <ClInclude Include="src\gfx\render\model\ModelShadowPipeline.h" />
     <ClInclude Include="src\gfx\render\particle\BlockDebrisEmitter.h" />
+    <ClInclude Include="src\gfx\render\particle\BloodEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\ExplosionEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\Particle.h" />
     <ClInclude Include="src\gfx\render\particle\ParticleEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\ParticleEngine.h" />
     <ClInclude Include="src\gfx\render\particle\ParticleInstance.h" />
+    <ClInclude Include="src\gfx\render\particle\PhysicalParticleEmitter.h" />
     <ClInclude Include="src\gfx\render\RenderLayers.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowContext.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
@@ -463,7 +468,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;NDEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;DISABLE_VVLS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

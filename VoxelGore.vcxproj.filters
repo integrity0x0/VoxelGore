@@ -159,6 +159,8 @@
     <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
     <ClCompile Include="src\gfx\render\model\ModelShadowPipeline.cpp" />
     <ClCompile Include="src\game\Enviroment.cpp" />
+    <ClCompile Include="src\gfx\render\particle\BloodEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\particle\PhysicalParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -333,5 +335,8 @@
     <ClInclude Include="src\gfx\Settings.h" />
     <ClInclude Include="src\gfx\render\model\ModelShadowPipeline.h" />
     <ClInclude Include="src\game\Enviroment.h" />
+    <ClInclude Include="src\gfx\render\particle\BloodEmitter.h" />
+    <ClInclude Include="src\gfx\render\particle\PhysicalParticleEmitter.h" />
+    <ClInclude Include="src\game\entity\BleedComponent.h" />
   </ItemGroup>
 </Project>

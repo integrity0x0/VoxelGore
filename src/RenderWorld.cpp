@@ -58,8 +58,12 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
                                                            *gameDataBinding_, *shaderCompiler_);
 
   billboardsAtlas_ = std::make_unique<Atlas>(device, engine.transferContext(), memoryAllocator,
-                                             glm::ivec2{4096, 4096}, 4u);
+                                             glm::ivec2{4096, 4096}, 4);
+  if (!billboardsAtlas_->Load(kBlankTexturePath, kBlankTextureKey))
+    throw std::runtime_error("Unable to load blank texture: " + kBlankTexturePath);
 
+  if (!billboardsAtlas_->Load(kBlankTexturePath, "saaaaa"))
+    throw std::runtime_error("Unable to load blank texture: " + kBlankTexturePath);
   generalBucket_ = &billboardRenderer_->CreateBucket(engine.bufferAllocator(), *billboardsAtlas_,
                                                      engine.getFramesInFlightCount());
   blockBucket_ = &billboardRenderer_->CreateBucket(

@@ -67,7 +67,7 @@ class Engine {
   bool IsRenderable() const;
 
  private:
-  static constexpr uint32_t framesInFlight = 2u;
+  static constexpr uint32_t framesInFlight = 5u;
 
   void loadLibrary();
   void createInstance();
@@ -96,7 +96,7 @@ class Engine {
   std::unique_ptr<vkcore::LibraryLoader> libraryLoader;
   std::unique_ptr<vkcore::Instance> instance;
 
-#if defined(_DEBUG) && !defined(DISABLE_VVLS)
+#if !defined(DISABLE_VVLS)
   std::unique_ptr<vkcore::DebugMessenger> debugMessenger;
 #endif
   std::unique_ptr<vkcore::Surface> surface;

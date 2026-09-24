@@ -42,9 +42,9 @@ gm::Block::Face PickFace(gm::BlockDebrisConfig::Face mode) {
 }  // namespace
 
 BlockDebrisEmitter::BlockDebrisEmitter(BlockRenderData& renderData,
-                                       const gm::BlockManager& blockManager,
-                                       const gm::ChunkManager& chunkManager)
-    : renderData_(&renderData), blockManager_(&blockManager), chunkManager_(&chunkManager) {}
+                                       const gm::ChunkManager& chunkManager,
+                                       const gm::BlockManager& blockManager)
+    : renderData_(&renderData), PhysicalParticleEmitter(chunkManager, blockManager) {}
 
 void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
   const gm::Block* block = blockManager_->block(blockId);
@@ -99,21 +99,6 @@ void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
     particle.collision = true;
     particles_.push_back(particle);
   }
-}
-
-void BlockDebrisEmitter::UpdateParticles(float dt) {
-  for (auto& p : particles_) {
-    p.velocity += p.acceleration * dt;
-
-    ResolveParticleCollision(p, dt, *chunkManager_);
-
-    p.life -= dt;
-    p.rotation += p.angularVelocity * dt;
-  }
-
-  particles_.erase(std::remove_if(particles_.begin(), particles_.end(),
-                                  [](const Particle& p) { return p.life <= 0.0f; }),
-                   particles_.end());
 }
 
 void BlockDebrisEmitter::Update(float dt) { UpdateParticles(dt); }

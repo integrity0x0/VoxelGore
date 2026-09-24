@@ -72,7 +72,7 @@ void Engine::createInstance() {
 #endif
 
   std::vector<std::string> validationLayers;
-#if defined(_DEBUG) && !defined(DISABLE_VVLS)
+#if !defined(DISABLE_VVLS)
   validationLayers.push_back("VK_LAYER_KHRONOS_validation");
 #ifndef __ANDROID__
   instanceExtensions.push_back("VK_EXT_debug_utils");
@@ -82,7 +82,7 @@ void Engine::createInstance() {
   instance = std::make_unique<vkcore::Instance>(*libraryLoader, instanceExtensions,
                                                 validationLayers, appInfo);
 
-#if defined(_DEBUG) && !defined(VK_USE_PLATFORM_ANDROID_KHR)
+#if !defined(DISABLE_VVLS)
   debugMessenger = std::make_unique<vkcore::DebugMessenger>(*instance);
 #endif
 
@@ -258,11 +258,14 @@ void Engine::createFramebuffers() {
 
 void Engine::createSyncObjects() {
   LOGI("Creating sync objects...");
-  uint32_t count = framesInFlight;
 
-  for (uint32_t i = 0; i < count; ++i) {
+  for (uint32_t i = 0; i < framesInFlight; ++i) {
     inFlightFences.emplace_back(*device, VK_FENCE_CREATE_SIGNALED_BIT);
     imageAvailableSemaphores.emplace_back(*device);
+  }
+  
+  uint32_t imageCount = swapchain->getImageCount();
+  for (uint32_t i = 0; i < imageCount; ++i) {
     renderFinishedSemaphores.emplace_back(*device);
   }
 }
@@ -400,7 +403,7 @@ void Engine::endFrame(uint32_t imageIndex) {
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &cmd;
 
-  VkSemaphore signalSemas[] = {renderFinishedSemaphores[currentFrame].handle()};
+  VkSemaphore signalSemas[] = {renderFinishedSemaphores[imageIndex].handle()};
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores = signalSemas;
 

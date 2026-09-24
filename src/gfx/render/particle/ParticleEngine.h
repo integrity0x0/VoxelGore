@@ -5,6 +5,7 @@
 #include "../billboard/BillboardRenderBucket.h"
 #include "BlockDebrisEmitter.h"
 #include "ExplosionEmitter.h"
+#include "BloodEmitter.h"
 #include "../../../game/Enviroment.h"
 
 namespace gfx {
@@ -33,6 +34,7 @@ class ParticleEngine {
 
   BlockDebrisEmitter blockDebrisEmitter_;
   ExplosionEmitter explosionEmitter_;
+  BloodEmitter bloodEmitter_;
 
   BillboardRenderBucket& BucketFor(const Particle& particle);
 

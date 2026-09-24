@@ -35,6 +35,7 @@ class EntityParser {
     std::optional<Render> render;
     std::optional<Hitbox> hitbox;
     std::optional<Health> health;
+    bool bleeding = false;
   };
 
   EntityParser() = delete;

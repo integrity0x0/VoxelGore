@@ -11,8 +11,8 @@ defaultDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                      const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
   if (messageSeverity & (
                          VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)) {
-    std::cerr << "validation layer: " << pCallbackData->pMessage << "\n\n";
-    return false;
+    std::cerr << "validation layer: " << pCallbackData->pMessage;
+    std::cerr << "\n\n";
   }
 
   return VK_FALSE;

@@ -1,4 +1,3 @@
-// files.cpp
 #include "files.h"
 
 #include <fstream>
@@ -48,6 +47,9 @@ Container ReadFileImpl(std::string_view path) {
   if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
     return {};
   }
+
+  file.close();
+
   return buffer;
 #endif
 }

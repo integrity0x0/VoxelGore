@@ -11,54 +11,15 @@ extern AAssetManager* g_AAssetManager;
 #endif
 
 #include "../../util/pathUtils.h"
+#include "../../util/files.h"
 
 namespace gm {
 
 namespace {
 
 std::optional<nlohmann::json> LoadJson(std::string_view path) {
-#ifdef __ANDROID__
-  AAsset* asset = AAssetManager_open(g_AAssetManager, path.data(), AASSET_MODE_BUFFER);
-
-  if (!asset) {
-    return std::nullopt;
-  }
-
-  const size_t size = AAsset_getLength(asset);
-
-  std::string data(size, '\0');
-
-  const int64_t read = AAsset_read(asset, data.data(), size);
-
-  AAsset_close(asset);
-
-  if (read != static_cast<int64_t>(size)) {
-    return std::nullopt;
-  }
-
-  try {
-    return nlohmann::json::parse(data);
-  } catch (const nlohmann::json::exception&) {
-    return std::nullopt;
-  }
-
-#else
-
-  std::ifstream file(path.data());
-
-  if (!file) {
-    return std::nullopt;
-  }
-
-  try {
-    nlohmann::json json;
-    file >> json;
-    return json;
-  } catch (const nlohmann::json::exception&) {
-    return std::nullopt;
-  }
-
-#endif
+  std::string data = util::ReadFile(path);
+  return nlohmann::json::parse(data);
 }
 
 std::optional<gm::RenderComponent::Type> ParseRenderType(std::string_view value) {
@@ -171,6 +132,8 @@ std::optional<EntityParser::Definition> EntityParser::Parse(std::string_view pat
           .start = health.value("start", max),
       };
     }
+
+    definition.bleeding = json->value("bleeding", false);
 
     return definition;
 
