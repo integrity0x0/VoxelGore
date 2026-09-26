@@ -25,9 +25,7 @@ Engine::Engine(android_app* app)
 Engine::Engine(GLFWwindow* window)
     : nativeWindow(window)
 #endif
-      ,
-      rng(std::random_device{}()),
-      colorDist(0.0f, 1.0f) {
+  {
   loadLibrary();
   createInstance();
   createSurface();
@@ -63,7 +61,9 @@ void Engine::createInstance() {
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.apiVersion = VK_API_VERSION_1_0;
 
-  std::vector<std::string> instanceExtensions = {VK_KHR_SURFACE_EXTENSION_NAME};
+  std::vector<std::string> instanceExtensions = {
+      VK_KHR_SURFACE_EXTENSION_NAME,
+  };
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   instanceExtensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
@@ -72,13 +72,38 @@ void Engine::createInstance() {
 #endif
 
   std::vector<std::string> validationLayers;
+
 #if !defined(DISABLE_VVLS)
   validationLayers.push_back("VK_LAYER_KHRONOS_validation");
-#ifndef __ANDROID__
+
+  std::vector<VkExtensionProperties> validationLayerExtensions;
+
+  uint32_t extensionCount = 0;
+
+  VkResult result = libraryLoader->dispatchTable().vkEnumerateInstanceExtensionProperties(
+      "VK_LAYER_KHRONOS_validation", &extensionCount, nullptr);
+
+  if (result != VK_SUCCESS) {
+    throw std::runtime_error("Failed to enumerate validation layer extensions");
+  }
+
+  validationLayerExtensions.resize(extensionCount);
+
+  result = libraryLoader->dispatchTable().vkEnumerateInstanceExtensionProperties(
+      "VK_LAYER_KHRONOS_validation", &extensionCount, validationLayerExtensions.data());
+
+  if (result != VK_SUCCESS) {
+    throw std::runtime_error("Failed to enumerate validation layer extensions");
+  }
+
+  for (const auto& extension : validationLayerExtensions) {
+    LOGI("Validation layer extension: %s", extension.extensionName);
+  }
+
+  const auto& supportedExtensions = libraryLoader->supportedInstanceExtensions();
+
   instanceExtensions.push_back("VK_EXT_debug_utils");
 #endif
-#endif
-
   instance = std::make_unique<vkcore::Instance>(*libraryLoader, instanceExtensions,
                                                 validationLayers, appInfo);
 
@@ -166,7 +191,7 @@ void Engine::createRenderPass() {
   colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
   VkAttachmentDescription depthAttachment{};
-  depthAttachment.format = VK_FORMAT_D16_UNORM;
+  depthAttachment.format = depthFormat;
   depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
   depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -344,10 +369,15 @@ void Engine::recreateSwapchain() {
   framebuffers.clear();
   depthTexture.reset();
   swapchain.reset();
+  renderFinishedSemaphores.clear();
 
   createSwapchain();
   createDepthResources();
   createFramebuffers();
+  uint32_t imageCount = swapchain->getImageCount();
+  for (uint32_t i = 0; i < imageCount; ++i) {
+    renderFinishedSemaphores.emplace_back(*device);
+  }
 }
 
 void Engine::destroySurface() {

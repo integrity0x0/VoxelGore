@@ -67,7 +67,7 @@ class Engine {
   bool IsRenderable() const;
 
  private:
-  static constexpr uint32_t framesInFlight = 1;
+  static constexpr uint32_t framesInFlight = 2;
   void loadLibrary();
   void createInstance();
   void createSurface();
@@ -121,7 +121,4 @@ class Engine {
 
   uint32_t graphicsQueueIndex = 0;
   uint32_t presentQueueIndex = 0;
-
-  std::mt19937 rng;
-  std::uniform_real_distribution<float> colorDist;
 };

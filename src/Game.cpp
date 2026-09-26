@@ -59,12 +59,12 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
 
 #endif
 
+constexpr uint32_t kWorldW = 4;
+constexpr uint32_t kWorldH = 1;
+constexpr uint32_t kWorldD = 4;
+
 void Game::Init() {
   const vkcore::Device& device = engine_->getDevice();
-
-  constexpr uint32_t kWorldW = 4;
-  constexpr uint32_t kWorldH = 1;
-  constexpr uint32_t kWorldD = 4;
 
   session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
 
@@ -189,8 +189,10 @@ bool Game::HandleResize() {
   if (window_->isResized()) {
     engine_->recreateSwapchain();
   }
+  
 #else
   if (!engine_->IsRenderable()) return false;
+  engine_->restoreSurface();
 #endif
 
   return true;
@@ -241,6 +243,9 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
   }
 
 #endif
+  const auto now = std::chrono::steady_clock::now();
+  dt_ = frameCount_ == 0 ? 0.0f : std::chrono::duration<float>(now - lastFrameTime_).count();
+  lastFrameTime_ = now;
 
   uint32_t imageIndex = 0;
 
@@ -255,10 +260,6 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
 
   VkCommandBuffer cmd = engine_->getCommandBuffer().handle();
   uint32_t frame = engine_->getCurrentFrameIndex();
-
-  const auto now = std::chrono::steady_clock::now();
-  dt_ = frameCount_ == 0 ? 0.0f : std::chrono::duration<float>(now - lastFrameTime_).count();
-  lastFrameTime_ = now;
 
   if (ui_) {
     ui_->Update();

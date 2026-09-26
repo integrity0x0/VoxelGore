@@ -1,14 +1,17 @@
 #pragma once
 
 #include <stdexcept>
+#include <string_view>
+#include <unordered_map>
 #include <vector>
 
-#include "../common/vulkanFunctions.h"
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <dlfcn.h>
 #endif
+
+#include "../common/vulkanFunctions.h"
 
 namespace vkcore {
 
@@ -17,24 +20,48 @@ class LibraryLoader {
   LibraryLoader();
   ~LibraryLoader();
 
-  LibraryLoader(const LibraryLoader&) = delete;
-  LibraryLoader& operator=(const LibraryLoader&) = delete;
-  LibraryLoader(LibraryLoader&&) = delete;
-  LibraryLoader& operator=(LibraryLoader&&) = delete;
+  [[nodiscard]] const LibraryDispatchTable& dispatchTable() const { return dispatchTable_; }
 
-  const LibraryDispatchTable& getDispatchTable() const;
-  const std::vector<std::string>& getSupportedInstanceExtensions() const;
-  const std::vector<std::string>& getSupportedInstanceLayers() const;
+  [[nodiscard]] const std::vector<std::string>& supportedInstanceExtensions() const {
+    return supportedInstanceExtensions_;
+  }
+
+  [[nodiscard]] const std::vector<std::string>& supportedInstanceLayers() const {
+    return supportedInstanceLayers_;
+  }
+
+  [[nodiscard]] bool IsInstanceExtensionSupported(std::string_view extension) const {
+    return std::find(supportedInstanceExtensions_.begin(), supportedInstanceExtensions_.end(),
+                     extension) != supportedInstanceExtensions_.end();
+  }
+
+  [[nodiscard]] bool IsInstanceExtensionSupported(std::string_view extension,
+                                                  const std::vector<std::string>& layers) const {
+    if (IsInstanceExtensionSupported(extension)) return true;
+
+    for (const auto& layer : layers) {
+      const auto it = supportedLayerExtensions_.find(layer);
+      if (it == supportedLayerExtensions_.end()) continue;
+
+      const auto& extensions = it->second;
+      if (std::find(extensions.begin(), extensions.end(), extension) != extensions.end())
+        return true;
+    }
+
+    return false;
+  }
 
  private:
 #ifdef _WIN32
-  HMODULE library = nullptr;
+  HMODULE library_ = nullptr;
 #else
-  void* library = nullptr;
+  void* library_ = nullptr;
 #endif
-  LibraryDispatchTable dispatchTable{};
 
-  std::vector<std::string> supportedInstanceExtensions;
-  std::vector<std::string> supportedInstanceLayers;
+  LibraryDispatchTable dispatchTable_ = {};
+  std::vector<std::string> supportedInstanceExtensions_;
+  std::vector<std::string> supportedInstanceLayers_;
+  std::unordered_map<std::string, std::vector<std::string>> supportedLayerExtensions_;
 };
+
 }  // namespace vkcore

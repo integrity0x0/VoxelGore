@@ -9,7 +9,7 @@ Surface::Surface(const Instance& instance, ANativeWindow* window) : instance_(&i
     throw std::runtime_error("Surface: ANativeWindow* is null");
   }
 
-  const auto& dispatchTable = instance_->getDispatchTable();
+  const auto& dispatchTable = instance_->dispatchTable();
 
   if (!dispatchTable.androidSurfaceTable.has_value()) {
     throw std::runtime_error("Surface: AndroidSurfaceDispatchTable not loaded");
@@ -48,7 +48,7 @@ Surface::Surface(const Instance& instance, GLFWwindow* window) : instance_(&inst
 #endif
 
 void Surface::SetupDeleter(VkSurfaceKHR surfaceRaw) {
-  const auto& dispatchTable = instance_->getDispatchTable();
+  const auto& dispatchTable = instance_->dispatchTable();
 
   if (!dispatchTable.surfaceTable.has_value()) {
     throw std::runtime_error("Surface: SurfaceDispatchTable not loaded");

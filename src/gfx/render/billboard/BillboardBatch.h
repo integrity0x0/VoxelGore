@@ -31,7 +31,7 @@ class BillboardBatch {
   [[nodiscard]] bool IsEmpty() const { return billboardCount_ == 0; }
 
  private:
-  static constexpr VkDeviceSize kBufferSize = 8 * 1024 * 1024ull;
+  static constexpr VkDeviceSize kBufferSize = 6 * 1024 * 1024ull;
   static constexpr size_t kMaxbillboards = kBufferSize / sizeof(BillboardInstance);
 
   static constexpr VkBufferUsageFlags kBufferUsage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;

@@ -135,7 +135,6 @@
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\util\files.cpp" />
     <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
-    <ClCompile Include="src\vkcore\common\SystemError.cpp" />
     <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
     <ClCompile Include="src\vkcore\debug\DebugMessenger.cpp" />
     <ClCompile Include="src\vkcore\devices\Device.cpp" />
@@ -350,6 +349,9 @@
     <ClInclude Include="src\vkcore\sync\Semaphore.h" />
     <ClInclude Include="src\WorldSession.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="changelog.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -448,7 +450,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;DISABLE_VVLS;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_DEPTH_ZERO_TO_ONE;TINYOBJLOADER_IMPLEMENTATION;TINYOBJLOADER_DISABLE_FAST_FLOAT;_DEBUG;_CONSOLE;VK_USE_PLATFORM_WIN32_KHR;VK_NO_PROTOTYPES;STB_IMAGE_IMPLEMENTATION;NOMINMAX;_CRT_SECURE_NO_WARNINGS;STB_IMAGE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

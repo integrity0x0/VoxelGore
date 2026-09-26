@@ -15,29 +15,29 @@ class Instance {
   ~Instance() = default;
 
   template <typename T>
-  inline T* getProcAddr(const LibraryLoader& loader, const char* fun) const {
+  [[nodiscard]] T* GetProcAddr(const LibraryLoader& loader, const char* fun) const {
     return reinterpret_cast<T*>(
-        loader.getDispatchTable().vkGetInstanceProcAddr(instance.get(), fun));
+        loader.dispatchTable().vkGetInstanceProcAddr(instance.get(), fun));
   }
 
-  inline const std::vector<std::string>& getEnabledExtensions() const { return enabledExtensions; }
+  [[nodiscard]] const std::vector<std::string>& enabledExtensions() const { return enabledExtensions_; }
 
-  inline const std::vector<std::string> getEnabledLayers() const { return enabledLayers; }
+  [[nodiscard]] const std::vector<std::string> enabledLayers() const { return enabledLayers_; }
 
-  inline const InstanceDispatchTable& getDispatchTable() const { return dispatchTable; }
+  [[nodiscard]] const InstanceDispatchTable& dispatchTable() const { return dispatchTable_; }
 
-  inline bool isExtensionEnabled(const std::string& extension) const {
-    return std::find(enabledExtensions.begin(), enabledExtensions.end(), extension) !=
-           enabledExtensions.end();
+  [[nodiscard]] bool IsExtensionEnabled(const std::string& extension) const {
+    return std::find(enabledExtensions_.begin(), enabledExtensions_.end(), extension) !=
+           enabledExtensions_.end();
   }
 
-  inline VkInstance handle() const { return instance.get(); }
+  [[nodiscard]] VkInstance handle() const { return instance.get(); }
 
  private:
   UniqueInstance instance = {};
-  std::vector<std::string> enabledExtensions = {};
-  std::vector<std::string> enabledLayers = {};
+  std::vector<std::string> enabledExtensions_ = {};
+  std::vector<std::string> enabledLayers_ = {};
   uint32_t apiVersion = 0;
-  InstanceDispatchTable dispatchTable = {};
+  InstanceDispatchTable dispatchTable_ = {};
 };
 }  // namespace vkcore

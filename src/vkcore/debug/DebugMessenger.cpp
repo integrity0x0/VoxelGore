@@ -14,7 +14,7 @@ DebugMessenger::DebugMessenger(const vkcore::Instance& instance,
   debugMessengerCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-  const auto& debugUtilsTable = instance.getDispatchTable().debugUtilsTable;
+  const auto& debugUtilsTable = instance.dispatchTable().debugUtilsTable;
 
   if (!debugUtilsTable.has_value()) {
     throw SystemError(VK_ERROR_UNKNOWN,

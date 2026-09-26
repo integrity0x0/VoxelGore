@@ -4,7 +4,7 @@ namespace vkcore {
 
 Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&device) {
   const auto& dispatchTable = device.dispatchTable();
-  const auto& instanceDispatchTable = surface.getInstance().getDispatchTable();
+  const auto& instanceDispatchTable = surface.getInstance().dispatchTable();
 
   if (!instanceDispatchTable.surfaceTable.has_value()) {
     throw std::runtime_error("Swapchain: SurfaceDispatchTable not loaded");
@@ -16,15 +16,15 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
   }
   const auto& swapchainTable = dispatchTable.swapchainTable.value();
 
-  SwapchainCapabilities caps = SwapchainCapabilities::extract(device.getPhysicalDevice().handle(),
+  SwapchainCapabilities caps = SwapchainCapabilities::Build(device.getPhysicalDevice().handle(),
                                                               surface.handle(), surfaceTable);
 
-  VkSurfaceFormatKHR chosenFormat = caps.chooseSurfaceFormat();
-  VkPresentModeKHR chosenPresentMode = caps.choosePresentMode();
-  extent_ = caps.chooseExtent(0, 0);
-  uint32_t imageCount = caps.chooseImageCount();
-  VkCompositeAlphaFlagBitsKHR compositeAlpha = caps.chooseCompositeAlpha();
-  VkImageUsageFlags imageUsage = caps.chooseImageUsage();
+  VkSurfaceFormatKHR chosenFormat = caps.ChooseSurfaceFormat();
+  VkPresentModeKHR chosenPresentMode = caps.ChoosePresentMode();
+  extent_ = caps.ChooseExtent(0, 0);
+  uint32_t imageCount = caps.ChooseImageCount();
+  VkCompositeAlphaFlagBitsKHR compositeAlpha = caps.ChooseCompositeAlpha();
+  VkImageUsageFlags imageUsage = caps.ChooseImageUsage();
   imageFormat_ = chosenFormat.format;
 
   VkSwapchainCreateInfoKHR swapchainCI = {VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};

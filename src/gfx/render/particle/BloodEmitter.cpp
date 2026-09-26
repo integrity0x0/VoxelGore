@@ -84,6 +84,7 @@ void BloodEmitter::Spawn(const glm::vec3& pos, const glm::vec3& normal, float da
     particle.layer = static_cast<float>(blankRegion_.arrayLayer);
     particle.renderLayer = RenderLayer::Solid;
     particle.ignoreLighting = false;
+    particle.collision = true;
     particles_.emplace_back(particle);
   }
 }

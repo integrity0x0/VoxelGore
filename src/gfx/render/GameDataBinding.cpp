@@ -50,12 +50,13 @@ GameDataBinding::GameDataBinding(const vkcore::Device& device,
 
     auto descriptorSet = descriptorPool_.Allocate(descriptorSetLayout_);
 
-    frames_.emplace_back(mapped, std::move(buffer), std::move(descriptorSet));
-
+    
     VkDescriptorBufferInfo& bufferInfo = bufferInfos.emplace_back();
-    bufferInfo.buffer = frames_.back().buffer.handle();
-    bufferInfo.offset = 0;
+    bufferInfo.buffer = buffer.handle();
+    bufferInfo.offset = buffer.offset();
     bufferInfo.range = sizeof(UniformGameData);
+
+    frames_.emplace_back(mapped, std::move(buffer), std::move(descriptorSet));
 
     VkWriteDescriptorSet& write = writes.emplace_back();
     write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

@@ -6,5 +6,6 @@
   "light": {
     "channel": "sea",
     "strength": 15
-  }
+  },
+  "debris": {}
 }

@@ -160,6 +160,9 @@ void ChunkRenderer::Render(VkCommandBuffer cmd, float dt, uint32_t currentFrame,
 
       break;
     }
+    default: {
+      throw std::runtime_error("ChunkRenderer: Render: Invalid render layer");
+    }
   }
 }
 }  // namespace gfx

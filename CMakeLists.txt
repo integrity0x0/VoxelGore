@@ -62,7 +62,6 @@ set(SOURCE_FILES
         src/Engine.cpp
 
         # vkcore - common
-        src/vkcore/common/SystemError.cpp
         src/vkcore/common/vulkanFunctions.cpp
 
         # vkcore - commands
@@ -272,6 +271,8 @@ target_link_libraries(VoxelGore PRIVATE
 
         # Shaderc
         ${SHADERC_LIBRARY}
+
+
 )
 
 # ============================================================

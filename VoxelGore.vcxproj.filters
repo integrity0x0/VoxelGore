@@ -56,7 +56,6 @@
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
-    <ClCompile Include="src\vkcore\common\SystemError.cpp" />
     <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
     <ClCompile Include="src\vkcore\debug\DebugMessenger.cpp" />
     <ClCompile Include="src\vkcore\devices\Device.cpp" />
@@ -338,5 +337,8 @@
     <ClInclude Include="src\gfx\render\particle\BloodEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\PhysicalParticleEmitter.h" />
     <ClInclude Include="src\game\entity\BleedComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="changelog.txt" />
   </ItemGroup>
 </Project>

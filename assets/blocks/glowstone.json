@@ -6,5 +6,6 @@
   "light": {
     "channel": "fire",
     "strength": 15
-  }
+  },
+  "debris": {}
 }

@@ -61,39 +61,39 @@ static void handleAppCmd(android_app* app, int32_t cmd) {
 }
 
 static int32_t handleInputEvent(android_app*, AInputEvent* event) {
-  if (AInputEvent_getType(event) != AINPUT_EVENT_TYPE_MOTION) return 0;
-  g_input.Update(event);
-  return 1;
+    if (AInputEvent_getType(event) != AINPUT_EVENT_TYPE_MOTION) return 0;
+    g_input.Update(event);
+    return 1;
 }
 
 void android_main(android_app* app) {
-  app->onAppCmd = handleAppCmd;
-  app->onInputEvent = handleInputEvent;
-  g_AAssetManager = app->activity->assetManager;
+    app->onAppCmd = handleAppCmd;
+    app->onInputEvent = handleInputEvent;
+    g_AAssetManager = app->activity->assetManager;
 
-  int events = 0;
-  android_poll_source* source = nullptr;
+    int events = 0;
+    android_poll_source* source = nullptr;
 
-  while (!app->destroyRequested) {
-    g_input.Reset();
-    while (ALooper_pollOnce(g_game ? 0 : -1, nullptr, &events, (void**)&source) >= 0) {
-      if (source) source->process(app, source);
-      if (app->destroyRequested) break;
-    }
-    if (app->destroyRequested) break;
-
-    if (g_game && g_game->IsRenderable()) {
-      try {
-        if (!g_game->Frame(g_input.inputState().pointers())) {
-          g_game.reset();
+    while (!app->destroyRequested) {
+        g_input.Reset();
+        while (ALooper_pollOnce(g_game ? 0 : -1, nullptr, &events, (void**)&source) >= 0) {
+            if (source) source->process(app, source);
+            if (app->destroyRequested) break;
         }
-      } catch (const std::exception& e) {
-        LOGE("Exception: %s", e.what());
-        g_game.reset();
-      }
-    }
-  }
+        if (app->destroyRequested) break;
 
-  g_game.reset();
-  LOGI("Goodbye!");
+        if (g_game && g_game->IsRenderable()) {
+            try {
+                if (!g_game->Frame(g_input.inputState().pointers())) {
+                    g_game.reset();
+                }
+            } catch (const std::exception& e) {
+                LOGE("Exception: %s", e.what());
+                g_game.reset();
+            }
+        }
+    }
+
+    g_game.reset();
+    LOGI("Goodbye!");
 }

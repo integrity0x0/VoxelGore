@@ -429,6 +429,10 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
 
     it = dirtyChunks.erase(it);
   }
+
+  device_->dispatchTable().vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, 0, 0, nullptr,
+                                                0, nullptr, 0, nullptr);
 }
 
 }  // namespace gfx

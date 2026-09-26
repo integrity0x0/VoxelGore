@@ -28,6 +28,7 @@ shaderc_include_result* ShaderIncluder::GetInclude(const char* requestedSource,
 
 void ShaderIncluder::ReleaseInclude(shaderc_include_result* data) {
   delete reinterpret_cast<IncludeData*>(data->user_data);
+  delete data;
 }
 
 }  // namespace gfx

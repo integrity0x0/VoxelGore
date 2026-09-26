@@ -45,31 +45,31 @@ Device DeviceCreator::createDevice() {
   deviceCI.pEnabledFeatures = &enabledFeatures_;
 
   VkDevice devHandle = VK_NULL_HANDLE;
-  SystemError::Check(instance_->getDispatchTable().vkCreateDevice(physicalDevice_.handle(),
+  SystemError::Check(instance_->dispatchTable().vkCreateDevice(physicalDevice_.handle(),
                                                                   &deviceCI, nullptr, &devHandle),
                      "Failed to create logical device");
 
   PFN_vkDestroyDevice pfnDestroy = reinterpret_cast<PFN_vkDestroyDevice>(
-      instance_->getDispatchTable().vkGetDeviceProcAddr(devHandle, "vkDestroyDevice"));
+      instance_->dispatchTable().vkGetDeviceProcAddr(devHandle, "vkDestroyDevice"));
   UniqueDevice uniqueDevice(devHandle, DeviceDeleter{.func = pfnDestroy});
 
   DeviceDispatchTable dispatchTable{};
-  loadBaseDeviceFunctions(devHandle, instance_->getDispatchTable().vkGetDeviceProcAddr,
+  loadBaseDeviceFunctions(devHandle, instance_->dispatchTable().vkGetDeviceProcAddr,
                           dispatchTable);
 
   bool swapchainEnabled = std::find(extensions_.begin(), extensions_.end(),
                                     VK_KHR_SWAPCHAIN_EXTENSION_NAME) != extensions_.end();
 
   if (swapchainEnabled) {
-    loadSwapchainFunctions(devHandle, instance_->getDispatchTable().vkGetDeviceProcAddr,
+    loadSwapchainFunctions(devHandle, instance_->dispatchTable().vkGetDeviceProcAddr,
                            dispatchTable);
   }
 
   uint32_t familyCount = 0;
-  instance_->getDispatchTable().vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_.handle(),
+  instance_->dispatchTable().vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_.handle(),
                                                                          &familyCount, nullptr);
   std::vector<VkQueueFamilyProperties> familyProps(familyCount);
-  instance_->getDispatchTable().vkGetPhysicalDeviceQueueFamilyProperties(
+  instance_->dispatchTable().vkGetPhysicalDeviceQueueFamilyProperties(
       physicalDevice_.handle(), &familyCount, familyProps.data());
 
   std::vector<DeviceQueue> deviceQueues;

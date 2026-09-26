@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vulkan/vulkan.h>
 
 #include <algorithm>
@@ -8,121 +9,134 @@
 namespace vkcore {
 
 struct SwapchainCapabilities {
-  VkSurfaceCapabilitiesKHR surfaceCapabilities = {};
+  VkSurfaceCapabilitiesKHR surfaceCapabilities{};
   std::vector<VkSurfaceFormatKHR> surfaceFormats;
   std::vector<VkPresentModeKHR> presentModes;
 
-  static SwapchainCapabilities extract(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
-                                       const SurfaceDispatchTable& surfaceTable) {
+  [[nodiscard]] static SwapchainCapabilities Build(VkPhysicalDevice physicalDevice,
+                                                     VkSurfaceKHR surface,
+                                                     const SurfaceDispatchTable& surfaceTable) {
     SwapchainCapabilities caps;
 
     SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
                            physicalDevice, surface, &caps.surfaceCapabilities),
-                       "SwapchainCapabilities::extract: "
+                       "SwapchainCapabilities::Build: "
                        "vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed");
 
     uint32_t formatCount = 0;
     SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface,
                                                                          &formatCount, nullptr),
-                       "SwapchainCapabilities::extract: "
+                       "SwapchainCapabilities::Build: "
                        "vkGetPhysicalDeviceSurfaceFormatsKHR (count) failed");
+
     if (formatCount > 0) {
       caps.surfaceFormats.resize(formatCount);
+
       SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfaceFormatsKHR(
                              physicalDevice, surface, &formatCount, caps.surfaceFormats.data()),
-                         "SwapchainCapabilities::extract: "
+                         "SwapchainCapabilities::Build: "
                          "vkGetPhysicalDeviceSurfaceFormatsKHR failed");
     }
 
     uint32_t presentModeCount = 0;
     SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
                            physicalDevice, surface, &presentModeCount, nullptr),
-                       "SwapchainCapabilities::extract: "
+                       "SwapchainCapabilities::Build: "
                        "vkGetPhysicalDeviceSurfacePresentModesKHR (count) failed");
+
     if (presentModeCount > 0) {
       caps.presentModes.resize(presentModeCount);
+
       SystemError::Check(surfaceTable.vkGetPhysicalDeviceSurfacePresentModesKHR(
                              physicalDevice, surface, &presentModeCount, caps.presentModes.data()),
-                         "SwapchainCapabilities::extract: "
+                         "SwapchainCapabilities::Build: "
                          "vkGetPhysicalDeviceSurfacePresentModesKHR failed");
     }
 
     return caps;
   }
 
-  VkSurfaceFormatKHR chooseSurfaceFormat() const {
+  [[nodiscard]] VkSurfaceFormatKHR ChooseSurfaceFormat() const {
     for (const auto& format : surfaceFormats) {
       if (format.format == VK_FORMAT_R8G8B8A8_SRGB &&
           format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
+
     if (!surfaceFormats.empty()) {
-      return surfaceFormats[0];
+      return surfaceFormats.front();
     }
+
     throw std::runtime_error(
-        "SwapchainCapabilities::chooseSurfaceFormat: no "
-        "surface formats available");
+        "SwapchainCapabilities::ChooseSurfaceFormat: "
+        "no surface formats available");
   }
 
-  VkPresentModeKHR choosePresentMode() const {
+  [[nodiscard]] VkPresentModeKHR ChoosePresentMode() const {
     for (const auto& mode : presentModes) {
       if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
         return mode;
       }
     }
+
     return VK_PRESENT_MODE_FIFO_KHR;
   }
 
-  VkExtent2D chooseExtent(uint32_t desiredWidth, uint32_t desiredHeight) const {
+  [[nodiscard]] VkExtent2D ChooseExtent(uint32_t desiredWidth, uint32_t desiredHeight) const {
     if (surfaceCapabilities.currentExtent.width != UINT32_MAX) {
       return surfaceCapabilities.currentExtent;
     }
 
-    VkExtent2D actualExtent = {desiredWidth, desiredHeight};
+    VkExtent2D extent{desiredWidth, desiredHeight};
 
-    actualExtent.width = std::clamp(actualExtent.width, surfaceCapabilities.minImageExtent.width,
-                                    surfaceCapabilities.maxImageExtent.width);
-    actualExtent.height = std::clamp(actualExtent.height, surfaceCapabilities.minImageExtent.height,
-                                     surfaceCapabilities.maxImageExtent.height);
+    extent.width = std::clamp(extent.width, surfaceCapabilities.minImageExtent.width,
+                              surfaceCapabilities.maxImageExtent.width);
+    extent.height = std::clamp(extent.height, surfaceCapabilities.minImageExtent.height,
+                               surfaceCapabilities.maxImageExtent.height);
 
-    return actualExtent;
+    return extent;
   }
 
-  uint32_t chooseImageCount() const {
+  [[nodiscard]] uint32_t ChooseImageCount() const {
     uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
+
     if (surfaceCapabilities.maxImageCount > 0 && imageCount > surfaceCapabilities.maxImageCount) {
       imageCount = surfaceCapabilities.maxImageCount;
     }
+
     return imageCount;
   }
 
-  VkCompositeAlphaFlagBitsKHR chooseCompositeAlpha() const {
-    if (surfaceCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR) {
-      return VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  [[nodiscard]] VkCompositeAlphaFlagBitsKHR ChooseCompositeAlpha() const {
+    constexpr VkCompositeAlphaFlagBitsKHR kPreferredAlphaModes[] = {
+        VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+        VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
+        VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
+        VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
+    };
+
+    for (VkCompositeAlphaFlagBitsKHR mode : kPreferredAlphaModes) {
+      if (surfaceCapabilities.supportedCompositeAlpha & mode) {
+        return mode;
+      }
     }
-    if (surfaceCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR) {
-      return VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR;
-    }
-    if (surfaceCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR) {
-      return VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR;
-    }
-    if (surfaceCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR) {
-      return VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
-    }
+
     throw std::runtime_error(
-        "SwapchainCapabilities::chooseCompositeAlpha: no "
-        "supported composite alpha");
+        "SwapchainCapabilities::ChooseCompositeAlpha: "
+        "no supported composite alpha");
   }
 
-  VkImageUsageFlags chooseImageUsage() const {
-    VkImageUsageFlags usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    if ((surfaceCapabilities.supportedUsageFlags & usage) == 0) {
+  [[nodiscard]] VkImageUsageFlags ChooseImageUsage() const {
+    constexpr VkImageUsageFlags kRequiredUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    if ((surfaceCapabilities.supportedUsageFlags & kRequiredUsage) == 0) {
       throw std::runtime_error(
-          "SwapchainCapabilities::chooseImageUsage: "
+          "SwapchainCapabilities::ChooseImageUsage: "
           "VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT not supported");
     }
-    return usage;
+
+    return kRequiredUsage;
   }
 };
 
