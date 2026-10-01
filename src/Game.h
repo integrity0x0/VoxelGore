@@ -15,8 +15,6 @@
 #include "game/ControlState.h"
 #include "game/LibControl.h"
 #include "gfx/render/block/BlockPreviewRenderer.h"
-#include "gfx/render/ui/LibGui.h"
-#include "gfx/render/ui/Ui.h"
 #include "script/LuaState.h"
 
 #ifdef __ANDROID__
@@ -63,8 +61,6 @@ class Game {
   std::unique_ptr<gm::PlayerController> player_;
 
   script::LuaState luaState_;
-  std::optional<gfx::ui::Ui> ui_;
-  std::optional<gfx::ui::LibGui> libGui_;
   std::optional<gm::LibControl> libControl_;
   std::unique_ptr<gfx::BlockPreviewRenderer> blockPreviewRenderer_;
 

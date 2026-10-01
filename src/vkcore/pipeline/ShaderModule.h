@@ -10,7 +10,7 @@ class ShaderModule {
   ShaderModule(const Device& device, std::span<const uint32_t> data,
                VkShaderModuleCreateFlags flags = 0, void* pNext = nullptr);
 
-  [[nodiscard]] VkShaderModule handle() const { return shaderModule_.get(); }
+  [[nodiscard]] VkShaderModule GetHandle() const { return shaderModule_.get(); }
  private:
   UniqueShaderModule shaderModule_;
 };

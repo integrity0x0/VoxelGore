@@ -19,7 +19,7 @@ vkcore::PipelineLayout ChunkRenderPipelines::BuildPipelineLayout(
     const vkcore::Device& device, const GameDataBinding& gameDataBinding,
     const vkcore::DescriptorSetLayout* shadowLayout,
     const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout) {
-  std::vector<const vkcore::DescriptorSetLayout*> layouts = {&gameDataBinding.descriptorSetLayout(),
+  std::vector<const vkcore::DescriptorSetLayout*> layouts = {&gameDataBinding.GetDescriptorSetLayout(),
                                                              &atlasDescriptorSetLayout};
   if (shadowLayout) layouts.emplace_back(shadowLayout);
 
@@ -62,7 +62,7 @@ vkcore::Pipeline ChunkRenderPipelines::BuildPipeline(VkRenderPass renderPass,
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, depthWrite)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
-      .Build(pipelineLayout_.handle(), renderPass);
+      .Build(pipelineLayout_.GetHandle(), renderPass);
 }
 
 void ChunkRenderPipelines::Bind(VkCommandBuffer cmd, RenderLayer renderLayer) const {

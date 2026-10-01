@@ -10,10 +10,10 @@ class Pipeline {
       : device_(&device), pipeline_(std::move(pipeline)) {}
 
   void Bind(VkCommandBuffer cmd, VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS) const {
-    device_->dispatchTable().vkCmdBindPipeline(cmd, bindPoint, pipeline_.get());
+    device_->GetDispatchTable().vkCmdBindPipeline(cmd, bindPoint, pipeline_.get());
   }
 
-  VkPipeline handle() const { return pipeline_.get(); }
+  VkPipeline GetHandle() const { return pipeline_.get(); }
 
  private:
   const Device* device_;

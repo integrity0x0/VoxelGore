@@ -20,7 +20,7 @@ void TransferContext::Begin() {
 
 void TransferContext::Flush() {
   cmd_.end();
-  transferQueue_->Submit(cmd_.handle());
+  transferQueue_->Submit(cmd_.GetHandle());
 
   transferQueue_->WaitIdle();
 
@@ -36,9 +36,9 @@ TransferContext::Allocation TransferContext::AllocateStagingBuffer(VkDeviceSize 
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
   TransferContext::Allocation allocation;
-  allocation.mapped = slice.map();
-  allocation.bufferOffset = slice.offset();
-  allocation.buffer = slice.handle();
+  allocation.mapped = slice.Map();
+  allocation.bufferOffset = slice.GetOffset();
+  allocation.buffer = slice.GetHandle();
 
   reservedSlices_.emplace_back(std::move(slice));
 

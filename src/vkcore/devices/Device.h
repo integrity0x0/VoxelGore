@@ -25,8 +25,8 @@ class Device {
 
   ~Device() = default;
 
-  VkDevice handle() const noexcept { return device_.get(); }
-  const DeviceDispatchTable& dispatchTable() const noexcept { return dispatchTable_; }
+  VkDevice GetHandle() const noexcept { return device_.get(); }
+  const DeviceDispatchTable& GetDispatchTable() const noexcept { return dispatchTable_; }
   const PhysicalDevice& getPhysicalDevice() const noexcept { return physicalDevice_; }
   const std::vector<std::string>& getEnabledExtensions() const noexcept {
     return enabledExtensions_;

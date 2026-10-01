@@ -15,7 +15,7 @@ class Swapchain {
  public:
   Swapchain(const Device& device, const Surface& surface);
 
-  VkSwapchainKHR handle() const noexcept { return swapchain_.get(); }
+  VkSwapchainKHR GetHandle() const noexcept { return swapchain_.get(); }
   VkFormat getImageFormat() const noexcept { return imageFormat_; }
   VkExtent2D extent() const noexcept { return extent_; }
   uint32_t getImageCount() const noexcept { return static_cast<uint32_t>(images_.size()); }

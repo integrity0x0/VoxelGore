@@ -9,10 +9,10 @@ ImageView::ImageView(const Device& device, const VkImageViewCreateInfo& imageVie
       subresourceRange_(imageViewCI.subresourceRange) {
   VkImageView rawView = VK_NULL_HANDLE;
   VkResult result =
-      device.dispatchTable().vkCreateImageView(device.handle(), &imageViewCI, nullptr, &rawView);
+      device.GetDispatchTable().vkCreateImageView(device.GetHandle(), &imageViewCI, nullptr, &rawView);
   SystemError::Check(result, "failed to create image view");
 
-  ImageViewDeleter deleter{device.handle(), device.dispatchTable().vkDestroyImageView};
+  ImageViewDeleter deleter{device.GetHandle(), device.GetDispatchTable().vkDestroyImageView};
   imageView_ = UniqueImageView(rawView, deleter);
 }
 

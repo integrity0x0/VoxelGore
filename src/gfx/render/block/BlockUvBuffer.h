@@ -18,15 +18,15 @@ class BlockUvBuffer {
   BlockUvBuffer(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
            uint32_t maxSurfaces);
 
-  [[nodiscard]] UniformUv* mapped() { return mapped_; };
+  [[nodiscard]] UniformUv* GetMapped() { return mapped_; };
 
-  [[nodiscard]] VkBuffer handle() const { return buffer_.handle(); }
+  [[nodiscard]] VkBuffer GetHandle() const { return buffer_.GetHandle(); }
 
-  [[nodiscard]] VkDeviceSize capacityBytes() const {
+  [[nodiscard]] VkDeviceSize GetCapacityBytes() const {
     return static_cast<VkDeviceSize>(maxSurfaces_) * sizeof(UvRegion);
   }
 
-  [[nodiscard]] uint32_t maxSurfaces() const { return maxSurfaces_; }
+  [[nodiscard]] uint32_t GetMaxSurfaces() const { return maxSurfaces_; }
 
  private:
   vkcore::Buffer buffer_;

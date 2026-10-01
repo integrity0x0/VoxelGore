@@ -11,12 +11,12 @@ DeviceMemory::DeviceMemory(const Device& device, VkDeviceSize size, uint32_t mem
 
   VkDeviceMemory deviceMemoryRaw = VK_NULL_HANDLE;
 
-  SystemError::Check(device_->dispatchTable().vkAllocateMemory(device_->handle(), &memoryAI,
+  SystemError::Check(device_->GetDispatchTable().vkAllocateMemory(device_->GetHandle(), &memoryAI,
                                                                nullptr, &deviceMemoryRaw),
                      "failed to allocate device memory");
 
   deviceMemory_ = UniqueDeviceMemory(deviceMemoryRaw,
-                                     {device_->handle(), device_->dispatchTable().vkFreeMemory});
+                                     {device_->GetHandle(), device_->GetDispatchTable().vkFreeMemory});
 
   if (device_->getPhysicalDevice()
           .getMemoryProperties()
@@ -24,11 +24,11 @@ DeviceMemory::DeviceMemory(const Device& device, VkDeviceSize size, uint32_t mem
           .propertyFlags &
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
     void* mapped = nullptr;
-    SystemError::Check(device_->dispatchTable().vkMapMemory(device_->handle(), deviceMemoryRaw, 0,
+    SystemError::Check(device_->GetDispatchTable().vkMapMemory(device_->GetHandle(), deviceMemoryRaw, 0,
                                                             size, 0, &mapped),
                        "failed to map memory");
-    MappedDeleter deleter = {deviceMemoryRaw, device.handle(),
-                             device.dispatchTable().vkUnmapMemory};
+    MappedDeleter deleter = {deviceMemoryRaw, device.GetHandle(),
+                             device.GetDispatchTable().vkUnmapMemory};
 
     mapped_ = std::unique_ptr<void, MappedDeleter>(mapped, deleter);
   }

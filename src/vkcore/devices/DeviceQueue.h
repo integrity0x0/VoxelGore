@@ -19,7 +19,7 @@ class DeviceQueue {
     dispatchTable_ = &dispatchTable;
   }
 
-  VkQueue handle() const noexcept { return queue_; }
+  VkQueue GetHandle() const noexcept { return queue_; }
 
   uint32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex_; }
 

@@ -32,6 +32,6 @@ vkcore::SampledTexture ShadowMap::CreateTexture(const vkcore::Device& device,
 ShadowMap::ShadowMap(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
                      const ShadowPass& shadowPass, const VkExtent2D& resolution)
     : texture_(CreateTexture(device, memoryAllocator, resolution)),
-      framebuffer_(shadowPass.MakeFramebuffer(&texture_.imageView(), resolution))  {
+      framebuffer_(shadowPass.MakeFramebuffer(&texture_.GetImageView(), resolution))  {
 }
 }  // namespace gfx

@@ -44,11 +44,11 @@ class ChunkRenderer {
   void Render(VkCommandBuffer cmd, float dt, uint32_t currentFrame, const glm::vec3& cameraPos,
               RenderLayer renderLayer);
   void RenderShadow(VkCommandBuffer cmd, uint32_t currentFrame);
-  Atlas& getAtlas() { return blockRenderData_->atlas(); }
+  Atlas& GetAtlas() { return blockRenderData_->GetAtlas(); }
 
-  BlockRenderData& blockRenderData() { return *blockRenderData_; }
+  BlockRenderData& GetBlockRenderData() { return *blockRenderData_; }
 
-  const vkcore::PipelineLayout& pipelineLayout() { return pipelines_->pipelineLayout(); }
+  const vkcore::PipelineLayout& GetPipelineLayout() { return pipelines_->GetPipelineLayout(); }
 
  private:
   uint32_t kBlockRenderDataSetIndex = 1u;

@@ -14,7 +14,7 @@ class SkyboxRenderer {
   void Draw(VkCommandBuffer cmd, const Skybox& skybox) const;
   void BindPipeline(VkCommandBuffer cmd) const;
   [[nodiscard]] const vkcore::DescriptorPool& descriptorPool() const { return descriptorPool_; }
-  [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const { return pipeline_.descriptorSetLayout(); }
+  [[nodiscard]] const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const { return pipeline_.GetDescriptorSetLayout(); }
  private:
   [[nodiscard]] vkcore::DescriptorPool BuildDescriptorPool(const vkcore::Device& device);
   [[nodiscard]] Mesh BuildMesh(const vkcore::Device& device,

@@ -19,16 +19,16 @@ class DescriptorSetLayout {
 
     VkDescriptorSetLayout descriptorSetLayoutRaw = VK_NULL_HANDLE;
     SystemError::Check(
-        device.dispatchTable().vkCreateDescriptorSetLayout(device.handle(), &descriptorSetLayoutCI,
+        device.GetDispatchTable().vkCreateDescriptorSetLayout(device.GetHandle(), &descriptorSetLayoutCI,
                                                            nullptr, &descriptorSetLayoutRaw),
         "failed to create descriptor set layout");
 
     descriptorSetLayout_ = UniqueDescriptorSetLayout(
         descriptorSetLayoutRaw,
-        {device.handle(), device.dispatchTable().vkDestroyDescriptorSetLayout});
+        {device.GetHandle(), device.GetDispatchTable().vkDestroyDescriptorSetLayout});
   }
 
-  VkDescriptorSetLayout handle() const { return descriptorSetLayout_.get(); }
+  VkDescriptorSetLayout GetHandle() const { return descriptorSetLayout_.get(); }
 
  private:
   const Device* device_;

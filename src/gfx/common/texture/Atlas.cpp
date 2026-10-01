@@ -58,7 +58,7 @@ Atlas::Atlas(const vkcore::Device& device, vkcore::TransferContext& transferCtxt
   vkcore::ImageTransitionInfo src(VK_IMAGE_LAYOUT_UNDEFINED, 0);
   vkcore::ImageTransitionInfo dst(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                   VK_ACCESS_SHADER_READ_BIT);
-  vkcore::TransitionImage(device, transferCtxt.cmd(), texture_.image(), src, dst,
+  vkcore::TransitionImage(device, transferCtxt.cmd(), texture_.GetImage(), src, dst,
                           VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT);
 
   transferCtxt.Flush();
@@ -125,14 +125,14 @@ const AtlasRegion* Atlas::Load(std::string_view path, std::string_view key) {
 
   transferCtxt_->Begin();
 
-  vkcore::TransitionImage(*device_, transferCtxt_->cmd(), texture_.image(), src, dst,
+  vkcore::TransitionImage(*device_, transferCtxt_->cmd(), texture_.GetImage(), src, dst,
                           VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-  vkcore::LoadDataToImage(*device_, *transferCtxt_, pixelData, texture_.image(), copyRegion);
+  vkcore::LoadDataToImage(*device_, *transferCtxt_, pixelData, texture_.GetImage(), copyRegion);
 
   dst = vkcore::ImageTransitionInfo(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                     VK_ACCESS_SHADER_READ_BIT);
-  vkcore::GenMipMaps(*device_, transferCtxt_->cmd(), texture_.image(), dst);
+  vkcore::GenMipMaps(*device_, transferCtxt_->cmd(), texture_.GetImage(), dst);
 
   transferCtxt_->Flush();
 

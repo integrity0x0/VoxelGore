@@ -19,7 +19,7 @@ class Texture {
           const VkImageCreateInfo& imageCI, const VkImageViewCreateInfo& viewCI);
 
   const Image& getImage() const { return image_; }
-  const ImageView& imageView() const { return imageView_; }
+  const ImageView& GetImageView() const { return imageView_; }
 
   VkExtent3D extent() const { return image_.extent(); }
   uint32_t width() const { return image_.extent().width; }

@@ -10,7 +10,7 @@ class ShadowMap {
             const ShadowPass& shadowPass, const VkExtent2D& resolution = {4096, 4096});
 
   [[nodiscard]] const vkcore::Framebuffer& framebuffer() const { return framebuffer_; }
-  [[nodiscard]] const vkcore::SampledTexture& texture() const { return texture_; }
+  [[nodiscard]] const vkcore::SampledTexture& GetTexture() const { return texture_; }
  private:
   [[nodiscard]] vkcore::SampledTexture CreateTexture(const vkcore::Device& device,
                                                      vkcore::MemoryAllocator& memoryAllocator,

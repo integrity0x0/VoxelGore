@@ -4,7 +4,7 @@ namespace vkcore {
 
 PhysicalDevice::PhysicalDevice(const Instance& instance, VkPhysicalDevice physicalDevice)
     : instance(&instance), physicalDevice(physicalDevice) {
-  const auto& dt = instance.dispatchTable();
+  const auto& dt = instance.GetDispatchTable();
 
   dt.vkGetPhysicalDeviceProperties(physicalDevice, &properties);
   dt.vkGetPhysicalDeviceFeatures(physicalDevice, &features);
@@ -25,7 +25,7 @@ PhysicalDevice::PhysicalDevice(const Instance& instance, VkPhysicalDevice physic
     supportedExtensions.emplace_back(ext.extensionName);
   }
 
-  instance.dispatchTable().vkGetPhysicalDeviceMemoryProperties(physicalDevice,
+  instance.GetDispatchTable().vkGetPhysicalDeviceMemoryProperties(physicalDevice,
                                                                   &memoryProperties);
 }
 
@@ -39,7 +39,7 @@ bool PhysicalDevice::supportsExtensions(const std::vector<std::string>& required
 }
 
 bool PhysicalDevice::supportsQueueFamilies(const std::vector<VkQueueFlags>& required) const {
-  const auto& dt = instance->dispatchTable();
+  const auto& dt = instance->GetDispatchTable();
   if (!dt.vkGetPhysicalDeviceQueueFamilyProperties) {
     throw std::runtime_error(
         "PhysicalDevice::supportsQueueFamilies: "
@@ -67,7 +67,7 @@ bool PhysicalDevice::supportsQueueFamilies(const std::vector<VkQueueFlags>& requ
 
 QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices(VkSurfaceKHR surface) const {
   QueueFamilyIndices result;
-  const auto& dt = instance->dispatchTable();
+  const auto& dt = instance->GetDispatchTable();
 
   if (!dt.vkGetPhysicalDeviceQueueFamilyProperties) {
     throw std::runtime_error(
@@ -120,17 +120,17 @@ int32_t PhysicalDevice::score() const {
 std::unique_ptr<PhysicalDevice> pick(const Instance& instance,
                                      const std::vector<std::string>& requiredExtensions,
                                      const std::vector<VkQueueFlags>& requiredFamilies) {
-  const auto& dt = instance.dispatchTable();
+  const auto& dt = instance.GetDispatchTable();
   if (!dt.vkEnumeratePhysicalDevices) {
     throw std::runtime_error("pick: vkEnumeratePhysicalDevices is missing from dispatch table");
   }
 
   uint32_t count = 0;
-  dt.vkEnumeratePhysicalDevices(instance.handle(), &count, nullptr);
+  dt.vkEnumeratePhysicalDevices(instance.GetHandle(), &count, nullptr);
   if (count == 0) throw std::runtime_error("No Vulkan physical devices found");
 
   std::vector<VkPhysicalDevice> devices(count);
-  dt.vkEnumeratePhysicalDevices(instance.handle(), &count, devices.data());
+  dt.vkEnumeratePhysicalDevices(instance.GetHandle(), &count, devices.data());
 
   std::unique_ptr<PhysicalDevice> best = nullptr;
   int32_t bestScore = -1;

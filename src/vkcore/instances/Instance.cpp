@@ -32,7 +32,7 @@ Instance::Instance(const LibraryLoader& loader, std::vector<std::string> extensi
     layersCStrings.emplace_back(layer.c_str());
   }
 
-  SystemError::Check(loader.dispatchTable().vkEnumerateInstanceVersion(&apiVersion),
+  SystemError::Check(loader.GetDispatchTable().vkEnumerateInstanceVersion(&apiVersion),
                      "Failed to enumerate Vulkan instance version");
 
   VkInstanceCreateInfo instanceCI = {VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
@@ -45,31 +45,31 @@ Instance::Instance(const LibraryLoader& loader, std::vector<std::string> extensi
 
   VkInstance inst = VK_NULL_HANDLE;
 
-  SystemError::Check(loader.dispatchTable().vkCreateInstance(&instanceCI, nullptr, &inst),
+  SystemError::Check(loader.GetDispatchTable().vkCreateInstance(&instanceCI, nullptr, &inst),
                      "Failed to create instance");
 
   PFN_vkDestroyInstance pfnDestroy = reinterpret_cast<PFN_vkDestroyInstance>(
-      loader.dispatchTable().vkGetInstanceProcAddr(inst, "vkDestroyInstance"));
+      loader.GetDispatchTable().vkGetInstanceProcAddr(inst, "vkDestroyInstance"));
 
   this->instance = UniqueInstance(inst, InstanceDeleter{.func = pfnDestroy});
 
   enabledExtensions_ = std::move(extensions);
   enabledLayers_ = std::move(layers);
 
-  loadBaseInstanceFunctions(inst, loader.dispatchTable().vkGetInstanceProcAddr, dispatchTable_);
+  loadBaseInstanceFunctions(inst, loader.GetDispatchTable().vkGetInstanceProcAddr, dispatchTable_);
 
   if (IsExtensionEnabled(VK_KHR_SURFACE_EXTENSION_NAME)) {
-    loadSurfaceFunctions(inst, loader.dispatchTable().vkGetInstanceProcAddr, dispatchTable_);
+    loadSurfaceFunctions(inst, loader.GetDispatchTable().vkGetInstanceProcAddr, dispatchTable_);
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   if (IsExtensionEnabled(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME)) {
-    loadAndroidSurfaceFunctions(inst, loader.dispatchTable().vkGetInstanceProcAddr, dispatchTable_);
+    loadAndroidSurfaceFunctions(inst, loader.GetDispatchTable().vkGetInstanceProcAddr, dispatchTable_);
   }
 #endif
 
   if (IsExtensionEnabled(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) {
-    loadDebugUtilsFunctions(inst, loader.dispatchTable().vkGetInstanceProcAddr, dispatchTable_);
+    loadDebugUtilsFunctions(inst, loader.GetDispatchTable().vkGetInstanceProcAddr, dispatchTable_);
   }
 }
 }  // namespace vkcore

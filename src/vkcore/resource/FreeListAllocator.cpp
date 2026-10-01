@@ -11,8 +11,8 @@ FreeListAllocator::FreeListAllocator(VkDeviceSize size) : size_(size) {
   freeRegions_.emplace_back(0, size_);
 }
 
-std::optional<FreeListAllocator::Region> FreeListAllocator::reserve(VkDeviceSize size,
-                                                                    VkDeviceSize alignment) {
+std::optional<FreeListAllocator::Region> FreeListAllocator::Allocate(VkDeviceSize size,
+                                                                     VkDeviceSize alignment) {
   if (size == 0) {
     return std::nullopt;
   }
@@ -52,18 +52,18 @@ std::optional<FreeListAllocator::Region> FreeListAllocator::reserve(VkDeviceSize
   return std::nullopt;
 }
 
-std::optional<FreeListAllocator::Region> FreeListAllocator::reserveFull() { return reserve(size_); }
+std::optional<FreeListAllocator::Region> FreeListAllocator::reserveFull() { return Allocate(size_); }
 
-void FreeListAllocator::free(const Region& region) {
+void FreeListAllocator::Free(const Region& region) {
   if (region.size == 0) {
     return;
   }
 
   freeRegions_.push_back(region);
-  merge();
+  Merge();
 }
 
-void FreeListAllocator::merge() {
+void FreeListAllocator::Merge() {
   if (freeRegions_.empty()) {
     return;
   }

@@ -9,7 +9,7 @@ ModelShadowPipeline::ModelShadowPipeline(const vkcore::Device& device,
                                          const vkcore::DescriptorSetLayout& materialSetLayout,
                                          const ShadowContext& shadowCtxt,
                                          const ShaderCompiler& shaderCompiler)
-    : pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout(),
+    : pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.GetDescriptorSetLayout(),
                                           materialSetLayout)),
       pipeline_(BuildPipeline(device, shadowCtxt.pass(), shaderCompiler)) {}
 
@@ -53,7 +53,7 @@ vkcore::Pipeline ModelShadowPipeline::BuildPipeline(const vkcore::Device& device
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, true)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
-      .Build(pipelineLayout_.handle(), renderPass.handle());
+      .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }
 
 void ModelShadowPipeline::Bind(VkCommandBuffer cmd) const { pipeline_.Bind(cmd); }

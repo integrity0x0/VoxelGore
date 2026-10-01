@@ -10,7 +10,7 @@ class CommandBuffer {
  public:
   ~CommandBuffer() = default;
 
-  VkCommandBuffer handle() const noexcept { return commandBuffer_.get(); }
+  VkCommandBuffer GetHandle() const noexcept { return commandBuffer_.get(); }
 
   void begin(VkCommandBufferUsageFlags flags = 0);
   void end();

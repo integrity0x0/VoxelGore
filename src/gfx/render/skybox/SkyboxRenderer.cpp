@@ -27,7 +27,7 @@ Mesh SkyboxRenderer::BuildMesh(const vkcore::Device& device,
   vkcore::LoadDataToBuffer(device, transferCtxt,
                            {reinterpret_cast<const std::byte*>(kCubeVertices.data()),
                            kCubeVertices.size() * sizeof(SkyboxVertex)},
-                           bufferSlice.buffer(), bufferSlice.offset());
+                           bufferSlice.buffer(), bufferSlice.GetOffset());
   transferCtxt.Flush();
   return Mesh(device, std::move(bufferSlice), static_cast<uint32_t>(kCubeVertices.size()));
 }
@@ -45,7 +45,7 @@ void SkyboxRenderer::BindPipeline(VkCommandBuffer cmd) const { pipeline_.Bind(cm
 
 void SkyboxRenderer::Draw(VkCommandBuffer cmd, const Skybox& skybox) const {
   mesh_.Bind(cmd);
-  skybox.Bind(cmd, pipeline_.pipelineLayout().handle());
+  skybox.Bind(cmd, pipeline_.GetPipelineLayout().GetHandle());
   mesh_.Draw(cmd);
 }
 }  // namespace gfx

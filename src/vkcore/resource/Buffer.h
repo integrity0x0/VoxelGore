@@ -23,7 +23,7 @@ class Buffer {
   Buffer(Buffer&&) noexcept = default;
   Buffer& operator=(Buffer&&) noexcept = default;
 
-  [[nodiscard]] VkBuffer handle() const { return buffer_.get(); }
+  [[nodiscard]] VkBuffer GetHandle() const { return buffer_.get(); }
   [[nodiscard]] VkBufferUsageFlags usage() const { return usage_; }
   [[nodiscard]] VkDeviceSize size() const { return size_; }
   [[nodiscard]] const VkMemoryRequirements& memoryRequirements() const {
@@ -36,12 +36,12 @@ class Buffer {
                   uint32_t firstBinding = 0) const {
     VkDeviceSize offsets[] = {offset};
     VkBuffer buffers[] = {buffer_.get()};
-    device_->dispatchTable().vkCmdBindVertexBuffers(cmd, firstBinding, 1u, buffers, offsets);
+    device_->GetDispatchTable().vkCmdBindVertexBuffers(cmd, firstBinding, 1u, buffers, offsets);
   }
 
   void BindIndex(VkCommandBuffer cmd, VkDeviceSize offset = 0ll,
                  VkIndexType indexType = VK_INDEX_TYPE_UINT32) const {
-    device_->dispatchTable().vkCmdBindIndexBuffer(cmd, buffer_.get(), offset, indexType);
+    device_->GetDispatchTable().vkCmdBindIndexBuffer(cmd, buffer_.get(), offset, indexType);
   }
 
  private:

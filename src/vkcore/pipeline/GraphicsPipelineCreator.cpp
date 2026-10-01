@@ -15,7 +15,7 @@ Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRende
         .pNext = nullptr,
         .flags = 0,
         .stage = shader.stage,
-        .module = shader.module.get().handle(),
+        .module = shader.module.get().GetHandle(),
         .pName = shader.entryPoint.c_str(),
         .pSpecializationInfo = nullptr,
     });
@@ -96,12 +96,12 @@ Pipeline GraphicsPipelineCreator::Build(VkPipelineLayout pipelineLayout, VkRende
   VkPipeline rawPipeline;
 
   SystemError::Check(
-      device_->dispatchTable().vkCreateGraphicsPipelines(device_->handle(), VK_NULL_HANDLE, 1,
+      device_->GetDispatchTable().vkCreateGraphicsPipelines(device_->GetHandle(), VK_NULL_HANDLE, 1,
                                                          &pipelineInfo, nullptr, &rawPipeline),
       "failed to create pipeline");
 
   UniquePipeline pipeline(
-      rawPipeline, PipelineDeleter{device_->handle(), device_->dispatchTable().vkDestroyPipeline});
+      rawPipeline, PipelineDeleter{device_->GetHandle(), device_->GetDispatchTable().vkDestroyPipeline});
 
   return Pipeline(*device_, std::move(pipeline));
 }

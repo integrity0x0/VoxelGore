@@ -6,13 +6,13 @@ class DescriptorPool;
 
 class DescriptorSet {
  public:
-  VkDescriptorSet handle() const { return descriptorSet_.get(); }
+  VkDescriptorSet GetHandle() const { return descriptorSet_.get(); }
 
   void Bind(VkCommandBuffer cmd, VkPipelineLayout layout, uint32_t bindingIndex = 0,
             VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS) const {
     VkDescriptorSet descriptorSets[] = {descriptorSet_.get()};
 
-    device_->dispatchTable().vkCmdBindDescriptorSets(cmd, bindPoint, layout, bindingIndex, 1,
+    device_->GetDispatchTable().vkCmdBindDescriptorSets(cmd, bindPoint, layout, bindingIndex, 1,
                                                      descriptorSets,
                                                      0, nullptr);
   }

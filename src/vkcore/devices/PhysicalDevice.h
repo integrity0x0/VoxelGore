@@ -23,7 +23,7 @@ class PhysicalDevice {
 
   const VkPhysicalDeviceMemoryProperties& getMemoryProperties() const { return memoryProperties; }
   int32_t score() const;
-  VkPhysicalDevice handle() const { return physicalDevice; }
+  VkPhysicalDevice GetHandle() const { return physicalDevice; }
   QueueFamilyIndices getQueueFamilyIndices(VkSurfaceKHR surface) const;
 
   std::optional<uint32_t> findMemoryType(VkMemoryPropertyFlags requiredFlags,

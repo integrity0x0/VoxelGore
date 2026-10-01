@@ -19,15 +19,15 @@ Mesh::Mesh(const vkcore::Device& device, vkcore::BufferSlice&& buffer, uint32_t 
     : device_(&device), buffer_(std::move(buffer)), vertexCount_(vertexCount) {}
 
 void Mesh::Bind(VkCommandBuffer cmd) const {
-  const auto& dt = device_->dispatchTable();
+  const auto& dt = device_->GetDispatchTable();
 
-  VkBuffer handle = buffer_.handle();
-  VkDeviceSize offset = buffer_.offset();
+  VkBuffer handle = buffer_.GetHandle();
+  VkDeviceSize offset = buffer_.GetOffset();
 
   dt.vkCmdBindVertexBuffers(cmd, 0, 1, &handle, &offset);
 
   if (indexBuffer_.has_value())
-    dt.vkCmdBindIndexBuffer(cmd, indexBuffer_->handle(), indexBuffer_->offset(), indexType_);
+    dt.vkCmdBindIndexBuffer(cmd, indexBuffer_->GetHandle(), indexBuffer_->GetOffset(), indexType_);
 }
 
 Mesh::Mesh(const vkcore::Device& device, vkcore::BufferSlice&& buffer, uint32_t vertexCount,
@@ -40,7 +40,7 @@ Mesh::Mesh(const vkcore::Device& device, vkcore::BufferSlice&& buffer, uint32_t 
       indexType_(indexType) {}
 
 void Mesh::Draw(VkCommandBuffer cmd) const {
-  const auto& dt = device_->dispatchTable();
+  const auto& dt = device_->GetDispatchTable();
   if (indexBuffer_)
     dt.vkCmdDrawIndexed(cmd, indexCount_, 1u, 0, 0, 0);
   else

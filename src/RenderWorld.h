@@ -45,7 +45,7 @@ class RenderWorld {
   TextureManager& textures() { return *textureManager_; }
   GameDataBinding& gameData() { return *gameDataBinding_; }
 
-  Atlas& blockAtlas() { return chunkRenderer_->getAtlas(); }
+  Atlas& blockAtlas() { return chunkRenderer_->GetAtlas(); }
 
   ShaderCompiler& shaderCompiler() { return *shaderCompiler_; }
   const ShaderCompiler& shaderCompiler() const { return *shaderCompiler_; }

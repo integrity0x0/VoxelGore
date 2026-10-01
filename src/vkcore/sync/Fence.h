@@ -8,7 +8,7 @@ class Fence {
  public:
   explicit Fence(const Device& device, VkFenceCreateFlags flags = 0);
 
-  VkFence handle() const noexcept { return fence_.get(); }
+  VkFence GetHandle() const noexcept { return fence_.get(); }
 
   void wait(uint64_t timeout = UINT64_MAX) const;
   void reset() const;

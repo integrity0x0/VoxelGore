@@ -138,7 +138,7 @@ class ChunkMeshBuilder {
         : buffer_(bufferAllocator.Allocate(
               kBufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-      uint8_t* base = reinterpret_cast<uint8_t*>(buffer_.map());
+      uint8_t* base = reinterpret_cast<uint8_t*>(buffer_.Map());
 
       constexpr VkDeviceSize kLayerSizes[] = {kSolidSize, kCutoutSize, kTranslucentSize};
 
@@ -149,10 +149,10 @@ class ChunkMeshBuilder {
       }
     }
 
-    MeshStream& layer(RenderLayer renderLayer) {
+    MeshStream& GetLayer(RenderLayer renderLayer) {
       return meshStreams_[static_cast<size_t>(renderLayer)];
     }
-    const MeshStream& layer(RenderLayer renderLayer) const {
+    const MeshStream& GetLayer(RenderLayer renderLayer) const {
       return meshStreams_[static_cast<size_t>(renderLayer)];
     }
 
@@ -163,11 +163,11 @@ class ChunkMeshBuilder {
       translucentQuadEntries_.push_back(entry);
     }
 
-    const std::vector<TranslucentMesh::QuadEntry>& TranslucentQuads() const {
+    const std::vector<TranslucentMesh::QuadEntry>& GetTranslucentQuads() const {
       return translucentQuadEntries_;
     }
 
-    VkBuffer BufferHandle() const { return buffer_.handle(); }
+    VkBuffer GetBufferHandle() const { return buffer_.GetHandle(); }
 
     void Reset() {
       for (auto& stream : meshStreams_) stream.Reset();

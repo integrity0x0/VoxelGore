@@ -35,7 +35,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
   nightSkybox_ =
       std::make_unique<Skybox>(Skybox::Load(device, engine.transferContext(), memoryAllocator,
                                             skyboxRenderer_->descriptorPool(),
-                                            skyboxRenderer_->descriptorSetLayout(), nightPaths, 4u)
+                                            skyboxRenderer_->GetDescriptorSetLayout(), nightPaths, 4u)
                                    .value());
 
   modelCache_ =
@@ -67,10 +67,10 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
   generalBucket_ = &billboardRenderer_->CreateBucket(engine.bufferAllocator(), *billboardsAtlas_,
                                                      engine.getFramesInFlightCount());
   blockBucket_ = &billboardRenderer_->CreateBucket(
-      engine.bufferAllocator(), chunkRenderer_->getAtlas(), engine.getFramesInFlightCount());
+      engine.bufferAllocator(), chunkRenderer_->GetAtlas(), engine.getFramesInFlightCount());
 
   particleEngine_ = std::make_unique<ParticleEngine>(
-      *billboardsAtlas_, chunkRenderer_->blockRenderData(), session.blocks(),
+      *billboardsAtlas_, chunkRenderer_->GetBlockRenderData(), session.blocks(),
       session.world().chunks(), session.lighting(), session.enviroment(), *generalBucket_,
       *blockBucket_);
 

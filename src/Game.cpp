@@ -92,7 +92,7 @@ void Game::Init() {
           .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
           .setDepthTest(false, false)
           .setCullMode(VK_CULL_MODE_NONE)
-          .Build(crosshairLayout_->handle(), engine_->getRenderPass().handle()));
+          .Build(crosshairLayout_->GetHandle(), engine_->getRenderPass().GetHandle()));
 
   const glm::vec3 worldCenter((kWorldW * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
                               (kWorldH * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
@@ -105,7 +105,7 @@ void Game::Init() {
 
   blockPreviewRenderer_ = std::make_unique<gfx::BlockPreviewRenderer>(
       device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(),
-      compiler, render_->chunks().blockRenderData());
+      compiler, render_->chunks().GetBlockRenderData());
 
   std::ignore = render_->textures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
 
@@ -116,19 +116,7 @@ void Game::Init() {
         return blockPreviewRenderer_->Render(*id);
       });
 
-  ui_.emplace(device, engine_->getCommandPool(), engine_->getRenderPass().handle(), compiler,
-              luaState_, render_->textures(), engine_->extent());
-
-  libGui_.emplace(*ui_, luaState_);
   libControl_.emplace(controlState_, luaState_);
-
-#ifdef __ANDROID__
-  ui_->push(core::kAssetsPrefix + "ui/game_android.xml");
-#else
-  ui_->push(core::kAssetsPrefix + "ui/game.xml");
-#endif
-
-  uiExtent_ = engine_->extent();
 
   lastFrameTime_ = std::chrono::steady_clock::now();
 
@@ -157,7 +145,7 @@ void Game::SetViewportAndScissor(VkCommandBuffer cmd) {
   scissor.offset = {0, 0};
   scissor.extent = extent;
 
-  auto& dt = engine_->getDevice().dispatchTable();
+  auto& dt = engine_->getDevice().GetDispatchTable();
   dt.vkCmdSetViewport(cmd, 0, 1, &vp);
   dt.vkCmdSetScissor(cmd, 0, 1, &scissor);
 }
@@ -165,11 +153,6 @@ void Game::SetViewportAndScissor(VkCommandBuffer cmd) {
 void Game::UpdateInput() {
 #ifndef __ANDROID__
   player_->HandleInput(*window_, controlState_, cursorLocked_);
-
-  if (!cursorLocked_ && ui_) {
-    auto swipe = ui_->routeTouches(window_->input().getState().pointers());
-    player_->camera().Rotate(swipe.deltaX, swipe.deltaY);
-  }
 #endif
 }
 
@@ -199,16 +182,6 @@ bool Game::HandleResize() {
 }
 
 void Game::UpdateUiSize() {
-  if (!ui_) return;
-
-  const VkExtent2D extent = engine_->extent();
-
-  if (uiExtent_.width == extent.width && uiExtent_.height == extent.height) {
-    return;
-  }
-
-  ui_->resize({extent.width, extent.height});
-  uiExtent_ = extent;
 }
 
 void Game::UpdatePlatform() {
@@ -258,12 +231,8 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
 
   UpdateUiSize();
 
-  VkCommandBuffer cmd = engine_->getCommandBuffer().handle();
+  VkCommandBuffer cmd = engine_->getCommandBuffer().GetHandle();
   uint32_t frame = engine_->getCurrentFrameIndex();
-
-  if (ui_) {
-    ui_->Update();
-  }
 
   player_->UpdateMovement(controlState_, dt_);
 
@@ -296,12 +265,8 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
 
   render_->Render(cmd, dt_, frame, player_->camera());
 
-  if (ui_) {
-    ui_->Render(cmd);
-  }
-
   crosshairPipeline_->Bind(cmd);
-  engine_->getDevice().dispatchTable().vkCmdDraw(cmd, 4, 1, 0, 0);
+  engine_->getDevice().GetDispatchTable().vkCmdDraw(cmd, 4, 1, 0, 0);
 
   engine_->endRenderPass();
   engine_->endFrame(imageIndex);

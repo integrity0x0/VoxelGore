@@ -25,7 +25,7 @@ class BillboardPipelines {
     return textureSetLayout_;
   }
 
-  [[nodiscard]] const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
+  [[nodiscard]] const vkcore::PipelineLayout& GetPipelineLayout() const { return pipelineLayout_; }
 
  private:
   [[nodiscard]] vkcore::DescriptorSetLayout BuildTextureSetLayout(const vkcore::Device& device);

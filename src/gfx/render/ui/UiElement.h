@@ -11,6 +11,7 @@
 #include "../../UvRegion.h"
 #include "../../common/texture/MaterialManager.h"
 #include "UiStateOverrides.h"
+#include "UiRenderer.h"
 
 namespace gfx {
 
@@ -18,22 +19,25 @@ enum class UiNodeType : uint8_t { Undefined, Container, Text, Image, Button, Che
 
 class UiElement {
  public:
-  using States = std::array<bool, static_cast<size_t>(UiState::Count)>;
-  
+  using StateFlags = std::array<bool, static_cast<size_t>(UiState::Count)>;
+  using StateOverrideTable = std::array<UiStateOverrides, static_cast<size_t>(UiState::Count)>;
+
   UiElement(std::string_view id, const UiElement* parent);
+  
+  virtual void Render(UiRenderer& renderer);
 
   virtual ~UiElement();
 
-  [[nodiscard]] UiNodeType NodeType() const { return nodeType_; }
+  [[nodiscard]] virtual UiNodeType GetNodeType() const = 0;
 
-  [[nodiscard]] const UiSize& Pos() const { return pos_; }
-  [[nodiscard]] const UiSize& Size() const { return size_; }
+  [[nodiscard]] const UiSize& GetPos() const { return pos_; }
+  [[nodiscard]] const UiSize& GetSize() const { return size_; }
 
   void SetPos(const UiSize& position) { pos_ = position; }
   void SetSize(const UiSize& size) { size_ = size; }
 
-  [[nodiscard]] const UiPoint& Anchor() const { return anchor_; }
-  [[nodiscard]] const UiPoint& Pivot() const { return pivot_; }
+  [[nodiscard]] const UiPoint& GetAnchor() const { return anchor_; }
+  [[nodiscard]] const UiPoint& GetPivot() const { return pivot_; }
 
   void SetAnchor(UiPoint anchor) { anchor_ = anchor; }
   void SetPivot(UiPoint pivot) { pivot_ = pivot; }
@@ -45,11 +49,12 @@ class UiElement {
   void SetEnabled(bool enabled) { enabled_ = enabled; }
 
   [[nodiscard]] bool IsChecked() const { return checked_; }
+  
   void SetChecked(bool checked) { checked_ = checked; }
 
-  [[nodiscard]] UiElement* Parent() const { return parent_; }
+  [[nodiscard]] const UiElement* GetParent() const { return parent_; }
 
-  [[nodiscard]] const std::vector<std::unique_ptr<UiElement>>& Children() const {
+  [[nodiscard]] const std::vector<std::unique_ptr<UiElement>>& GetChildren() const {
     return children_;
   }
 
@@ -63,23 +68,29 @@ class UiElement {
     states_[static_cast<size_t>(state)] = value;
   }
 
+  [[nodiscard]] StateOverrideTable& GetOverrideTable() { return overrideTable_; }
+
+  [[nodiscard]] const StateOverrideTable& GetOverrideTable() const { return overrideTable_; }
+
+  virtual void Render(UiRenderer& renderer);
+
  protected:
-  void SetNodeType(UiNodeType nodeType) { nodeType_ = nodeType; }
   void SetParent(UiElement* parent) { parent_ = parent; }
 
  private:
-  UiNodeType nodeType_ = UiNodeType::Undefined;
-  States states_{};
+  StateFlags states_ = {};
 
   std::string id_;
 
-  UiElement* parent_ = nullptr;
+  const UiElement* parent_ = nullptr;
   std::vector<std::unique_ptr<UiElement>> children_;
 
   UiSize pos_;
   UiSize size_;
 
   std::optional<UiTextureRegion> image_;
+
+  glm::vec4 color_;
 
   UiPoint anchor_;
   UiPoint pivot_;
@@ -90,6 +101,8 @@ class UiElement {
 
   UiPadding padding_;
   std::optional<UiTextureRegion> bgImage_;
+
+  StateOverrideTable overrideTable_;
 };
 
 }  // namespace gfx

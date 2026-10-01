@@ -16,7 +16,7 @@ PipelineLayout::PipelineLayout(const Device& device,
   std::vector<VkDescriptorSetLayout> descriptorSetLayoutHandles;
   descriptorSetLayoutHandles.reserve(descriptorSetLayouts.size());
   for (const auto* layout : descriptorSetLayouts) {
-    descriptorSetLayoutHandles.push_back(layout->handle());
+    descriptorSetLayoutHandles.push_back(layout->GetHandle());
   }
 
   pipelineLayoutCI.setLayoutCount = static_cast<uint32_t>(descriptorSetLayoutHandles.size());
@@ -25,16 +25,16 @@ PipelineLayout::PipelineLayout(const Device& device,
   pipelineLayoutCI.pPushConstantRanges = pcRanges.data();
 
   VkPipelineLayout pipelineLayoutRaw = VK_NULL_HANDLE;
-  SystemError::Check(device.dispatchTable().vkCreatePipelineLayout(
-                         device.handle(), &pipelineLayoutCI, nullptr, &pipelineLayoutRaw),
+  SystemError::Check(device.GetDispatchTable().vkCreatePipelineLayout(
+                         device.GetHandle(), &pipelineLayoutCI, nullptr, &pipelineLayoutRaw),
                      "failed to create pipeline layout");
   pipelineLayout = UniquePipelineLayout(
-      pipelineLayoutRaw, {device.handle(), device.dispatchTable().vkDestroyPipelineLayout});
+      pipelineLayoutRaw, {device.GetHandle(), device.GetDispatchTable().vkDestroyPipelineLayout});
 }
 
 void PipelineLayout::PushConstants(VkCommandBuffer commandBuffer, VkShaderStageFlags stageFlags,
                                    uint32_t offset, std::span<const std::byte> data) const {
-  device->dispatchTable().vkCmdPushConstants(commandBuffer, pipelineLayout.get(), stageFlags,
+  device->GetDispatchTable().vkCmdPushConstants(commandBuffer, pipelineLayout.get(), stageFlags,
                                              offset, static_cast<uint32_t>(data.size()),
                                              data.data());
 }

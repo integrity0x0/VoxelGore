@@ -23,7 +23,7 @@ vkcore::Texture BlockPreviewRenderer::CreateDepthTexture(const vkcore::Device& d
   vkcore::Image image(device, imageCI, memoryAllocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
   VkImageViewCreateInfo viewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-  viewCI.image = image.handle();
+  viewCI.image = image.GetHandle();
   viewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
   viewCI.format = kPreviewDepthFormat;
   viewCI.subresourceRange = {VK_IMAGE_ASPECT_DEPTH_BIT, 0, 1, 0, 1};
@@ -115,8 +115,8 @@ vkcore::Buffer BlockPreviewRenderer::BuildVertexBuffer(uint32_t blockId) {
   std::array<BlockPreviewVertex, 36> vertices;
   for (uint32_t face = 0; face < 6; face++) {
     gfx::BlockSurfaceId surfaceId =
-        blockRenderData_->surfaceId(blockId, static_cast<gm::Block::Face>(face));
-    const gfx::UvRegion& uvRegion = blockRenderData_->surfaceRegistry().ExtractRegion(surfaceId);
+        blockRenderData_->GetSurfaceId(blockId, static_cast<gm::Block::Face>(face));
+    const gfx::UvRegion& uvRegion = blockRenderData_->GetSurfaceRegistry().ExtractRegion(surfaceId);
     glm::vec2 uvMin = uvRegion.min;
     glm::vec2 uvScale = uvRegion.max - uvRegion.min;
 
@@ -161,7 +161,7 @@ vkcore::Pipeline BlockPreviewRenderer::BuildPipeline(const vkcore::Device& devic
       .AddVertexAttribute(0, 0, VK_FORMAT_R32G32B32_SFLOAT,
                           offsetof(gfx::BlockPreviewVertex, pos))
       .AddVertexAttribute(1, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(gfx::BlockPreviewVertex, uv))
-      .Build(pipelineLayout_.handle(), renderPass_.handle(), 0);
+      .Build(pipelineLayout_.GetHandle(), renderPass_.GetHandle(), 0);
 }
 
 BlockPreviewRenderer::BlockPreviewRenderer(const vkcore::Device& device,
@@ -183,17 +183,17 @@ BlockPreviewRenderer::BlockPreviewRenderer(const vkcore::Device& device,
       pipelineLayout_(BuildPipelineLayout(device)),
       pipeline_(BuildPipeline(device, shaderCompiler)) {
   VkDescriptorImageInfo imageInfo = {};
-  imageInfo.sampler = blockRenderData.atlas().texture().sampler().handle();
-  imageInfo.imageView = blockRenderData.atlas().texture().imageView().handle();
+  imageInfo.sampler = blockRenderData.GetAtlas().GetTexture().GetSampler().GetHandle();
+  imageInfo.imageView = blockRenderData.GetAtlas().GetTexture().GetImageView().GetHandle();
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
   VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-  write.dstSet = descriptorSet_.handle();
+  write.dstSet = descriptorSet_.GetHandle();
   write.dstBinding = 0;
   write.dstArrayElement = 0;
   write.descriptorCount = 1;
   write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
   write.pImageInfo = &imageInfo;
-  device_->dispatchTable().vkUpdateDescriptorSets(device_->handle(), 1, &write, 0, nullptr);
+  device_->GetDispatchTable().vkUpdateDescriptorSets(device_->GetHandle(), 1, &write, 0, nullptr);
 }
 
 vkcore::SampledTexture BlockPreviewRenderer::Render(uint32_t blockId) {
@@ -215,14 +215,14 @@ vkcore::SampledTexture BlockPreviewRenderer::Render(uint32_t blockId) {
                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
   VkImageViewCreateInfo colorViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-  colorViewCI.image = colorImage.handle();
+  colorViewCI.image = colorImage.GetHandle();
   colorViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
   colorViewCI.format = kPreviewColorFormat;
   colorViewCI.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
   vkcore::ImageView colorView(*device_, colorViewCI);
 
   vkcore::Framebuffer framebuffer = renderPass_.MakeFramebuffer(
-      std::to_array<const vkcore::ImageView*>({&colorView, &depthTexture.imageView()}), {kPreviewSize, kPreviewSize});
+      std::to_array<const vkcore::ImageView*>({&colorView, &depthTexture.GetImageView()}), {kPreviewSize, kPreviewSize});
 
   VkSamplerCreateInfo samplerCI = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
   samplerCI.magFilter = VK_FILTER_LINEAR;
@@ -240,21 +240,21 @@ vkcore::SampledTexture BlockPreviewRenderer::Render(uint32_t blockId) {
   clearValues[1].depthStencil = {1.0f, 0};
 
   VkRect2D renderArea = {{0, 0}, {kPreviewSize, kPreviewSize}};
-  renderPass_.Begin(cmd.handle(), framebuffer, renderArea, clearValues);
+  renderPass_.Begin(cmd.GetHandle(), framebuffer, renderArea, clearValues);
 
   VkViewport viewport = {0.0f, 0.0f, float(kPreviewSize), float(kPreviewSize), 0.0f, 1.0f};
   VkRect2D scissor = {{0, 0}, {kPreviewSize, kPreviewSize}};
-  device_->dispatchTable().vkCmdSetViewport(cmd.handle(), 0, 1, &viewport);
-  device_->dispatchTable().vkCmdSetScissor(cmd.handle(), 0, 1, &scissor);
+  device_->GetDispatchTable().vkCmdSetViewport(cmd.GetHandle(), 0, 1, &viewport);
+  device_->GetDispatchTable().vkCmdSetScissor(cmd.GetHandle(), 0, 1, &scissor);
 
-  device_->dispatchTable().vkCmdBindPipeline(cmd.handle(), VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                             pipeline_.handle());
+  device_->GetDispatchTable().vkCmdBindPipeline(cmd.GetHandle(), VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                             pipeline_.GetHandle());
 
-  descriptorSet_.Bind(cmd.handle(), pipelineLayout_.handle());
+  descriptorSet_.Bind(cmd.GetHandle(), pipelineLayout_.GetHandle());
 
-  VkBuffer vbHandle = vertexBuffer.handle();
+  VkBuffer vbHandle = vertexBuffer.GetHandle();
   VkDeviceSize vbOffset = 0;
-  device_->dispatchTable().vkCmdBindVertexBuffers(cmd.handle(), 0, 1, &vbHandle, &vbOffset);
+  device_->GetDispatchTable().vkCmdBindVertexBuffers(cmd.GetHandle(), 0, 1, &vbHandle, &vbOffset);
 
   glm::mat4 mvp = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
   mvp[1][1] *= -1.0f;
@@ -262,14 +262,14 @@ vkcore::SampledTexture BlockPreviewRenderer::Render(uint32_t blockId) {
   mvp *= glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
   PushConstants pc;
   pc.mvp = mvp;
-  pipelineLayout_.PushConstants(cmd.handle(), VK_SHADER_STAGE_VERTEX_BIT, pc);
+  pipelineLayout_.PushConstants(cmd.GetHandle(), VK_SHADER_STAGE_VERTEX_BIT, pc);
 
-  device_->dispatchTable().vkCmdDraw(cmd.handle(), 36, 1, 0, 0);
+  device_->GetDispatchTable().vkCmdDraw(cmd.GetHandle(), 36, 1, 0, 0);
 
-  renderPass_.End(cmd.handle());
-  device_->dispatchTable().vkEndCommandBuffer(cmd.handle());
+  renderPass_.End(cmd.GetHandle());
+  device_->GetDispatchTable().vkEndCommandBuffer(cmd.GetHandle());
 
-  deviceQueue_->Submit(cmd.handle());
+  deviceQueue_->Submit(cmd.GetHandle());
   deviceQueue_->WaitIdle();
 
   vkcore::Texture resultTexture(*device_, std::move(colorImage), std::move(colorView));

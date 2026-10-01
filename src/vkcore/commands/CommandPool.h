@@ -15,14 +15,14 @@ class CommandPool {
 
     VkCommandPool rawPool = VK_NULL_HANDLE;
     SystemError::Check(
-        device.dispatchTable().vkCreateCommandPool(device.handle(), &poolCI, nullptr, &rawPool),
+        device.GetDispatchTable().vkCreateCommandPool(device.GetHandle(), &poolCI, nullptr, &rawPool),
         "failed to create command pool");
 
-    CommandPoolDeleter deleter{device.handle(), device.dispatchTable().vkDestroyCommandPool};
+    CommandPoolDeleter deleter{device.GetHandle(), device.GetDispatchTable().vkDestroyCommandPool};
     commandPool_ = UniqueCommandPool(rawPool, deleter);
   }
 
-  VkCommandPool handle() const noexcept { return commandPool_.get(); }
+  VkCommandPool GetHandle() const noexcept { return commandPool_.get(); }
   uint32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex_; }
   VkCommandPoolCreateFlags flags() const noexcept { return flags_; }
 
@@ -33,12 +33,12 @@ class CommandPool {
     commandBufferAI.commandBufferCount = 1;
 
     VkCommandBuffer buffer = VK_NULL_HANDLE;
-    SystemError::Check(device_->dispatchTable().vkAllocateCommandBuffers(device_->handle(),
+    SystemError::Check(device_->GetDispatchTable().vkAllocateCommandBuffers(device_->GetHandle(),
                                                                          &commandBufferAI, &buffer),
                        "failed to allocate command buffer");
 
-    CommandBufferDeleter deleter{device_->handle(), commandPool_.get(),
-                                 device_->dispatchTable().vkFreeCommandBuffers};
+    CommandBufferDeleter deleter{device_->GetHandle(), commandPool_.get(),
+                                 device_->GetDispatchTable().vkFreeCommandBuffers};
     return CommandBuffer(*device_, UniqueCommandBuffer(buffer, deleter));
   }
 
@@ -50,14 +50,14 @@ class CommandPool {
     commandBufferAI.commandBufferCount = count;
 
     std::vector<VkCommandBuffer> rawBuffers(count);
-    SystemError::Check(device_->dispatchTable().vkAllocateCommandBuffers(
-                           device_->handle(), &commandBufferAI, rawBuffers.data()),
+    SystemError::Check(device_->GetDispatchTable().vkAllocateCommandBuffers(
+                           device_->GetHandle(), &commandBufferAI, rawBuffers.data()),
                        "failed to allocate command buffers");
 
     std::vector<CommandBuffer> buffers;
     buffers.reserve(count);
-    CommandBufferDeleter deleter = {device_->handle(), commandPool_.get(),
-                                    device_->dispatchTable().vkFreeCommandBuffers};
+    CommandBufferDeleter deleter = {device_->GetHandle(), commandPool_.get(),
+                                    device_->GetDispatchTable().vkFreeCommandBuffers};
     for (VkCommandBuffer buf : rawBuffers) {
       buffers.push_back(CommandBuffer(*device_, std::move(UniqueCommandBuffer(buf, deleter))));
     }
@@ -70,7 +70,7 @@ class CommandPool {
     VkCommandBufferBeginInfo beginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    SystemError::Check(device_->dispatchTable().vkBeginCommandBuffer(cmd.handle(), &beginInfo),
+    SystemError::Check(device_->GetDispatchTable().vkBeginCommandBuffer(cmd.GetHandle(), &beginInfo),
                        "failed to begin command buffer");
 
     return cmd;

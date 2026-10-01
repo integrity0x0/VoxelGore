@@ -51,5 +51,3 @@ int main() {
   glfwTerminate();
   return 0;
 }
-
-// TODO: fix screen resize

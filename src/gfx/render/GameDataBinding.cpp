@@ -46,21 +46,21 @@ GameDataBinding::GameDataBinding(const vkcore::Device& device,
     vkcore::BufferSlice buffer = bufferAllocator.Allocate(sizeof(UniformGameData), alignment,
                                                           kBuffersUsage, kMemoryProperties);
 
-    UniformGameData* mapped = reinterpret_cast<UniformGameData*>(buffer.map());
+    UniformGameData* mapped = reinterpret_cast<UniformGameData*>(buffer.Map());
 
     auto descriptorSet = descriptorPool_.Allocate(descriptorSetLayout_);
 
     
     VkDescriptorBufferInfo& bufferInfo = bufferInfos.emplace_back();
-    bufferInfo.buffer = buffer.handle();
-    bufferInfo.offset = buffer.offset();
+    bufferInfo.buffer = buffer.GetHandle();
+    bufferInfo.offset = buffer.GetOffset();
     bufferInfo.range = sizeof(UniformGameData);
 
     frames_.emplace_back(mapped, std::move(buffer), std::move(descriptorSet));
 
     VkWriteDescriptorSet& write = writes.emplace_back();
     write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    write.dstSet = frames_.back().descriptorSet.handle();
+    write.dstSet = frames_.back().descriptorSet.GetHandle();
     write.dstBinding = 0;
     write.dstArrayElement = 0;
     write.descriptorCount = 1;
@@ -68,7 +68,7 @@ GameDataBinding::GameDataBinding(const vkcore::Device& device,
     write.pBufferInfo = &bufferInfo;
   }
 
-  device.dispatchTable().vkUpdateDescriptorSets(
-      device.handle(), static_cast<uint32_t>(writes.size()), writes.data(), 0, nullptr);
+  device.GetDispatchTable().vkUpdateDescriptorSets(
+      device.GetHandle(), static_cast<uint32_t>(writes.size()), writes.data(), 0, nullptr);
 }
 }  // namespace gfx

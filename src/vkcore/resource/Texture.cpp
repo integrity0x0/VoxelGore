@@ -22,7 +22,7 @@ struct LoadedImage {
 };
 
 ImageView CreateImageView(const Device& device, const Image& image, VkImageViewCreateInfo viewCI) {
-  viewCI.image = image.handle();
+  viewCI.image = image.GetHandle();
   return ImageView(device, viewCI);
 }
 
@@ -115,7 +115,7 @@ Texture FinishTexture(const Device& device, TransferContext& transferCtxt, Image
 
   VkImageViewCreateInfo imageViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 
-  imageViewCI.image = image.handle();
+  imageViewCI.image = image.GetHandle();
   imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
   imageViewCI.format = imageCI.format;
 
@@ -156,7 +156,7 @@ Texture FinishCubemap(const Device& device, TransferContext& transferCtxt, Image
   transferCtxt.Flush();
 
   VkImageViewCreateInfo imageViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-  imageViewCI.image = image.handle();
+  imageViewCI.image = image.GetHandle();
   imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
   imageViewCI.format = imageCI.format;
   imageViewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;

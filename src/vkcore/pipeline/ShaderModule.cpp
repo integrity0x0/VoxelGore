@@ -10,11 +10,11 @@ ShaderModule::ShaderModule(const Device& device, std::span<const uint32_t> data,
   moduleCI.pNext = pNext;
 
   VkShaderModule shaderModule;
-  SystemError::Check(device.dispatchTable().vkCreateShaderModule(device.handle(), &moduleCI,
+  SystemError::Check(device.GetDispatchTable().vkCreateShaderModule(device.GetHandle(), &moduleCI,
                                                                  nullptr, &shaderModule),
                      "failed to create shader module");
 
   shaderModule_ = UniqueShaderModule(
-      shaderModule, {device.handle(), device.dispatchTable().vkDestroyShaderModule});
+      shaderModule, {device.GetHandle(), device.GetDispatchTable().vkDestroyShaderModule});
 }
 }  // namespace vkcore

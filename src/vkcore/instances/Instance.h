@@ -17,21 +17,21 @@ class Instance {
   template <typename T>
   [[nodiscard]] T* GetProcAddr(const LibraryLoader& loader, const char* fun) const {
     return reinterpret_cast<T*>(
-        loader.dispatchTable().vkGetInstanceProcAddr(instance.get(), fun));
+        loader.GetDispatchTable().vkGetInstanceProcAddr(instance.get(), fun));
   }
 
   [[nodiscard]] const std::vector<std::string>& enabledExtensions() const { return enabledExtensions_; }
 
   [[nodiscard]] const std::vector<std::string> enabledLayers() const { return enabledLayers_; }
 
-  [[nodiscard]] const InstanceDispatchTable& dispatchTable() const { return dispatchTable_; }
+  [[nodiscard]] const InstanceDispatchTable& GetDispatchTable() const { return dispatchTable_; }
 
   [[nodiscard]] bool IsExtensionEnabled(const std::string& extension) const {
     return std::find(enabledExtensions_.begin(), enabledExtensions_.end(), extension) !=
            enabledExtensions_.end();
   }
 
-  [[nodiscard]] VkInstance handle() const { return instance.get(); }
+  [[nodiscard]] VkInstance GetHandle() const { return instance.get(); }
 
  private:
   UniqueInstance instance = {};

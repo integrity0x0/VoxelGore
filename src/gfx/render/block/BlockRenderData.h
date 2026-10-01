@@ -29,21 +29,21 @@ class BlockRenderData {
         blockInfos_[blockId].surfaces[static_cast<uint32_t>(face)]);
   }
 
-  [[nodiscard]] BlockSurfaceId surfaceId(uint32_t blockId, gm::Block::Face face);
-  [[nodiscard]] RenderGroupId renderGroupId(uint32_t blockId);
+  [[nodiscard]] BlockSurfaceId GetSurfaceId(uint32_t blockId, gm::Block::Face face);
+  [[nodiscard]] RenderGroupId GetRenderGroupId(uint32_t blockId);
 
-  [[nodiscard]] const Atlas& atlas() const { return atlas_; }
-  [[nodiscard]] Atlas& atlas() { return atlas_; }
-  [[nodiscard]] const BlockSurfaceRegistry& surfaceRegistry() const { return surfaceRegistry_; }
-  [[nodiscard]] const RenderGroupRegistry& renderGroupRegistry() const {
+  [[nodiscard]] const Atlas& GetAtlas() const { return atlas_; }
+  [[nodiscard]] Atlas& GetAtlas() { return atlas_; }
+  [[nodiscard]] const BlockSurfaceRegistry& GetSurfaceRegistry() const { return surfaceRegistry_; }
+  [[nodiscard]] const RenderGroupRegistry& GetRenderGroupRegistry() const {
     return renderGroupRegistry_;
   }
-  [[nodiscard]] const std::vector<BlockUvBuffer>& uvBuffers() const { return uvBuffers_; }
+  [[nodiscard]] const std::vector<BlockUvBuffer>& GetUvBuffer() const { return uvBuffers_; }
 
-  [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const {
+  [[nodiscard]] const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const {
     return descriptorSetLayout_;
   }
-  [[nodiscard]] const vkcore::DescriptorSet& descriptorSet(uint32_t frame) const {
+  [[nodiscard]] const vkcore::DescriptorSet& GetDescriptorSet(uint32_t frame) const {
     assert(frame < descriptorSets_.size());
     return descriptorSets_[frame];
   }

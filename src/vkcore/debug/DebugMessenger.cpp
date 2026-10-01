@@ -14,7 +14,7 @@ DebugMessenger::DebugMessenger(const vkcore::Instance& instance,
   debugMessengerCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-  const auto& debugUtilsTable = instance.dispatchTable().debugUtilsTable;
+  const auto& debugUtilsTable = instance.GetDispatchTable().debugUtilsTable;
 
   if (!debugUtilsTable.has_value()) {
     throw SystemError(VK_ERROR_UNKNOWN,
@@ -22,10 +22,10 @@ DebugMessenger::DebugMessenger(const vkcore::Instance& instance,
   }
   VkDebugUtilsMessengerEXT debugMessengerRaw = VK_NULL_HANDLE;
   SystemError::Check(debugUtilsTable->vkCreateDebugUtilsMessengerEXT(
-                         instance.handle(), &debugMessengerCI, nullptr, &debugMessengerRaw),
+                         instance.GetHandle(), &debugMessengerCI, nullptr, &debugMessengerRaw),
                      "Failed to create VkDebugUtilsMessenger");
   debugMessenger = UniqueDebugUtilsMessengerEXT(
-      debugMessengerRaw, {instance.handle(), debugUtilsTable->vkDestroyDebugUtilsMessengerEXT});
+      debugMessengerRaw, {instance.GetHandle(), debugUtilsTable->vkDestroyDebugUtilsMessengerEXT});
 }
 
 }  // namespace vkcore

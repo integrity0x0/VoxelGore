@@ -49,7 +49,7 @@ class MemorySlice {
   }
 
   [[nodiscard]] VkDeviceMemory memory() const {
-    return storage_ ? storage_->memory.handle() : VK_NULL_HANDLE;
+    return storage_ ? storage_->memory.GetHandle() : VK_NULL_HANDLE;
   }
 
   [[nodiscard]] void* map(VkDeviceSize offset = 0) const {
@@ -67,7 +67,7 @@ class MemorySlice {
  private:
   void release() {
     if (storage_) {
-      storage_->allocator.free(region_);
+      storage_->allocator.Free(region_);
       storage_.reset();
     }
   }

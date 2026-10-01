@@ -136,14 +136,6 @@
     <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
-    <ClCompile Include="src\gfx\render\ui\Container.cpp" />
-    <ClCompile Include="src\gfx\render\ui\DescriptorSetRegistry.cpp" />
-    <ClCompile Include="src\gfx\render\ui\LibGui.cpp" />
-    <ClCompile Include="src\gfx\render\ui\Node.cpp" />
-    <ClCompile Include="src\gfx\render\ui\NodeBinding.cpp" />
-    <ClCompile Include="src\gfx\render\ui\NodeParser.cpp" />
-    <ClCompile Include="src\gfx\render\ui\Page.cpp" />
-    <ClCompile Include="src\gfx\render\ui\Renderer.cpp" />
     <ClCompile Include="src\gfx\render\GameDataBinding.cpp" />
     <ClCompile Include="src\gfx\render\model\ModelPipeline.cpp" />
     <ClCompile Include="src\gfx\render\model\ModelRenderer.cpp" />
@@ -160,6 +152,14 @@
     <ClCompile Include="src\game\Enviroment.cpp" />
     <ClCompile Include="src\gfx\render\particle\BloodEmitter.cpp" />
     <ClCompile Include="src\gfx\render\particle\PhysicalParticleEmitter.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiContainer.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiRenderer.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiText.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiRenderPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiStateTable.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiElementParser.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -299,18 +299,9 @@
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
-    <ClInclude Include="src\gfx\render\ui\Container.h" />
-    <ClInclude Include="src\gfx\render\ui\DescriptorSetRegistry.h" />
     <ClInclude Include="src\gfx\render\ui\InputRouter.h" />
-    <ClInclude Include="src\gfx\render\ui\LibGui.h" />
-    <ClInclude Include="src\gfx\render\ui\Node.h" />
-    <ClInclude Include="src\gfx\render\ui\NodeBinding.h" />
-    <ClInclude Include="src\gfx\render\ui\NodeParser.h" />
-    <ClInclude Include="src\gfx\render\ui\Page.h" />
     <ClInclude Include="src\gfx\render\ui\Panel.h" />
-    <ClInclude Include="src\gfx\render\ui\Renderer.h" />
     <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
-    <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\GameDataBinding.h" />
     <ClInclude Include="src\gfx\render\model\ModelInstanceData.h" />
     <ClInclude Include="src\gfx\render\model\ModelPipeline.h" />
@@ -337,6 +328,18 @@
     <ClInclude Include="src\gfx\render\particle\BloodEmitter.h" />
     <ClInclude Include="src\gfx\render\particle\PhysicalParticleEmitter.h" />
     <ClInclude Include="src\game\entity\BleedComponent.h" />
+    <ClInclude Include="src\gfx\render\ui\UiButton.h" />
+    <ClInclude Include="src\gfx\render\ui\UiContainer.h" />
+    <ClInclude Include="src\gfx\render\ui\UiElement.h" />
+    <ClInclude Include="src\gfx\render\ui\UiRenderer.h" />
+    <ClInclude Include="src\gfx\render\ui\UiStateOverrides.h" />
+    <ClInclude Include="src\gfx\render\ui\UiText.h" />
+    <ClInclude Include="src\gfx\render\ui\UiTypes.h" />
+    <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
+    <ClInclude Include="src\gfx\render\ui\UiVertex.h" />
+    <ClInclude Include="src\gfx\render\ui\UiStateTable.h" />
+    <ClInclude Include="src\gfx\render\ui\UiElementParser.h" />
+    <ClInclude Include="src\gfx\render\ui\UiPage.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

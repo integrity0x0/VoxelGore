@@ -21,7 +21,7 @@ class ChunkRenderPipelines {
 
   void Bind(VkCommandBuffer cmd, RenderLayer renderLayer) const;
 
-  [[nodiscard]] const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
+  [[nodiscard]] const vkcore::PipelineLayout& GetPipelineLayout() const { return pipelineLayout_; }
 
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(

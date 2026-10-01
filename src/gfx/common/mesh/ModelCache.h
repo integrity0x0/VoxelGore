@@ -42,7 +42,7 @@ class ModelCache {
   }
 
   [[nodiscard]] const vkcore::DescriptorSetLayout& materialSetLayout() const {
-    return materialCache_.descriptorSetLayout();
+    return materialCache_.GetDescriptorSetLayout();
   }
 
  private:

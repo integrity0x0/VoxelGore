@@ -17,7 +17,7 @@ class PipelineLayout {
                  std::span<const VkPushConstantRange> pcRanges = {}, void* pNext = nullptr,
                  VkPipelineLayoutCreateFlags flags = 0);
 
-  VkPipelineLayout handle() const { return pipelineLayout.get(); }
+  VkPipelineLayout GetHandle() const { return pipelineLayout.get(); }
 
   void PushConstants(VkCommandBuffer commandBuffer, VkShaderStageFlags stageFlags, uint32_t offset,
                      std::span<const std::byte> data) const;

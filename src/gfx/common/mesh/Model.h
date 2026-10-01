@@ -27,7 +27,7 @@ class Model {
 
   struct Submesh {
     Mesh mesh;
-    const MaterialManager::Material* material;
+    const Material* material;
   };
 
   Model(ModelId id, const vkcore::Device& device, std::vector<Submesh>&& submeshes);

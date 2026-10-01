@@ -16,9 +16,9 @@ class SampledTexture {
                  const VkSamplerCreateInfo& samplerCI);
 
   const Texture& getTexture() const { return texture_; }
-  const Sampler& sampler() const { return sampler_; }
-  const Image& image() const { return texture_.getImage(); }
-  const ImageView& imageView() const { return texture_.imageView(); }
+  const Sampler& GetSampler() const { return sampler_; }
+  const Image& GetImage() const { return texture_.getImage(); }
+  const ImageView& GetImageView() const { return texture_.GetImageView(); }
   uint32_t width() const { return texture_.width(); }
   uint32_t height() const { return texture_.height(); }
   uint32_t mipLevels() const { return texture_.mipLevels(); }

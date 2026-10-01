@@ -17,8 +17,8 @@ class SkyboxPipeline {
     pipeline_.Bind(cmd);
   }
 
-  const vkcore::DescriptorSetLayout& descriptorSetLayout() const { return descriptorSetLayout_; }
-  const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
+  const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const { return descriptorSetLayout_; }
+  const vkcore::PipelineLayout& GetPipelineLayout() const { return pipelineLayout_; }
  private:
   [[nodiscard]] vkcore::DescriptorSetLayout BuildDescriptorSetLayout(const vkcore::Device& device);
   [[nodiscard]] vkcore::PipelineLayout BuildDescriptorPipelineLayout(

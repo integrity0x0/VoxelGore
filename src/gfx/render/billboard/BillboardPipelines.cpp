@@ -22,7 +22,7 @@ vkcore::PipelineLayout BillboardPipelines::BuildPipelineLayout(
     const vkcore::Device& device, const GameDataBinding& gameDataBinding) {
   return vkcore::PipelineLayout(device,
                                 std::to_array<const vkcore::DescriptorSetLayout*>(
-                                    {&gameDataBinding.descriptorSetLayout(), &textureSetLayout_}));
+                                    {&gameDataBinding.GetDescriptorSetLayout(), &textureSetLayout_}));
 }
 
 vkcore::Pipeline BillboardPipelines::BuildPipeline(const vkcore::Device& device,
@@ -73,7 +73,7 @@ vkcore::Pipeline BillboardPipelines::BuildPipeline(const vkcore::Device& device,
       .AddColorBlendAttachment(colorBlendEnable)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
-      .Build(pipelineLayout_.handle(), renderPass.handle());
+      .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }
 
 std::array<vkcore::Pipeline, static_cast<size_t>(RenderLayer::Count)>

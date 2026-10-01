@@ -189,7 +189,7 @@ bool IsBlocked(BlockRenderData& renderData, const gm::Chunk& self,
 
   uint32_t neighborId = target->GetVoxel(neighborLocalPos).id;
 
-  return renderData.renderGroupId(neighborId) == renderData.renderGroupId(sourceVoxelId);
+  return renderData.GetRenderGroupId(neighborId) == renderData.GetRenderGroupId(sourceVoxelId);
 }
 
 }  // namespace
@@ -214,7 +214,7 @@ ChunkMeshBuilder::ChunkMeshBuilder(const vkcore::Device& device, const gm::Light
 bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::vec3& worldOffset,
                                uint32_t surfaceId, const std::array<glm::vec4, 4>& cornerColors,
                                RenderLayer renderLayer) {
-  MeshStream& stream = staging.layer(renderLayer);
+  MeshStream& stream = staging.GetLayer(renderLayer);
 
   if (!stream.CanFit(1)) {
     return false;
@@ -253,7 +253,7 @@ bool ChunkMeshBuilder::AddFace(StagingInfo& staging, uint32_t face, const glm::v
 
 std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const StagingInfo& staging,
                                                     RenderLayer renderLayer) {
-  const MeshStream& stream = staging.layer(renderLayer);
+  const MeshStream& stream = staging.GetLayer(renderLayer);
 
   if (stream.empty()) {
     return std::nullopt;
@@ -269,18 +269,18 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
 
   VkBufferCopy vertexRegion{};
   vertexRegion.srcOffset = stream.VertexSrcOffset();
-  vertexRegion.dstOffset = vertexBuffer.offset();
+  vertexRegion.dstOffset = vertexBuffer.GetOffset();
   vertexRegion.size = stream.VertexBytes();
 
-  device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), vertexBuffer.handle(), 1,
+  device_->GetDispatchTable().vkCmdCopyBuffer(cmd, staging.GetBufferHandle(), vertexBuffer.GetHandle(), 1,
                                            &vertexRegion);
 
   VkBufferCopy indexRegion{};
   indexRegion.srcOffset = stream.IndexSrcOffset();
-  indexRegion.dstOffset = indexBuffer.offset();
+  indexRegion.dstOffset = indexBuffer.GetOffset();
   indexRegion.size = stream.IndexBytes();
 
-  device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), indexBuffer.handle(), 1,
+  device_->GetDispatchTable().vkCmdCopyBuffer(cmd, staging.GetBufferHandle(), indexBuffer.GetHandle(), 1,
                                            &indexRegion);
 
   return Mesh(*device_, std::move(vertexBuffer), stream.vertexCount(), std::move(indexBuffer),
@@ -289,7 +289,7 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
 
 std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBuffer cmd,
                                                                      StagingInfo& staging) {
-  MeshStream& stream = staging.layer(RenderLayer::Translucent);
+  MeshStream& stream = staging.GetLayer(RenderLayer::Translucent);
 
   if (stream.empty()) {
     return std::nullopt;
@@ -301,16 +301,16 @@ std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBu
 
   VkBufferCopy vertexRegion{};
   vertexRegion.srcOffset = stream.VertexSrcOffset();
-  vertexRegion.dstOffset = vertexBuffer.offset();
+  vertexRegion.dstOffset = vertexBuffer.GetOffset();
   vertexRegion.size = stream.VertexBytes();
 
-  device_->dispatchTable().vkCmdCopyBuffer(cmd, staging.BufferHandle(), vertexBuffer.handle(), 1,
+  device_->GetDispatchTable().vkCmdCopyBuffer(cmd, staging.GetBufferHandle(), vertexBuffer.GetHandle(), 1,
                                            &vertexRegion);
 
   Mesh mesh(*device_, std::move(vertexBuffer), stream.vertexCount());
 
   return TranslucentMesh(*device_, std::move(mesh), bufferAllocator_, framesCount_,
-                         staging.TranslucentQuads());
+                         staging.GetTranslucentQuads());
 }
 
 bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
@@ -346,7 +346,7 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
           }
 
           uint32_t blockSurfaceId =
-              block ? blockRenderData_->surfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0;
+              block ? blockRenderData_->GetSurfaceId(v.id, static_cast<gm::Block::Face>(face)) : 0;
 
           std::array<glm::vec4, 4> cornerColors;
 
@@ -430,8 +430,8 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
     it = dirtyChunks.erase(it);
   }
 
-  device_->dispatchTable().vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, 0, 0, nullptr,
+  device_->GetDispatchTable().vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, nullptr,
                                                 0, nullptr, 0, nullptr);
 }
 

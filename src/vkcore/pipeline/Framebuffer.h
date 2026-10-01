@@ -16,7 +16,7 @@ class Framebuffer {
               VkRenderPass renderPass, VkExtent2D, uint32_t layers = 1,
               VkFramebufferCreateFlags flags = 0);
 
-  VkFramebuffer handle() const noexcept { return framebuffer_.get(); }
+  VkFramebuffer GetHandle() const noexcept { return framebuffer_.get(); }
 
   uint32_t width() const noexcept { return width_; }
   uint32_t height() const noexcept { return height_; }

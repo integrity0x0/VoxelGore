@@ -10,7 +10,7 @@ ModelPipeline::ModelPipeline(const vkcore::Device& device, const vkcore::RenderP
                              const vkcore::DescriptorSetLayout& materialSetLayout,
                              const ShadowContext* shadowCtxt, const ShaderCompiler& shaderCompiler)
     : 
-      pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.descriptorSetLayout(), materialSetLayout, shadowCtxt)),
+      pipelineLayout_(BuildPipelineLayout(device, gameDataBinding.GetDescriptorSetLayout(), materialSetLayout, shadowCtxt)),
       pipeline_(BuildPipeline(device, renderPass, shaderCompiler)) {}
 
 vkcore::PipelineLayout ModelPipeline::BuildPipelineLayout(
@@ -20,7 +20,7 @@ vkcore::PipelineLayout ModelPipeline::BuildPipelineLayout(
     &gameDataSetLayout, &materialSetLayout
   };
 
-  if (shadowCtxt) layouts.emplace_back(&shadowCtxt->descriptorSetLayout());
+  if (shadowCtxt) layouts.emplace_back(&shadowCtxt->GetDescriptorSetLayout());
 
   return vkcore::PipelineLayout(device, layouts);
 }
@@ -61,7 +61,7 @@ vkcore::Pipeline ModelPipeline::BuildPipeline(const vkcore::Device& device,
       .setDepthTest(true, true)
       .AddColorBlendAttachment()
       .setCullMode(VK_CULL_MODE_BACK_BIT)
-      .Build(pipelineLayout_.handle(), renderPass.handle());
+      .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }
 
 void ModelPipeline::Bind(VkCommandBuffer cmd) const { pipeline_.Bind(cmd); }

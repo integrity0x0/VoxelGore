@@ -22,7 +22,7 @@ class ChunkShadowPipelines {
 
   void Bind(VkCommandBuffer cmd, ShadowLayer layer) const;
 
-  [[nodiscard]] const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
+  [[nodiscard]] const vkcore::PipelineLayout& GetPipelineLayout() const { return pipelineLayout_; }
 
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(

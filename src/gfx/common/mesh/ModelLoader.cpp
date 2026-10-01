@@ -164,7 +164,7 @@ std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
     vkcore::LoadDataToBuffer(device, transferCtxt,
                              {reinterpret_cast<const std::byte*>(bucket.vertices.data()),
                               bucket.vertices.size() * sizeof(Model::Vertex)},
-                             vertexBuffer.buffer(), vertexBuffer.offset());
+                             vertexBuffer.buffer(), vertexBuffer.GetOffset());
 
     vkcore::BufferSlice indexBuffer = bufferAllocator.Allocate(
         bucket.indices.size() * sizeof(uint32_t),
@@ -174,7 +174,7 @@ std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
     vkcore::LoadDataToBuffer(device, transferCtxt,
                              {reinterpret_cast<const std::byte*>(bucket.indices.data()),
                               bucket.indices.size() * sizeof(uint32_t)},
-                             indexBuffer.buffer(), indexBuffer.offset());
+                             indexBuffer.buffer(), indexBuffer.GetOffset());
 
     transferCtxt.Flush();
 

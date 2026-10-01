@@ -8,14 +8,14 @@ Skybox::Skybox(const vkcore::Device& device, vkcore::SampledTexture&& cubemap,
     : device_(&device), cubemap_(std::move(cubemap)), descriptorSet_(std::move(descriptorSet)) {
 
   VkDescriptorImageInfo imageInfo{
-      .sampler = cubemap_.sampler().handle(),
-      .imageView = cubemap_.imageView().handle(),
+      .sampler = cubemap_.GetSampler().GetHandle(),
+      .imageView = cubemap_.GetImageView().GetHandle(),
       .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
   };
 
   VkWriteDescriptorSet write {
       .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      .dstSet = descriptorSet_.handle(),
+      .dstSet = descriptorSet_.GetHandle(),
       .dstBinding = 0,
       .dstArrayElement = 0,
       .descriptorCount = 1,
@@ -23,7 +23,7 @@ Skybox::Skybox(const vkcore::Device& device, vkcore::SampledTexture&& cubemap,
       .pImageInfo = &imageInfo,
   };
 
-  device.dispatchTable().vkUpdateDescriptorSets(device.handle(), 1, &write, 0, nullptr);
+  device.GetDispatchTable().vkUpdateDescriptorSets(device.GetHandle(), 1, &write, 0, nullptr);
 }
 
 std::optional<Skybox> Skybox::Load(const vkcore::Device& device, vkcore::TransferContext& transferCtxt,

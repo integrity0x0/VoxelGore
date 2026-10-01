@@ -14,15 +14,15 @@ ChunkShadowPipelines::ChunkShadowPipelines(const vkcore::Device& device,
                                            const ShaderCompiler& shaderCompiler)
     : device_(&device),
       pipelineLayout_(BuildPipelineLayout(device, gameDataBinding, atlasDescriptorSetLayout)),
-      pipelines_{BuildPipeline(shadowRenderPass.handle(), shaderCompiler, ShadowLayer::Solid),
-                 BuildPipeline(shadowRenderPass.handle(), shaderCompiler, ShadowLayer::Cutout)} {}
+      pipelines_{BuildPipeline(shadowRenderPass.GetHandle(), shaderCompiler, ShadowLayer::Solid),
+                 BuildPipeline(shadowRenderPass.GetHandle(), shaderCompiler, ShadowLayer::Cutout)} {}
 
 vkcore::PipelineLayout ChunkShadowPipelines::BuildPipelineLayout(
     const vkcore::Device& device, const GameDataBinding& gameDataBinding,
     const vkcore::DescriptorSetLayout& atlasDescriptorSetLayout) {
   return vkcore::PipelineLayout(
       device,
-      std::to_array<const vkcore::DescriptorSetLayout*>({&gameDataBinding.descriptorSetLayout(),
+      std::to_array<const vkcore::DescriptorSetLayout*>({&gameDataBinding.GetDescriptorSetLayout(),
                                                       &atlasDescriptorSetLayout}),
       std::vector<VkPushConstantRange>{});
 }
@@ -55,7 +55,7 @@ vkcore::Pipeline ChunkShadowPipelines::BuildPipeline(VkRenderPass shadowRenderPa
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .setDepthTest(true, true)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
-      .Build(pipelineLayout_.handle(), shadowRenderPass);
+      .Build(pipelineLayout_.GetHandle(), shadowRenderPass);
 }
 
 void ChunkShadowPipelines::Bind(VkCommandBuffer cmd, ShadowLayer layer) const {

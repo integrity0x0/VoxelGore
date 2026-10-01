@@ -23,7 +23,7 @@ BillboardBatch::BillboardBatch(const vkcore::Device& device,
   for (uint32_t i = 0; i < framesCount; ++i) {
     auto buffer = bufferAllocator.Allocate(kBufferSize, kBufferUsage, kMemoryProperties);
 
-    auto mapped = std::span<BillboardInstance>(reinterpret_cast<BillboardInstance*>(buffer.map()),
+    auto mapped = std::span<BillboardInstance>(reinterpret_cast<BillboardInstance*>(buffer.Map()),
                                                kMaxbillboards);
 
     frames_.emplace_back(mapped, std::move(buffer));
@@ -72,17 +72,17 @@ void BillboardBatch::Render(VkCommandBuffer cmd, const glm::vec3& cameraPosition
     }
   }
 
-  const auto& dt = device_->dispatchTable();
+  const auto& dt = device_->GetDispatchTable();
 
   VkDescriptorSet sets[] = {
-      descriptorSet_->handle(),
+      descriptorSet_->GetHandle(),
   };
 
-  dt.vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_->handle(),
+  dt.vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_->GetHandle(),
                              kAtlasSetIndex, 1, sets, 0, nullptr);
 
-  VkBuffer buffers[] = {frame.instanceBuffer.handle()};
-  VkDeviceSize offsets[] = {frame.instanceBuffer.offset()};
+  VkBuffer buffers[] = {frame.instanceBuffer.GetHandle()};
+  VkDeviceSize offsets[] = {frame.instanceBuffer.GetOffset()};
 
   dt.vkCmdBindVertexBuffers(cmd, 0, 1, buffers, offsets);
 

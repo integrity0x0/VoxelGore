@@ -15,34 +15,34 @@ DescriptorPool::DescriptorPool(const Device& device,
   descriptorPoolCI.maxSets = maxSets;
   descriptorPoolCI.flags |= VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
   VkDescriptorPool descriptorPoolRaw = VK_NULL_HANDLE;
-  SystemError::Check(device.dispatchTable().vkCreateDescriptorPool(
-                         device.handle(), &descriptorPoolCI, nullptr, &descriptorPoolRaw),
+  SystemError::Check(device.GetDispatchTable().vkCreateDescriptorPool(
+                         device.GetHandle(), &descriptorPoolCI, nullptr, &descriptorPoolRaw),
                      "failed to create descriptor pool");
 
   descriptorPool = UniqueDescriptorPool(
-      descriptorPoolRaw, {device.handle(), device.dispatchTable().vkDestroyDescriptorPool});
+      descriptorPoolRaw, {device.GetHandle(), device.GetDispatchTable().vkDestroyDescriptorPool});
 }
 
 DescriptorSet DescriptorPool::Allocate(const DescriptorSetLayout& layout) const {
-  VkDescriptorSetLayout layouts[] = {layout.handle()};
+  VkDescriptorSetLayout layouts[] = {layout.GetHandle()};
   VkDescriptorSetAllocateInfo descriptorSetAI = {VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
   descriptorSetAI.descriptorPool = descriptorPool.get();
   descriptorSetAI.descriptorSetCount = 1;
   descriptorSetAI.pSetLayouts = layouts;
   VkDescriptorSet descriptorSetRaw = VK_NULL_HANDLE;
-  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(
-                         device->handle(), &descriptorSetAI, &descriptorSetRaw),
+  SystemError::Check(device->GetDispatchTable().vkAllocateDescriptorSets(
+                         device->GetHandle(), &descriptorSetAI, &descriptorSetRaw),
                      "Failed to allocate descriptor set");
 
   return DescriptorSet(
       *device, std::move(UniqueDescriptorSet(descriptorSetRaw,
-                                             {device->handle(), descriptorPool.get(),
-                                              device->dispatchTable().vkFreeDescriptorSets})));
+                                             {device->GetHandle(), descriptorPool.get(),
+                                              device->GetDispatchTable().vkFreeDescriptorSets})));
 }
 
 std::vector<DescriptorSet> DescriptorPool::Allocate(const DescriptorSetLayout& layout,
                                                     uint32_t count) const {
-  std::vector<VkDescriptorSetLayout> rawLayouts(count, layout.handle());
+  std::vector<VkDescriptorSetLayout> rawLayouts(count, layout.GetHandle());
 
   VkDescriptorSetAllocateInfo allocInfo = {VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
   allocInfo.descriptorPool = descriptorPool.get();
@@ -50,15 +50,15 @@ std::vector<DescriptorSet> DescriptorPool::Allocate(const DescriptorSetLayout& l
   allocInfo.pSetLayouts = rawLayouts.data();
 
   std::vector<VkDescriptorSet> rawSets(allocInfo.descriptorSetCount);
-  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
+  SystemError::Check(device->GetDispatchTable().vkAllocateDescriptorSets(device->GetHandle(), &allocInfo,
                                                                       rawSets.data()),
                      "Failed to allocate descriptor sets");
 
   std::vector<DescriptorSet> result;
   result.reserve(rawSets.size());
 
-  DescriptorSetDeleter deleter{device->handle(), descriptorPool.get(),
-                               device->dispatchTable().vkFreeDescriptorSets};
+  DescriptorSetDeleter deleter{device->GetHandle(), descriptorPool.get(),
+                               device->GetDispatchTable().vkFreeDescriptorSets};
 
   for (auto rawSet : rawSets) {
     UniqueDescriptorSet unique(rawSet, deleter);
@@ -74,7 +74,7 @@ std::vector<DescriptorSet> DescriptorPool::Allocate(
   rawLayouts.reserve(layouts.size());
   for (const auto& layout : layouts) {
     assert(layout);
-    rawLayouts.push_back(layout->handle());
+    rawLayouts.push_back(layout->GetHandle());
   }
 
   VkDescriptorSetAllocateInfo allocInfo = {VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
@@ -83,15 +83,15 @@ std::vector<DescriptorSet> DescriptorPool::Allocate(
   allocInfo.pSetLayouts = rawLayouts.data();
 
   std::vector<VkDescriptorSet> rawSets(allocInfo.descriptorSetCount);
-  SystemError::Check(device->dispatchTable().vkAllocateDescriptorSets(device->handle(), &allocInfo,
+  SystemError::Check(device->GetDispatchTable().vkAllocateDescriptorSets(device->GetHandle(), &allocInfo,
                                                                       rawSets.data()),
                      "Failed to allocate descriptor sets");
 
   std::vector<DescriptorSet> result;
   result.reserve(rawSets.size());
 
-  DescriptorSetDeleter deleter{device->handle(), descriptorPool.get(),
-                               device->dispatchTable().vkFreeDescriptorSets};
+  DescriptorSetDeleter deleter{device->GetHandle(), descriptorPool.get(),
+                               device->GetDispatchTable().vkFreeDescriptorSets};
 
   for (auto rawSet : rawSets) {
     UniqueDescriptorSet unique(rawSet, deleter);

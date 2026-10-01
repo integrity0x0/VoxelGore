@@ -7,7 +7,7 @@ namespace gfx {
 namespace {
 void UpdateAllBuffers(BlockSurfaceId id, const UvRegion& region, std::vector<BlockUvBuffer>& buffers) {
   for (size_t i = 0; i < buffers.size(); ++i) {
-    UniformUv* ptr = buffers[i].mapped() + id;
+    UniformUv* ptr = buffers[i].GetMapped() + id;
     ptr->uvRect = glm::vec4(region.min, region.max);
     ptr->arrayLayer = region.arrayLayer;
   }
@@ -28,7 +28,7 @@ BlockSurfaceId BlockSurfaceRegistry::RegisterAnimatedSurface(const BlockAnimatio
   const BlockSurfaceId id = static_cast<BlockSurfaceId>(surfaces_.size());
   animatedIds_.push_back(id);
   surfaces_.emplace_back(animation);
-  UpdateAllBuffers(id, animation.getCurrentRegion(), buffers);
+  UpdateAllBuffers(id, animation.GetCurrentRegion(), buffers);
   return id;
 }
 
@@ -40,7 +40,7 @@ const UvRegion& BlockSurfaceRegistry::ExtractRegion(BlockSurfaceId id) const {
   if (const UvRegion* region = std::get_if<UvRegion>(&surface)) {
     return *region;
   }
-  return std::get<BlockAnimation>(surface).getCurrentRegion();
+  return std::get<BlockAnimation>(surface).GetCurrentRegion();
 }
 
 BlockSurfaceId BlockSurfaceRegistry::Resolve(const std::string& path, std::vector<BlockUvBuffer>& buffers) {
@@ -73,7 +73,7 @@ BlockSurfaceId BlockSurfaceRegistry::Load(const std::string& path, std::vector<B
 }
 
 void BlockSurfaceRegistry::UpdateAnimations(float dt, BlockUvBuffer& uvBuffer) {
-  UniformUv* mapped = uvBuffer.mapped();
+  UniformUv* mapped = uvBuffer.GetMapped();
 
   for (BlockSurfaceId id : animatedIds_) {
     if (BlockAnimation* anim = std::get_if<BlockAnimation>(&surfaces_[id])) {

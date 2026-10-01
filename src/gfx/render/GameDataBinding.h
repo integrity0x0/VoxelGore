@@ -19,12 +19,12 @@ class GameDataBinding {
   }
 
   void Bind(VkCommandBuffer cmd, uint32_t frameIndex) const {
-    VkDescriptorSet set = frames_[frameIndex].descriptorSet.handle();
-    device_->dispatchTable().vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_.handle(),
+    VkDescriptorSet set = frames_[frameIndex].descriptorSet.GetHandle();
+    device_->GetDispatchTable().vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout_.GetHandle(),
                                                      kFirstSetIndex, 1u, &set, 0, nullptr);
   }
 
-  [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const {
+  [[nodiscard]] const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const {
     return descriptorSetLayout_;
   }
  private:

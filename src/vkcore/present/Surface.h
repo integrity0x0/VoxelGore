@@ -20,7 +20,7 @@ class Surface {
   Surface(const Instance& instance, UniqueSurfaceKHR&& surface)
       : instance_(&instance), surface_(std::move(surface)) {}
 
-  [[nodiscard]] VkSurfaceKHR handle() const noexcept;
+  [[nodiscard]] VkSurfaceKHR GetHandle() const noexcept;
   [[nodiscard]] const Instance& getInstance() const noexcept;
 
  private:

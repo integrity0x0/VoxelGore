@@ -12,13 +12,13 @@ BlockAnimation::BlockAnimation(SpriteSheet&& spriteSheet, float frameDurationSec
   }
 }
 
-void BlockAnimation::start() { playing_ = true; }
+void BlockAnimation::Start() { playing_ = true; }
 
-void BlockAnimation::stop() { playing_ = false; }
+void BlockAnimation::Stop() { playing_ = false; }
 
 const UvRegion& BlockAnimation::Update(float dt) {
   if (!playing_) {
-    return getCurrentRegion();
+    return GetCurrentRegion();
   }
 
   accumulator_ += dt;
@@ -28,14 +28,14 @@ const UvRegion& BlockAnimation::Update(float dt) {
     currentFrame_ = (currentFrame_ + 1) % static_cast<uint32_t>(spriteSheet_.frameCount());
   }
 
-  return getCurrentRegion();
+  return GetCurrentRegion();
 }
 
-void BlockAnimation::setCurrentFrame(uint32_t frameIndex) {
+void BlockAnimation::SetCurrentFrame(uint32_t frameIndex) {
   currentFrame_ = frameIndex % static_cast<uint32_t>(spriteSheet_.frameCount());
 }
 
-void BlockAnimation::setTime(float timeSec) {
+void BlockAnimation::SetTime(float timeSec) {
   accumulator_ = std::fmod(timeSec, frameDuration_ * static_cast<float>(spriteSheet_.frameCount()));
 
   uint32_t framesElapsed = static_cast<uint32_t>(accumulator_ / frameDuration_);

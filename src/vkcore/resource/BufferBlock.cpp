@@ -14,7 +14,7 @@ BufferBlock::BufferBlock(const Device& device, const VkBufferCreateInfo& bufferC
                                                     FreeListAllocator(bufferCI.size))) {}
 
 std::optional<BufferSlice> BufferBlock::Allocate(VkDeviceSize size, VkDeviceSize alignment) {
-  auto region = storage_->allocator.reserve(size, alignment);
+  auto region = storage_->allocator.Allocate(size, alignment);
 
   if (region) {
     return BufferSlice(storage_, *region);

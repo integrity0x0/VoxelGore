@@ -60,31 +60,31 @@ void BlockRenderData::BuildDescriptors(uint32_t framesCount) {
 
   VkDescriptorImageInfo imageInfo = {};
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-  imageInfo.imageView = atlas_.texture().imageView().handle();
-  imageInfo.sampler = atlas_.texture().sampler().handle();
+  imageInfo.imageView = atlas_.GetTexture().GetImageView().GetHandle();
+  imageInfo.sampler = atlas_.GetTexture().GetSampler().GetHandle();
 
   for (uint32_t frame = 0; frame < framesCount; ++frame) {
     VkDescriptorBufferInfo uvInfo{};
-    uvInfo.buffer = uvBuffers_[frame].handle();
+    uvInfo.buffer = uvBuffers_[frame].GetHandle();
     uvInfo.offset = 0;
-    uvInfo.range = uvBuffers_[frame].capacityBytes();
+    uvInfo.range = uvBuffers_[frame].GetCapacityBytes();
 
     VkWriteDescriptorSet writes[2] = {};
     writes[0] = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-    writes[0].dstSet = descriptorSets_[frame].handle();
+    writes[0].dstSet = descriptorSets_[frame].GetHandle();
     writes[0].dstBinding = 0;
     writes[0].descriptorCount = 1;
     writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     writes[0].pBufferInfo = &uvInfo;
 
     writes[1] = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-    writes[1].dstSet = descriptorSets_[frame].handle();
+    writes[1].dstSet = descriptorSets_[frame].GetHandle();
     writes[1].dstBinding = 1;
     writes[1].descriptorCount = 1;
     writes[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     writes[1].pImageInfo = &imageInfo;
 
-    device_->dispatchTable().vkUpdateDescriptorSets(device_->handle(), 2u, writes, 0, nullptr);
+    device_->GetDispatchTable().vkUpdateDescriptorSets(device_->GetHandle(), 2u, writes, 0, nullptr);
   }
 }
 
@@ -114,7 +114,7 @@ void BlockRenderData::Update(float dt, uint32_t currentFrameInFlight) {
   surfaceRegistry_.UpdateAnimations(dt, uvBuffers_[currentFrameInFlight]);
 }
 
-BlockSurfaceId BlockRenderData::surfaceId(uint32_t blockId, gm::Block::Face face) {
+BlockSurfaceId BlockRenderData::GetSurfaceId(uint32_t blockId, gm::Block::Face face) {
   if (blockId >= blockInfos_.size()) {
     return BlockSurfaceRegistry::kInvalidSurface;
   }
@@ -128,7 +128,7 @@ BlockSurfaceId BlockRenderData::surfaceId(uint32_t blockId, gm::Block::Face face
   return blockInfos_[blockId].surfaces[faceIndex];
 }
 
-RenderGroupId BlockRenderData::renderGroupId(uint32_t blockId) {
+RenderGroupId BlockRenderData::GetRenderGroupId(uint32_t blockId) {
   if (blockId >= blockInfos_.size()) {
     return RenderGroupRegistry::kInvalid;
   }

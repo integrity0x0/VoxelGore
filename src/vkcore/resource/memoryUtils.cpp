@@ -25,8 +25,8 @@ void LoadDataToBuffer(const Device& device, TransferContext& transferCtxt,
 
   VkBufferCopy copyRegion = {allocation.bufferOffset, offset, data.size()};
 
-  device.dispatchTable().vkCmdCopyBuffer(transferCtxt.cmd().handle(), allocation.buffer,
-                                         dstBuffer.handle(), 1u, &copyRegion);
+  device.GetDispatchTable().vkCmdCopyBuffer(transferCtxt.cmd().GetHandle(), allocation.buffer,
+                                         dstBuffer.GetHandle(), 1u, &copyRegion);
 }
 
 }  // namespace vkcore

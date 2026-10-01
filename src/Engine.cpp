@@ -45,8 +45,8 @@ Engine::Engine(GLFWwindow* window)
 }
 
 Engine::~Engine() {
-  if (device && device->handle() != VK_NULL_HANDLE) {
-    device->dispatchTable().vkDeviceWaitIdle(device->handle());
+  if (device && device->GetHandle() != VK_NULL_HANDLE) {
+    device->GetDispatchTable().vkDeviceWaitIdle(device->GetHandle());
   }
   LOGI("Engine destroyed");
 }
@@ -80,7 +80,7 @@ void Engine::createInstance() {
 
   uint32_t extensionCount = 0;
 
-  VkResult result = libraryLoader->dispatchTable().vkEnumerateInstanceExtensionProperties(
+  VkResult result = libraryLoader->GetDispatchTable().vkEnumerateInstanceExtensionProperties(
       "VK_LAYER_KHRONOS_validation", &extensionCount, nullptr);
 
   if (result != VK_SUCCESS) {
@@ -89,7 +89,7 @@ void Engine::createInstance() {
 
   validationLayerExtensions.resize(extensionCount);
 
-  result = libraryLoader->dispatchTable().vkEnumerateInstanceExtensionProperties(
+  result = libraryLoader->GetDispatchTable().vkEnumerateInstanceExtensionProperties(
       "VK_LAYER_KHRONOS_validation", &extensionCount, validationLayerExtensions.data());
 
   if (result != VK_SUCCESS) {
@@ -111,7 +111,7 @@ void Engine::createInstance() {
   debugMessenger = std::make_unique<vkcore::DebugMessenger>(*instance);
 #endif
 
-  LOGI("Instance created: %p", (void*)instance->handle());
+  LOGI("Instance created: %p", (void*)instance->GetHandle());
 }
 
 void Engine::createSurface() {
@@ -122,7 +122,7 @@ void Engine::createSurface() {
 #elif defined(VK_USE_PLATFORM_WIN32_KHR)
   surface = std::make_unique<vkcore::Surface>(*instance, nativeWindow);
 #endif
-  LOGI("Surface created: %p", (void*)surface->handle());
+  LOGI("Surface created: %p", (void*)surface->GetHandle());
 }
 
 void Engine::pickPhysicalDevice() {
@@ -136,7 +136,7 @@ void Engine::pickPhysicalDevice() {
 }
 
 void Engine::createLogicalDevice() {
-  vkcore::QueueFamilyIndices indices = physDevice->getQueueFamilyIndices(surface->handle());
+  vkcore::QueueFamilyIndices indices = physDevice->getQueueFamilyIndices(surface->GetHandle());
 
   if (!indices.graphics.has_value()) {
     throw std::runtime_error("No graphics queue family found");
@@ -172,7 +172,7 @@ void Engine::createAllocators() {
 void Engine::createSwapchain() {
   LOGI("Creating swapchain...");
   swapchain = std::make_unique<vkcore::Swapchain>(*device, *surface);
-  LOGI("Swapchain created: %p", (void*)swapchain->handle());
+  LOGI("Swapchain created: %p", (void*)swapchain->GetHandle());
   LOGI("Swapchain extent: %ux%u", swapchain->extent().width, swapchain->extent().height);
   LOGI("Swapchain image count: %u", swapchain->getImageCount());
 }
@@ -224,7 +224,7 @@ void Engine::createRenderPass() {
 
   renderPass = std::make_unique<vkcore::RenderPass>(*device, attachments, subpasses, dependencies);
 
-  LOGI("Render pass created: %p", (void*)renderPass->handle());
+  LOGI("Render pass created: %p", (void*)renderPass->GetHandle());
 }
 
 void Engine::createDepthResources() {
@@ -246,7 +246,7 @@ void Engine::createDepthResources() {
   vkcore::Image depthImage(*device, imageCI, *memoryAllocator_, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
   VkImageViewCreateInfo viewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-  viewCI.image = depthImage.handle();
+  viewCI.image = depthImage.GetHandle();
   viewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
   viewCI.format = depthFormat;
   viewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -272,11 +272,11 @@ void Engine::createFramebuffers() {
   for (const auto& imageView : imageViews) {
     std::vector<const vkcore::ImageView*> attachments;
     attachments.push_back(&imageView);
-    attachments.push_back(&depthTexture->imageView());
+    attachments.push_back(&depthTexture->GetImageView());
 
     framebuffers.push_back(renderPass->MakeFramebuffer(attachments, swapchain->extent(), 1, 0));
 
-    LOGI("Framebuffer created: %p", (void*)framebuffers.back().handle());
+    LOGI("Framebuffer created: %p", (void*)framebuffers.back().GetHandle());
   }
 }
 
@@ -300,7 +300,7 @@ void Engine::createCommandPool() {
   commandPool =
       std::make_unique<vkcore::CommandPool>(*device, getGraphicsQueue().getQueueFamilyIndex(),
                                             VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-  LOGI("Command pool: %p", (void*)commandPool->handle());
+  LOGI("Command pool: %p", (void*)commandPool->GetHandle());
 }
 
 void Engine::createTransferCtxt() {
@@ -315,7 +315,7 @@ void Engine::createCommandBuffers() {
 
   for (uint32_t i = 0; i < count; ++i) {
     commandBuffers[i] = std::make_unique<vkcore::CommandBuffer>(commandPool->Allocate());
-    LOGI("Command buffer %u created: %p", i, (void*)commandBuffers[i]->handle());
+    LOGI("Command buffer %u created: %p", i, (void*)commandBuffers[i]->GetHandle());
   }
 }
 
@@ -330,14 +330,14 @@ bool Engine::beginFrame(uint32_t& imageIndex) {
   }
 #endif
 
-  VkFence fence = inFlightFences[currentFrame].handle();
-  device->dispatchTable().vkWaitForFences(device->handle(), 1, &fence, VK_TRUE, UINT64_MAX);
+  VkFence fence = inFlightFences[currentFrame].GetHandle();
+  device->GetDispatchTable().vkWaitForFences(device->GetHandle(), 1, &fence, VK_TRUE, UINT64_MAX);
 
-  VkResult result = device->dispatchTable().vkAcquireNextImageKHR(
-      device->handle(), swapchain->handle(), UINT64_MAX,
-      imageAvailableSemaphores[currentFrame].handle(), VK_NULL_HANDLE, &imageIndex);
+  VkResult result = device->GetDispatchTable().vkAcquireNextImageKHR(
+      device->GetHandle(), swapchain->GetHandle(), UINT64_MAX,
+      imageAvailableSemaphores[currentFrame].GetHandle(), VK_NULL_HANDLE, &imageIndex);
 
-  device->dispatchTable().vkResetFences(device->handle(), 1, &fence);
+  device->GetDispatchTable().vkResetFences(device->GetHandle(), 1, &fence);
 
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
     LOGI("Swapchain out of date");
@@ -350,14 +350,14 @@ bool Engine::beginFrame(uint32_t& imageIndex) {
   }
 
   auto& cmdBuffer = commandBuffers[currentFrame];
-  device->dispatchTable().vkResetCommandBuffer(cmdBuffer->handle(), 0);
+  device->GetDispatchTable().vkResetCommandBuffer(cmdBuffer->GetHandle(), 0);
 
   VkCommandBufferBeginInfo beginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-  VkCommandBuffer cmd = cmdBuffer->handle();
-  if (device->dispatchTable().vkBeginCommandBuffer(cmd, &beginInfo) != VK_SUCCESS) {
+  VkCommandBuffer cmd = cmdBuffer->GetHandle();
+  if (device->GetDispatchTable().vkBeginCommandBuffer(cmd, &beginInfo) != VK_SUCCESS) {
     throw std::runtime_error("Failed to begin command buffer");
   }
 
@@ -409,22 +409,22 @@ void Engine::BeginRenderPass(uint32_t imageIndex, float r, float g, float b) {
 
   clearValues[1].depthStencil = {1.0f, 0};
 
-  renderPass->Begin(commandBuffers[currentFrame]->handle(), framebuffers[imageIndex], renderArea,
+  renderPass->Begin(commandBuffers[currentFrame]->GetHandle(), framebuffers[imageIndex], renderArea,
                     clearValues);
 }
 
-void Engine::endRenderPass() { renderPass->End(commandBuffers[currentFrame]->handle()); }
+void Engine::endRenderPass() { renderPass->End(commandBuffers[currentFrame]->GetHandle()); }
 
 void Engine::endFrame(uint32_t imageIndex) {
-  VkCommandBuffer cmd = commandBuffers[currentFrame]->handle();
+  VkCommandBuffer cmd = commandBuffers[currentFrame]->GetHandle();
 
-  if (device->dispatchTable().vkEndCommandBuffer(cmd) != VK_SUCCESS) {
+  if (device->GetDispatchTable().vkEndCommandBuffer(cmd) != VK_SUCCESS) {
     throw std::runtime_error("Failed to end command buffer");
   }
 
   VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
 
-  VkSemaphore waitSemas[] = {imageAvailableSemaphores[currentFrame].handle()};
+  VkSemaphore waitSemas[] = {imageAvailableSemaphores[currentFrame].GetHandle()};
   VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
   submitInfo.waitSemaphoreCount = 1;
   submitInfo.pWaitSemaphores = waitSemas;
@@ -433,12 +433,12 @@ void Engine::endFrame(uint32_t imageIndex) {
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &cmd;
 
-  VkSemaphore signalSemas[] = {renderFinishedSemaphores[imageIndex].handle()};
+  VkSemaphore signalSemas[] = {renderFinishedSemaphores[imageIndex].GetHandle()};
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores = signalSemas;
 
-  VkResult res = device->dispatchTable().vkQueueSubmit(getGraphicsQueue().handle(), 1, &submitInfo,
-                                                       inFlightFences[currentFrame].handle());
+  VkResult res = device->GetDispatchTable().vkQueueSubmit(getGraphicsQueue().GetHandle(), 1, &submitInfo,
+                                                       inFlightFences[currentFrame].GetHandle());
   if (res) {
     throw std::runtime_error("Failed to submit draw command buffer");
   }
@@ -447,13 +447,13 @@ void Engine::endFrame(uint32_t imageIndex) {
   presentInfo.waitSemaphoreCount = 1;
   presentInfo.pWaitSemaphores = signalSemas;
 
-  VkSwapchainKHR swapchains[] = {swapchain->handle()};
+  VkSwapchainKHR swapchains[] = {swapchain->GetHandle()};
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapchains;
   presentInfo.pImageIndices = &imageIndex;
 
   VkResult result =
-      device->dispatchTable().vkQueuePresentKHR(getPresentQueue().handle(), &presentInfo);
+      device->GetDispatchTable().vkQueuePresentKHR(getPresentQueue().GetHandle(), &presentInfo);
 
   if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
     recreateSwapchain();

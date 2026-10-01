@@ -20,7 +20,7 @@ class LibraryLoader {
   LibraryLoader();
   ~LibraryLoader();
 
-  [[nodiscard]] const LibraryDispatchTable& dispatchTable() const { return dispatchTable_; }
+  [[nodiscard]] const LibraryDispatchTable& GetDispatchTable() const { return dispatchTable_; }
 
   [[nodiscard]] const std::vector<std::string>& supportedInstanceExtensions() const {
     return supportedInstanceExtensions_;

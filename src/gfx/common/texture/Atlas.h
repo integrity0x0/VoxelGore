@@ -60,7 +60,7 @@ class Atlas {
     return regions_.contains(key);
   }
 
-  const vkcore::SampledTexture& texture() const { return texture_; }
+  const vkcore::SampledTexture& GetTexture() const { return texture_; }
 
   const glm::ivec2& size() const { return size_; }
 

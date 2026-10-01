@@ -5,25 +5,25 @@
 namespace vkcore {
 
 UniqueImage Image::CreateImage(const Device& device, const VkImageCreateInfo& imageCI) {
-  const auto& dispatchTable = device.dispatchTable();
+  const auto& dispatchTable = device.GetDispatchTable();
 
   VkImage imageRaw = VK_NULL_HANDLE;
-  VkResult result = dispatchTable.vkCreateImage(device.handle(), &imageCI, nullptr, &imageRaw);
+  VkResult result = dispatchTable.vkCreateImage(device.GetHandle(), &imageCI, nullptr, &imageRaw);
   SystemError::Check(result, "Failed to create image");
 
-  return UniqueImage(imageRaw, {device.handle(), dispatchTable.vkDestroyImage});
+  return UniqueImage(imageRaw, {device.GetHandle(), dispatchTable.vkDestroyImage});
 }
 
 VkMemoryRequirements Image::GetImageMemoryRequirements(const Device& device, VkImage image) {
   VkMemoryRequirements req = {};
-  device.dispatchTable().vkGetImageMemoryRequirements(device.handle(), image, &req);
+  device.GetDispatchTable().vkGetImageMemoryRequirements(device.GetHandle(), image, &req);
   return req;
 }
 
 void Image::BindImageMemory(const Device& device, VkImage image, const MemorySlice& memorySlice) {
-  const auto& dispatchTable = device.dispatchTable();
+  const auto& dispatchTable = device.GetDispatchTable();
 
-  VkResult result = dispatchTable.vkBindImageMemory(device.handle(), image, memorySlice.memory(),
+  VkResult result = dispatchTable.vkBindImageMemory(device.GetHandle(), image, memorySlice.memory(),
                                                     memorySlice.offset());
 
   SystemError::Check(result, "Failed to bind image memory");

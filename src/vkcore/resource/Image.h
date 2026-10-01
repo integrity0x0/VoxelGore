@@ -13,7 +13,7 @@ class Image {
   Image(const Device& device, const VkImageCreateInfo& imageCI, MemoryAllocator& allocator,
         VkMemoryPropertyFlags flags);
 
-  VkImage handle() const { return image_.get(); }
+  VkImage GetHandle() const { return image_.get(); }
   const VkMemoryRequirements& memoryRequirements() const { return memoryRequirements_; }
 
   VkExtent3D extent() const { return extent_; }

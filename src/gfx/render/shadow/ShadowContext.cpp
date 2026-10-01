@@ -14,18 +14,18 @@ ShadowContext::ShadowContext(const vkcore::Device& device, vkcore::MemoryAllocat
       resolution_(resolution) {
   VkDescriptorImageInfo imageInfo = {};
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-  imageInfo.imageView = map_.texture().imageView().handle();
-  imageInfo.sampler = map_.texture().sampler().handle();
+  imageInfo.imageView = map_.GetTexture().GetImageView().GetHandle();
+  imageInfo.sampler = map_.GetTexture().GetSampler().GetHandle();
 
   VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
-  write.dstSet = descriptorSet_.handle();
+  write.dstSet = descriptorSet_.GetHandle();
   write.dstBinding = 0;
   write.dstArrayElement = 0;
   write.descriptorCount = 1;
   write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
   write.pImageInfo = &imageInfo;
 
-  device.dispatchTable().vkUpdateDescriptorSets(device.handle(), 1u, &write, 0, nullptr);
+  device.GetDispatchTable().vkUpdateDescriptorSets(device.GetHandle(), 1u, &write, 0, nullptr);
 }
 
 vkcore::DescriptorSetLayout ShadowContext::BuildDescriptorSetLayout(const vkcore::Device& device) {

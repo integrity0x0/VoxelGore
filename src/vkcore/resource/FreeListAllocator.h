@@ -18,18 +18,18 @@ class FreeListAllocator {
 
   explicit FreeListAllocator(VkDeviceSize size);
 
-  [[nodiscard]] std::optional<Region> reserve(VkDeviceSize size, VkDeviceSize alignment = 0);
+  [[nodiscard]] std::optional<Region> Allocate(VkDeviceSize size, VkDeviceSize alignment = 0);
 
   [[nodiscard]] std::optional<Region> reserveFull();
 
-  void free(const Region& region);
+  void Free(const Region& region);
 
   [[nodiscard]] const std::vector<Region>& freeRegions() const { return freeRegions_; }
 
   [[nodiscard]] VkDeviceSize size() const { return size_; }
 
  private:
-  void merge();
+  void Merge();
 
   VkDeviceSize size_;
   std::vector<Region> freeRegions_;

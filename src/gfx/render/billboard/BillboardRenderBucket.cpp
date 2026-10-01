@@ -18,11 +18,11 @@ BillboardRenderBucket::BuildBatches(const vkcore::Device& device,
                                     vkcore::BufferAllocator& bufferAllocator,
                                     uint32_t framesCount) {
   return {
-      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->pipelineLayout(),
+      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->GetPipelineLayout(),
                      framesCount),
-      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->pipelineLayout(),
+      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->GetPipelineLayout(),
                      framesCount),
-      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->pipelineLayout(),
+      BillboardBatch(device, bufferAllocator, descriptorSet_, pipelines_->GetPipelineLayout(),
                      framesCount, gfx::BillboardBatch::SortingMode::BackToFront),
   };
 }
@@ -38,15 +38,15 @@ BillboardRenderBucket::BillboardRenderBucket(const vkcore::Device& device,
       batches_(BuildBatches(device, bufferAllocator, framesCount)) {
   VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
   write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-  write.dstSet = descriptorSet_.handle();
+  write.dstSet = descriptorSet_.GetHandle();
   write.descriptorCount = 1u;
   VkDescriptorImageInfo imageInfo;
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-  imageInfo.imageView = atlas.texture().imageView().handle();
-  imageInfo.sampler = atlas.texture().sampler().handle();
+  imageInfo.imageView = atlas.GetTexture().GetImageView().GetHandle();
+  imageInfo.sampler = atlas.GetTexture().GetSampler().GetHandle();
   write.pImageInfo = &imageInfo;
 
-  device.dispatchTable().vkUpdateDescriptorSets(device.handle(), 1u, &write, 0, nullptr);
+  device.GetDispatchTable().vkUpdateDescriptorSets(device.GetHandle(), 1u, &write, 0, nullptr);
 }
 
 void BillboardRenderBucket::Submit(const BillboardInstance& billboard, RenderLayer renderLayer,

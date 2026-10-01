@@ -3,8 +3,8 @@
 namespace vkcore {
 
 Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&device) {
-  const auto& dispatchTable = device.dispatchTable();
-  const auto& instanceDispatchTable = surface.getInstance().dispatchTable();
+  const auto& dispatchTable = device.GetDispatchTable();
+  const auto& instanceDispatchTable = surface.getInstance().GetDispatchTable();
 
   if (!instanceDispatchTable.surfaceTable.has_value()) {
     throw std::runtime_error("Swapchain: SurfaceDispatchTable not loaded");
@@ -16,8 +16,8 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
   }
   const auto& swapchainTable = dispatchTable.swapchainTable.value();
 
-  SwapchainCapabilities caps = SwapchainCapabilities::Build(device.getPhysicalDevice().handle(),
-                                                              surface.handle(), surfaceTable);
+  SwapchainCapabilities caps = SwapchainCapabilities::Build(device.getPhysicalDevice().GetHandle(),
+                                                              surface.GetHandle(), surfaceTable);
 
   VkSurfaceFormatKHR chosenFormat = caps.ChooseSurfaceFormat();
   VkPresentModeKHR chosenPresentMode = caps.ChoosePresentMode();
@@ -28,7 +28,7 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
   imageFormat_ = chosenFormat.format;
 
   VkSwapchainCreateInfoKHR swapchainCI = {VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};
-  swapchainCI.surface = surface.handle();
+  swapchainCI.surface = surface.GetHandle();
   swapchainCI.minImageCount = imageCount;
   swapchainCI.imageFormat = chosenFormat.format;
   swapchainCI.imageColorSpace = chosenFormat.colorSpace;
@@ -44,20 +44,20 @@ Swapchain::Swapchain(const Device& device, const Surface& surface) : device_(&de
 
   VkSwapchainKHR rawSwapchain = VK_NULL_HANDLE;
   SystemError::Check(
-      swapchainTable.vkCreateSwapchainKHR(device.handle(), &swapchainCI, nullptr, &rawSwapchain),
+      swapchainTable.vkCreateSwapchainKHR(device.GetHandle(), &swapchainCI, nullptr, &rawSwapchain),
       "Swapchain: vkCreateSwapchainKHR failed");
 
   SwapchainDeleter deleter;
-  deleter.device = device.handle();
+  deleter.device = device.GetHandle();
   deleter.func = swapchainTable.vkDestroySwapchainKHR;
   swapchain_ = UniqueSwapchainKHR(rawSwapchain, deleter);
 
   uint32_t actualImageCount = 0;
-  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
+  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.GetHandle(), rawSwapchain,
                                                             &actualImageCount, nullptr),
                      "Swapchain: vkGetSwapchainImagesKHR (count) failed");
   images_.resize(actualImageCount);
-  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.handle(), rawSwapchain,
+  SystemError::Check(swapchainTable.vkGetSwapchainImagesKHR(device.GetHandle(), rawSwapchain,
                                                             &actualImageCount, images_.data()),
                      "Swapchain: vkGetSwapchainImagesKHR failed");
 

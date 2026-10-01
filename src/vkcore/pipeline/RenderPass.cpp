@@ -27,10 +27,10 @@ RenderPass::RenderPass(const Device& device, std::span<const VkAttachmentDescrip
 
   VkRenderPass raw = VK_NULL_HANDLE;
   VkResult result =
-      device.dispatchTable().vkCreateRenderPass(device.handle(), &renderPassCI, nullptr, &raw);
+      device.GetDispatchTable().vkCreateRenderPass(device.GetHandle(), &renderPassCI, nullptr, &raw);
   SystemError::Check(result, "failed to create render pass");
 
-  RenderPassDeleter deleter{device.handle(), device.dispatchTable().vkDestroyRenderPass};
+  RenderPassDeleter deleter{device.GetHandle(), device.GetDispatchTable().vkDestroyRenderPass};
   renderPass_ = UniqueRenderPass(raw, deleter);
 }
 
@@ -39,12 +39,12 @@ void RenderPass::Begin(VkCommandBuffer cmd, const Framebuffer& framebuffer, VkRe
                        VkSubpassContents contents) const {
   VkRenderPassBeginInfo beginInfo = {VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
   beginInfo.renderPass = renderPass_.get();
-  beginInfo.framebuffer = framebuffer.handle();
+  beginInfo.framebuffer = framebuffer.GetHandle();
   beginInfo.renderArea = renderArea;
   beginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
   beginInfo.pClearValues = clearValues.empty() ? nullptr : clearValues.data();
 
-  device_->dispatchTable().vkCmdBeginRenderPass(cmd, &beginInfo, contents);
+  device_->GetDispatchTable().vkCmdBeginRenderPass(cmd, &beginInfo, contents);
 
   VkViewport viewport{};
   viewport.x = 0.0f;
@@ -54,17 +54,17 @@ void RenderPass::Begin(VkCommandBuffer cmd, const Framebuffer& framebuffer, VkRe
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
 
-  device_->dispatchTable().vkCmdSetViewport(cmd, 0, 1, &viewport);
+  device_->GetDispatchTable().vkCmdSetViewport(cmd, 0, 1, &viewport);
 
   VkRect2D scissor{};
   scissor.offset = {0, 0};
   scissor.extent = {4096, 4096};
 
-  device_->dispatchTable().vkCmdSetScissor(cmd, 0, 1, &scissor);
+  device_->GetDispatchTable().vkCmdSetScissor(cmd, 0, 1, &scissor);
 }
 
 void RenderPass::End(VkCommandBuffer cmd) const {
-  device_->dispatchTable().vkCmdEndRenderPass(cmd);
+  device_->GetDispatchTable().vkCmdEndRenderPass(cmd);
 }
 
 Framebuffer RenderPass::MakeFramebuffer(std::span<const ImageView* const> attachments,

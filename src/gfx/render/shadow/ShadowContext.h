@@ -17,12 +17,12 @@ class ShadowContext {
   [[nodiscard]] const ShadowPass& pass() const { return pass_; }
   [[nodiscard]] const ShadowMap& map() const { return map_; }
   [[nodiscard]] const vkcore::Framebuffer& framebuffer() const { return map_.framebuffer(); }
-  [[nodiscard]] const vkcore::SampledTexture& texture() const { return map_.texture(); }
+  [[nodiscard]] const vkcore::SampledTexture& GetTexture() const { return map_.GetTexture(); }
 
-  [[nodiscard]] const vkcore::DescriptorSetLayout& descriptorSetLayout() const {
+  [[nodiscard]] const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const {
     return descriptorSetLayout_;
   }
-  [[nodiscard]] const vkcore::DescriptorSet& descriptorSet() const { return descriptorSet_; }
+  [[nodiscard]] const vkcore::DescriptorSet& GetDescriptorSet() const { return descriptorSet_; }
 
   void UpdateLightMatrix(const glm::vec3& lightDir, const glm::vec3& focusPoint);
 

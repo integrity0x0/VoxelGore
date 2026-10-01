@@ -7,11 +7,11 @@ Semaphore::Semaphore(const Device& device, VkSemaphoreCreateFlags flags) : devic
   semaphoreCI.flags = flags;
 
   VkSemaphore rawSemaphore = VK_NULL_HANDLE;
-  VkResult result = device.dispatchTable().vkCreateSemaphore(device.handle(), &semaphoreCI, nullptr,
+  VkResult result = device.GetDispatchTable().vkCreateSemaphore(device.GetHandle(), &semaphoreCI, nullptr,
                                                              &rawSemaphore);
   SystemError::Check(result, "failed to create semaphore");
 
-  SemaphoreDeleter deleter{device.handle(), device.dispatchTable().vkDestroySemaphore};
+  SemaphoreDeleter deleter{device.GetHandle(), device.GetDispatchTable().vkDestroySemaphore};
   semaphore_ = UniqueSemaphore(rawSemaphore, deleter);
 }
 

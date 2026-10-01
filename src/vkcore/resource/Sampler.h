@@ -8,13 +8,13 @@ class Sampler {
   Sampler(const Device& device, const VkSamplerCreateInfo& samplerCI) {
     VkSampler samplerRaw = VK_NULL_HANDLE;
     SystemError::Check(
-        device.dispatchTable().vkCreateSampler(device.handle(), &samplerCI, nullptr, &samplerRaw),
+        device.GetDispatchTable().vkCreateSampler(device.GetHandle(), &samplerCI, nullptr, &samplerRaw),
         "failed to create sampler");
 
-    sampler = UniqueSampler(samplerRaw, {device.handle(), device.dispatchTable().vkDestroySampler});
+    sampler = UniqueSampler(samplerRaw, {device.GetHandle(), device.GetDispatchTable().vkDestroySampler});
   }
 
-  VkSampler handle() const { return sampler.get(); }
+  VkSampler GetHandle() const { return sampler.get(); }
 
  private:
   UniqueSampler sampler;

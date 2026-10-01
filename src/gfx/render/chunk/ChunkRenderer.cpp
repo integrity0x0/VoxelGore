@@ -29,15 +29,15 @@ ChunkRenderer::ChunkRenderer(const vkcore::Device& device, vkcore::TransferConte
 
   if (shadowCtxt) {
     pipelines_ = std::make_unique<ChunkRenderPipelines>(
-        device_, renderPass.handle(), gameDataBinding, &shadowCtxt->descriptorSetLayout(),
-        blockRenderData_->descriptorSetLayout(), shaderCompiler);
+        device_, renderPass.GetHandle(), gameDataBinding, &shadowCtxt->GetDescriptorSetLayout(),
+        blockRenderData_->GetDescriptorSetLayout(), shaderCompiler);
     shadowPipelines_ = std::make_unique<ChunkShadowPipelines>(
-        device_, shadowCtxt->pass(), gameDataBinding, blockRenderData_->descriptorSetLayout(),
+        device_, shadowCtxt->pass(), gameDataBinding, blockRenderData_->GetDescriptorSetLayout(),
         shaderCompiler);
   } else {
     pipelines_ = std::make_unique<ChunkRenderPipelines>(
-        device_, renderPass.handle(), gameDataBinding, nullptr,
-        blockRenderData_->descriptorSetLayout(), shaderCompiler);
+        device_, renderPass.GetHandle(), gameDataBinding, nullptr,
+        blockRenderData_->GetDescriptorSetLayout(), shaderCompiler);
   }
   
 }
@@ -69,8 +69,8 @@ void ChunkRenderer::UpdateDirty(VkCommandBuffer cmd, uint32_t currentFrameInFlig
 }
 
 void ChunkRenderer::RenderShadow(VkCommandBuffer cmd, uint32_t currentFrame) {
-  const vkcore::DescriptorSet& set = blockRenderData_->descriptorSet(currentFrame);
-  set.Bind(cmd, pipelineLayout().handle(), kBlockRenderDataSetIndex);
+  const vkcore::DescriptorSet& set = blockRenderData_->GetDescriptorSet(currentFrame);
+  set.Bind(cmd, GetPipelineLayout().GetHandle(), kBlockRenderDataSetIndex);
 
   for (ShadowLayer layer : {ShadowLayer::Solid, ShadowLayer::Cutout}) {
     shadowPipelines_->Bind(cmd, layer);
@@ -87,11 +87,11 @@ void ChunkRenderer::Render(VkCommandBuffer cmd, float dt, uint32_t currentFrame,
                            const glm::vec3& cameraPos, RenderLayer renderLayer) {
   blockRenderData_->Update(dt, currentFrame);
 
-  const vkcore::DescriptorSet& set = blockRenderData_->descriptorSet(currentFrame);
-  set.Bind(cmd, pipelineLayout().handle(), kBlockRenderDataSetIndex);
+  const vkcore::DescriptorSet& set = blockRenderData_->GetDescriptorSet(currentFrame);
+  set.Bind(cmd, GetPipelineLayout().GetHandle(), kBlockRenderDataSetIndex);
 
   if (shadowCtxt_) {
-    shadowCtxt_->descriptorSet().Bind(cmd, pipelineLayout().handle(), 2);
+    shadowCtxt_->GetDescriptorSet().Bind(cmd, GetPipelineLayout().GetHandle(), 2);
   }
   switch (renderLayer) {
     case RenderLayer::Solid: {

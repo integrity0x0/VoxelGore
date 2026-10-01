@@ -4,12 +4,12 @@
 
 namespace gfx {
 vkcore::DescriptorPool MaterialManager::BuildDescriptorPool(const vkcore::Device& device) {
-  static constexpr uint32_t kMaxTextures = 32u;
+  static constexpr uint32_t kMaxTextures = 32;
 
   return vkcore::DescriptorPool(device,
                                 std::to_array({VkDescriptorPoolSize{
                                     VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, kMaxTextures}}),
-                                32u);
+                                32);
 }
 
 vkcore::DescriptorSetLayout MaterialManager::BuildDescriptorSetLayout(
@@ -39,16 +39,16 @@ const MaterialManager::Material* MaterialManager::Require(std::string_view key) 
   VkWriteDescriptorSet write = {VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET};
   write.descriptorCount = 1u;
   write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-  write.dstSet = descriptorSet.handle();
+  write.dstSet = descriptorSet.GetHandle();
 
   VkDescriptorImageInfo imageInfo = {};
   imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-  imageInfo.imageView = texture->imageView().handle();
-  imageInfo.sampler = texture->sampler().handle();
+  imageInfo.imageView = texture->GetImageView().GetHandle();
+  imageInfo.sampler = texture->GetSampler().GetHandle();
 
   write.pImageInfo = &imageInfo;
 
-  device_->dispatchTable().vkUpdateDescriptorSets(device_->handle(), 1u, &write, 0, nullptr);
+  device_->GetDispatchTable().vkUpdateDescriptorSets(device_->GetHandle(), 1u, &write, 0, nullptr);
 
   auto material = std::make_unique<Material>(texture, std::move(descriptorSet));
 

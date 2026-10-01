@@ -42,14 +42,14 @@ vkcore::Pipeline SkyboxPipeline::BuildPipeline(const vkcore::Device& device,
       .setCullMode(VK_CULL_MODE_NONE)
       .setDepthTest(true, false, VK_COMPARE_OP_LESS_OR_EQUAL)
       .AddColorBlendAttachment(false)
-      .Build(pipelineLayout_.handle(), renderPass.handle());
+      .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }
 
 SkyboxPipeline::SkyboxPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass,
                                const GameDataBinding& gameDataBinding,
                                const ShaderCompiler& shaderCompiler)
     : descriptorSetLayout_(BuildDescriptorSetLayout(device)),
-      pipelineLayout_(BuildDescriptorPipelineLayout(device, gameDataBinding.descriptorSetLayout())),
+      pipelineLayout_(BuildDescriptorPipelineLayout(device, gameDataBinding.GetDescriptorSetLayout())),
       pipeline_(BuildPipeline(device, renderPass, shaderCompiler)) {}
 
 }  // namespace gfx

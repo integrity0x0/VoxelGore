@@ -13,7 +13,7 @@ std::optional<MemorySlice> MemoryBlock::reserve(VkDeviceSize size, VkDeviceSize 
     return std::nullopt;
   }
 
-  auto region = storage_->allocator.reserve(size, alignment);
+  auto region = storage_->allocator.Allocate(size, alignment);
 
   if (!region) {
     return std::nullopt;

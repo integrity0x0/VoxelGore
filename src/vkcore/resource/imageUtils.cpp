@@ -5,10 +5,10 @@ void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, c
                      ImageTransitionInfo src, ImageTransitionInfo dst,
                      const ImageSubresourceRange& range, VkPipelineStageFlags srcStage,
                      VkPipelineStageFlags dstStage) {
-  VkCommandBuffer cmd = commandBuffer.handle();
+  VkCommandBuffer cmd = commandBuffer.GetHandle();
 
   VkImageMemoryBarrier barrier = {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
-  barrier.image = image.handle();
+  barrier.image = image.GetHandle();
   barrier.oldLayout = src.layout;
   barrier.srcAccessMask = src.accessFlags;
   barrier.newLayout = dst.layout;
@@ -17,7 +17,7 @@ void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, c
   barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
   barrier.subresourceRange = range;
 
-  device.dispatchTable().vkCmdPipelineBarrier(cmd, srcStage, dstStage, 0, 0, nullptr, 0, nullptr,
+  device.GetDispatchTable().vkCmdPipelineBarrier(cmd, srcStage, dstStage, 0, 0, nullptr, 0, nullptr,
                                               1, &barrier);
 }
 
@@ -35,7 +35,7 @@ void LoadDataToImage(const vkcore::Device& device,
   TransferContext::Allocation allocation =
       transferCtxt.AllocateStagingBuffer(data.size());  // if overflowed, returns nullopt
 
-  VkCommandBuffer cmd = transferCtxt.cmd().handle();
+  VkCommandBuffer cmd = transferCtxt.cmd().GetHandle();
 
   VkBufferImageCopy region = {};
   region.imageOffset = copyRegion.offset;
@@ -45,7 +45,7 @@ void LoadDataToImage(const vkcore::Device& device,
 
   std::memcpy(reinterpret_cast<uint8_t*>(allocation.mapped), data.data(), data.size());
 
-  device.dispatchTable().vkCmdCopyBufferToImage(cmd, allocation.buffer, dstImage.handle(),
+  device.GetDispatchTable().vkCmdCopyBufferToImage(cmd, allocation.buffer, dstImage.GetHandle(),
                                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 }
 
@@ -53,8 +53,8 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
                 const Image& dstImage,  // requires image be in TRANSFER_DST_OPTIMAL
                 const ImageSubresourceRange& range, ImageTransitionInfo dstTransition,
                 VkPipelineStageFlags dstStage) {
-  const auto& dt = device.dispatchTable();
-  VkCommandBuffer cmd = commandBuffer.handle();
+  const auto& dt = device.GetDispatchTable();
+  VkCommandBuffer cmd = commandBuffer.GetHandle();
 
   VkExtent3D mipExtent = dstImage.extent();
 
@@ -63,7 +63,7 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
   mipExtent.depth = std::max(1u, mipExtent.depth / (1 << range.baseMipLevel));
 
   VkImageMemoryBarrier barrier = {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
-  barrier.image = dstImage.handle();
+  barrier.image = dstImage.GetHandle();
   barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
   barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
@@ -111,8 +111,8 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
         range.layerCount,
     };
 
-    dt.vkCmdBlitImage(cmd, dstImage.handle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                      dstImage.handle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit,
+    dt.vkCmdBlitImage(cmd, dstImage.GetHandle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                      dstImage.GetHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit,
                       VK_FILTER_LINEAR);
 
     barrier.subresourceRange = {

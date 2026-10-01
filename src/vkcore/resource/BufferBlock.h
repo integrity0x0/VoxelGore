@@ -29,7 +29,7 @@ class BufferSlice {
   BufferSlice(std::shared_ptr<BufferBlockStorage> storage, const FreeListAllocator::Region& region)
       : storage_(std::move(storage)), region_(region) {}
 
-  ~BufferSlice() { release(); }
+  ~BufferSlice() { Release(); }
 
   BufferSlice(const BufferSlice&) = delete;
   BufferSlice& operator=(const BufferSlice&) = delete;
@@ -41,7 +41,7 @@ class BufferSlice {
 
   BufferSlice& operator=(BufferSlice&& other) noexcept {
     if (this != &other) {
-      release();
+      Release();
       storage_ = std::move(other.storage_);
       region_ = other.region_;
       other.storage_.reset();
@@ -51,12 +51,12 @@ class BufferSlice {
 
   [[nodiscard]] const vkcore::Buffer& buffer() const { return storage_->buffer; }
 
-  [[nodiscard]] VkBuffer handle() const {
-    return storage_ ? storage_->buffer.handle() : VK_NULL_HANDLE;
+  [[nodiscard]] VkBuffer GetHandle() const {
+    return storage_ ? storage_->buffer.GetHandle() : VK_NULL_HANDLE;
   }
-  [[nodiscard]] VkDeviceSize offset() const { return region_.offset; }
-  [[nodiscard]] VkDeviceSize size() const { return region_.size; }
-  [[nodiscard]] void* map(VkDeviceSize offset = 0ll) const {
+  [[nodiscard]] VkDeviceSize GetOffset() const { return region_.offset; }
+  [[nodiscard]] VkDeviceSize GetSize() const { return region_.size; }
+  [[nodiscard]] void* Map(VkDeviceSize offset = 0ll) const {
     return storage_ ? storage_->buffer.memorySlice().map(region_.offset + offset) : nullptr;
   }
 
@@ -69,9 +69,9 @@ class BufferSlice {
   }
 
  private:
-  void release() {
+  void Release() {
     if (storage_) {
-      storage_->allocator.free(region_);
+      storage_->allocator.Free(region_);
       storage_.reset();
     }
   }

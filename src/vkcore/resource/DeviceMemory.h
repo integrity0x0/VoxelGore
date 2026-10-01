@@ -13,7 +13,7 @@ class DeviceMemory {
 
   ~DeviceMemory();
 
-  [[nodiscard]] VkDeviceMemory handle() const { return deviceMemory_.get(); }
+  [[nodiscard]] VkDeviceMemory GetHandle() const { return deviceMemory_.get(); }
 
   [[nodiscard]] VkDeviceSize size() const { return size_; }
 

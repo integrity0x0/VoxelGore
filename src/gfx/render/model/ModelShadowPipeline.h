@@ -19,7 +19,7 @@ class ModelShadowPipeline {
 
   void Bind(VkCommandBuffer cmd) const;
 
-  [[nodiscard]] const vkcore::PipelineLayout& pipelineLayout() const { return pipelineLayout_; }
+  [[nodiscard]] const vkcore::PipelineLayout& GetPipelineLayout() const { return pipelineLayout_; }
   [[nodiscard]] const vkcore::Pipeline& pipeline() const { return pipeline_; }
 
  private:

@@ -14,7 +14,7 @@ Framebuffer::Framebuffer(const Device& device, std::span<const ImageView* const>
   std::vector<VkImageView> viewHandles;
   viewHandles.reserve(attachments_.size());
   for (const ImageView* view : attachments_) {
-    viewHandles.push_back(view->handle());
+    viewHandles.push_back(view->GetHandle());
   }
 
   VkFramebufferCreateInfo framebufferCI = {VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
@@ -27,13 +27,13 @@ Framebuffer::Framebuffer(const Device& device, std::span<const ImageView* const>
   framebufferCI.layers = layers_;
 
   VkFramebuffer rawFramebuffer = VK_NULL_HANDLE;
-  VkResult result = device.dispatchTable().vkCreateFramebuffer(device.handle(), &framebufferCI,
+  VkResult result = device.GetDispatchTable().vkCreateFramebuffer(device.GetHandle(), &framebufferCI,
                                                                nullptr, &rawFramebuffer);
   if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to create framebuffer");
   }
 
-  FramebufferDeleter deleter{device.handle(), device.dispatchTable().vkDestroyFramebuffer};
+  FramebufferDeleter deleter{device.GetHandle(), device.GetDispatchTable().vkDestroyFramebuffer};
   framebuffer_ = UniqueFramebuffer(rawFramebuffer, deleter);
 }
 

@@ -39,7 +39,7 @@ TranslucentMesh::TranslucentMesh(const vkcore::Device& device, Mesh&& mesh,
         indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    uint32_t* mapped = reinterpret_cast<uint32_t*>(indexBuffer.map());
+    uint32_t* mapped = reinterpret_cast<uint32_t*>(indexBuffer.Map());
 
     frames_.emplace_back(std::move(indexBuffer), mapped);
   }
@@ -75,7 +75,7 @@ void TranslucentMesh::Draw(VkCommandBuffer cmd, uint32_t currentFrame) {
 
   frame.indexBuffer.BindIndex(cmd);
   mesh_.Bind(cmd);
-  device_->dispatchTable().vkCmdDrawIndexed(cmd, static_cast<uint32_t>(quadIndices_.size()) * 6u, 1,
+  device_->GetDispatchTable().vkCmdDrawIndexed(cmd, static_cast<uint32_t>(quadIndices_.size()) * 6u, 1,
                                             0, 0, 0);
 }
 

@@ -24,7 +24,7 @@ ModelRenderer::ModelRenderer(const vkcore::Device& device, vkcore::BufferAllocat
         kMaxInstances * sizeof(ModelInstanceData), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    auto* mapped = reinterpret_cast<ModelInstanceData*>(buffer.map());
+    auto* mapped = reinterpret_cast<ModelInstanceData*>(buffer.Map());
 
     frames_.emplace_back(std::move(buffer), mapped);
   }
@@ -73,16 +73,16 @@ void ModelRenderer::DrawGroups(VkCommandBuffer cmd, uint32_t frameIndex,
   for (auto& group : groups_) {
     uint32_t count = static_cast<uint32_t>(group.instances.size());
     if (offset + count > kMaxInstances) break;
-    group.model->Draw(cmd, layout, frame.instanceBuffer.handle(),
-                      offset + frame.instanceBuffer.offset(), count);
+    group.model->Draw(cmd, layout, frame.instanceBuffer.GetHandle(),
+                      offset + frame.instanceBuffer.GetOffset(), count);
     offset += count;
   }
 }
 
 void ModelRenderer::Render(VkCommandBuffer cmd, uint32_t frameIndex) {
   pipeline_.Bind(cmd);
-  shadowCtxt_->descriptorSet().Bind(cmd, pipeline_.pipelineLayout().handle(), 2);
-  DrawGroups(cmd, frameIndex, pipeline_.pipelineLayout());
+  shadowCtxt_->GetDescriptorSet().Bind(cmd, pipeline_.GetPipelineLayout().GetHandle(), 2);
+  DrawGroups(cmd, frameIndex, pipeline_.GetPipelineLayout());
 
   groups_.clear();
   sparseIndices_.clear();
@@ -92,7 +92,7 @@ void ModelRenderer::Render(VkCommandBuffer cmd, uint32_t frameIndex) {
 void ModelRenderer::RenderShadow(VkCommandBuffer cmd, uint32_t frameIndex) {
   if (!shadowPipeline_) return;
   shadowPipeline_->Bind(cmd);
-  DrawGroups(cmd, frameIndex, shadowPipeline_->pipelineLayout());
+  DrawGroups(cmd, frameIndex, shadowPipeline_->GetPipelineLayout());
 }
 
 }  // namespace gfx

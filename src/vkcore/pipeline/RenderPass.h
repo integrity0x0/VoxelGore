@@ -16,7 +16,7 @@ class RenderPass {
              std::span<const SubpassDescription> subpasses,
              std::span<const VkSubpassDependency> dependencies = {});
 
-  [[nodiscard]] VkRenderPass handle() const { return renderPass_.get(); }
+  [[nodiscard]] VkRenderPass GetHandle() const { return renderPass_.get(); }
   [[nodiscard]] const std::vector<VkAttachmentDescription>& attachments() const {
     return attachments_;
   }

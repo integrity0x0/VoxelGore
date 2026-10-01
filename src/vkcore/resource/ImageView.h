@@ -8,7 +8,7 @@ class ImageView {
  public:
   ImageView(const Device& device, const VkImageViewCreateInfo& imageViewCI);
 
-  VkImageView handle() const noexcept { return imageView_.get(); }
+  VkImageView GetHandle() const noexcept { return imageView_.get(); }
   VkFormat format() const noexcept { return format_; }
   VkImageViewType viewType() const noexcept { return viewType_; }
   VkImageSubresourceRange subresourceRange() const noexcept { return subresourceRange_; }

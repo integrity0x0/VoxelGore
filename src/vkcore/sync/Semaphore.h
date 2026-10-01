@@ -8,7 +8,7 @@ class Semaphore {
  public:
   explicit Semaphore(const Device& device, VkSemaphoreCreateFlags flags = 0);
 
-  VkSemaphore handle() const noexcept { return semaphore_.get(); }
+  VkSemaphore GetHandle() const noexcept { return semaphore_.get(); }
 
  private:
   UniqueSemaphore semaphore_;
