@@ -1,16 +1,35 @@
 #version 460
 
+precision highp float;
+precision highp int;
+
 layout(location = 0) in vec2 aPos;
-layout(location = 1) in vec2 aUV;
-layout(location = 2) in vec4 aColor;
+layout(location = 1) in vec2 aSize;
+layout(location = 2) in vec4 aUvRect;
+layout(location = 3) in vec4 aColor;
+layout(location = 4) in float aRadius;
 
-layout(location = 0) out vec2 oUV;
-layout(location = 1) out vec4 oColor;
+layout(push_constant) uniform PushData {
+  vec2 ndcScale;
+} pc;
 
-void main() {    
-    gl_Position = vec4(aPos, 0.0f, 1.0f);
-    
-    oUV = aUV;
-    oColor = aColor;
+layout(location = 0) out VertexData {
+  mediump vec2 uv;
+  mediump vec4 color;
+  vec2 local;
+  flat vec2 halfSize;
+  flat float radius;
+} oVertex;
+
+const vec2 kCorners[6] = vec2[](vec2(0, 0), vec2(0, 1), vec2(1, 1),
+                               vec2(0, 0), vec2(1, 1), vec2(1, 0));
+
+void main() {
+  vec2 c = kCorner[gl_VertexIndex];
+  gl_Position = vec4((aPos + c * aSize) * pc.ndcScale - 1.0, 0.0, 1.0);
+  oVertex.local = (c - 0.5) * aSize;
+  oVertex.uv = mix(aUvRect.xy, aUvRect.zw, c);
+  oVertex.color = aColor;
+  oVertex.halfSize = aSize * 0.5;
+  oVertex.radius = aRadius;
 }
-

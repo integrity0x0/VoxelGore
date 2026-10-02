@@ -19,9 +19,9 @@ class LuaScript {
  public:
   LuaScript(const LuaState& luaState, const std::vector<char>& bytes, std::string_view chunkName);
 
-  void call(const char* functionName, int nargs = 0, int nresults = 0) const;
-  bool hasFunction(const char* functionName) const;
-  lua_State* getState() const { return rawState(); }
+  void Call(const char* functionName, int nargs = 0, int nresults = 0) const;
+  bool HasFunction(const char* functionName) const;
+  lua_State* GetState() const { return GetRawState(); }
 
   LuaScript(const LuaScript&) = delete;
   LuaScript& operator=(const LuaScript&) = delete;
@@ -30,7 +30,7 @@ class LuaScript {
   ~LuaScript();
 
  private:
-  lua_State* rawState() const;
+  lua_State* GetRawState() const;
 
   const LuaState* luaState_;
   int envRef_;

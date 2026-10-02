@@ -23,7 +23,7 @@ struct UiLength {
   UiUnit unit = UiUnit::Px;
 };
 
-struct UiSize {
+struct UiLength2 {
   UiLength x;
   UiLength y;
 };

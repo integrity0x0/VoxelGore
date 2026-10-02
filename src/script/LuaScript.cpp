@@ -2,12 +2,12 @@
 
 namespace script {
 
-lua_State* LuaScript::rawState() const { return luaState_->get(); }
+lua_State* LuaScript::GetRawState() const { return luaState_->get(); }
 
 LuaScript::LuaScript(const LuaState& luaState, const std::vector<char>& bytes,
                      std::string_view chunkName)
     : luaState_(&luaState), envRef_(LUA_NOREF) {
-  lua_State* L = rawState();
+  lua_State* L = GetRawState();
 
   if (luaL_loadbuffer(L, bytes.data(), bytes.size(), chunkName.data()) != LUA_OK) {
     std::string error = lua_tostring(L, -1);
@@ -35,8 +35,8 @@ LuaScript::LuaScript(const LuaState& luaState, const std::vector<char>& bytes,
   }
 }
 
-void LuaScript::call(const char* functionName, int nargs, int nresults) const {
-  lua_State* L = rawState();
+void LuaScript::Call(const char* functionName, int nargs, int nresults) const {
+  lua_State* L = GetRawState();
 
   lua_rawgeti(L, LUA_REGISTRYINDEX, envRef_);
   lua_getfield(L, -1, functionName);
@@ -55,12 +55,12 @@ void LuaScript::call(const char* functionName, int nargs, int nresults) const {
   if (lua_pcall(L, nargs, nresults, 0) != LUA_OK) {
     std::string error = lua_tostring(L, -1);
     lua_pop(L, 1);
-    throw std::runtime_error(std::string("Lua call error in ") + functionName + ": " + error);
+    throw std::runtime_error(std::string("Lua Call error in ") + functionName + ": " + error);
   }
 }
 
-bool LuaScript::hasFunction(const char* functionName) const {
-  lua_State* L = rawState();
+bool LuaScript::HasFunction(const char* functionName) const {
+  lua_State* L = GetRawState();
   lua_rawgeti(L, LUA_REGISTRYINDEX, envRef_);
   lua_getfield(L, -1, functionName);
   bool result = lua_isfunction(L, -1);
@@ -76,7 +76,7 @@ LuaScript::LuaScript(LuaScript&& other) noexcept
 LuaScript& LuaScript::operator=(LuaScript&& other) noexcept {
   if (this != &other) {
     if (envRef_ != LUA_NOREF) {
-      luaL_unref(rawState(), LUA_REGISTRYINDEX, envRef_);
+      luaL_unref(GetRawState(), LUA_REGISTRYINDEX, envRef_);
     }
     luaState_ = other.luaState_;
     envRef_ = other.envRef_;
@@ -87,7 +87,7 @@ LuaScript& LuaScript::operator=(LuaScript&& other) noexcept {
 
 LuaScript::~LuaScript() {
   if (envRef_ != LUA_NOREF) {
-    luaL_unref(rawState(), LUA_REGISTRYINDEX, envRef_);
+    luaL_unref(GetRawState(), LUA_REGISTRYINDEX, envRef_);
   }
 }
 

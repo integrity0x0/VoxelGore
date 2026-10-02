@@ -30,11 +30,11 @@ class UiElement {
 
   [[nodiscard]] virtual UiNodeType GetNodeType() const = 0;
 
-  [[nodiscard]] const UiSize& GetPos() const { return pos_; }
-  [[nodiscard]] const UiSize& GetSize() const { return size_; }
+  [[nodiscard]] const UiLength2& GetPos() const { return pos_; }
+  [[nodiscard]] const UiLength2& GetSize() const { return size_; }
 
-  void SetPos(const UiSize& position) { pos_ = position; }
-  void SetSize(const UiSize& size) { size_ = size; }
+  void SetPos(const UiLength2& position) { pos_ = position; }
+  void SetSize(const UiLength2& size) { size_ = size; }
 
   [[nodiscard]] const UiPoint& GetAnchor() const { return anchor_; }
   [[nodiscard]] const UiPoint& GetPivot() const { return pivot_; }
@@ -44,13 +44,6 @@ class UiElement {
 
   [[nodiscard]] bool IsVisible() const { return visible_; }
   void SetVisible(bool visible) { visible_ = visible; }
-
-  [[nodiscard]] bool IsEnabled() const { return enabled_; }
-  void SetEnabled(bool enabled) { enabled_ = enabled; }
-
-  [[nodiscard]] bool IsChecked() const { return checked_; }
-  
-  void SetChecked(bool checked) { checked_ = checked; }
 
   [[nodiscard]] const UiElement* GetParent() const { return parent_; }
 
@@ -72,6 +65,10 @@ class UiElement {
 
   [[nodiscard]] const StateOverrideTable& GetOverrideTable() const { return overrideTable_; }
 
+  [[nodiscard]] float GetRadius() const { return radius_; }
+
+  void SetRadius(float radius) { radius_ = radius; }
+
   virtual void Render(UiRenderer& renderer);
 
  protected:
@@ -85,8 +82,8 @@ class UiElement {
   const UiElement* parent_ = nullptr;
   std::vector<std::unique_ptr<UiElement>> children_;
 
-  UiSize pos_;
-  UiSize size_;
+  UiLength2 pos_;
+  UiLength2 size_;
 
   std::optional<UiTextureRegion> image_;
 
@@ -97,10 +94,11 @@ class UiElement {
 
   bool visible_ = true;
   bool enabled_ = true;
-  bool checked_ = false;
 
   UiPadding padding_;
   std::optional<UiTextureRegion> bgImage_;
+
+  float radius_ = 0.0f;
 
   StateOverrideTable overrideTable_;
 };

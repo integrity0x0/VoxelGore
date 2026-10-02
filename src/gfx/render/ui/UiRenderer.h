@@ -5,7 +5,7 @@
 #include "../../../vkcore/resource/BufferAllocator.h"
 #include "../../common/texture/MaterialManager.h"
 #include "UiTypes.h"
-#include "UiVertex.h"
+#include "UiQuadInstance.h"
 
 namespace gfx {
 class UiRenderer {
@@ -26,9 +26,9 @@ class UiRenderer {
 private:
   struct FrameData {
     vkcore::BufferSlice vertexBuffer;
-    UiVertex* mapped;
+    UiQuadInstance* mapped;
 
-    FrameData(vkcore::BufferSlice&& vertexBuffer, UiVertex* mapped)
+    FrameData(vkcore::BufferSlice&& vertexBuffer, UiQuadInstance* mapped)
         : vertexBuffer(std::move(vertexBuffer)), mapped(mapped) {}
   };
 
@@ -37,7 +37,7 @@ private:
   static constexpr VkMemoryPropertyFlags kMemoryProperties =
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
   static constexpr VkDeviceSize kBufferSize = 32 * 1024 * 1024ull;
-  static constexpr size_t kMaxVertices = kBufferSize / sizeof(UiVertex);
+  static constexpr size_t kMaxVertices = kBufferSize / sizeof(UiQuadInstance);
   std::reference_wrapper<const vkcore::Device> device_;
   std::vector<FrameData> frames_;
   uint32_t vertexOffset_ = 0;

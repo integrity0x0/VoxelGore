@@ -3,9 +3,11 @@
 #include <glm/glm.hpp>
 
 namespace gfx {
-struct UiVertex {
+struct UiQuadInstance {
   glm::vec2 pos;
-  glm::vec2 uv;
+  glm::vec2 size;
+  glm::vec4 uvRect;
   glm::vec4 color;
+  float radius;
 };
 }  // namespace gfx

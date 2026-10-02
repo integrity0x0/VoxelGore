@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "../../../vkcore/pipeline/GraphicsPipelineCreator.h"
 #include "../../../vkcore/pipeline/PipelineLayout.h"
 #include "../../../vkcore/pipeline/RenderPass.h"
@@ -8,11 +10,15 @@
 namespace gfx {
 class UiRenderPipeline {
  public:
+  struct PushConstant {
+    glm::vec2 ndcScale;
+  };
 
+  UiRenderPipeline(const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout, const vkcore::RenderPass& renderPass);
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(
       const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout);
-  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device);
+  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass);
  private:
   vkcore::PipelineLayout pipelineLayout_;
   vkcore::Pipeline pipeline_;

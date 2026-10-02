@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "../../../script/LuaScript.h"
+#include "UiElement.h"
 
 namespace gfx {
 class UiPage {
