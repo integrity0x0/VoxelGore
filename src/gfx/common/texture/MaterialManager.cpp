@@ -28,7 +28,7 @@ MaterialManager::MaterialManager(const vkcore::Device& device, TextureManager& t
       textureManager_(&textureManager),
       descriptorPool_(BuildDescriptorPool(device)) {}
 
-const MaterialManager::Material* MaterialManager::Require(std::string_view key) {
+const Material* MaterialManager::Require(std::string_view key) {
   if (const auto* cached = Find(key)) return cached;
 
   const auto* texture = textureManager_->Require(key);

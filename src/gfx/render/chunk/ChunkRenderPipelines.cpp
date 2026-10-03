@@ -60,7 +60,7 @@ vkcore::Pipeline ChunkRenderPipelines::BuildPipeline(VkRenderPass renderPass,
       .AddColorBlendAttachment(blendEnabled)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
-      .setDepthTest(true, depthWrite)
+      .SetDepthTest(true, depthWrite)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
       .Build(pipelineLayout_.GetHandle(), renderPass);
 }

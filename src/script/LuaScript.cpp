@@ -4,7 +4,7 @@ namespace script {
 
 lua_State* LuaScript::GetRawState() const { return luaState_->get(); }
 
-LuaScript::LuaScript(const LuaState& luaState, const std::vector<char>& bytes,
+LuaScript::LuaScript(const LuaState& luaState, std::span<const std::byte> bytes,
                      std::string_view chunkName)
     : luaState_(&luaState), envRef_(LUA_NOREF) {
   lua_State* L = GetRawState();

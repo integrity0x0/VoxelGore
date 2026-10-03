@@ -153,7 +153,7 @@ vkcore::Pipeline BlockPreviewRenderer::BuildPipeline(const vkcore::Device& devic
       .AddShaderStage(vert, VK_SHADER_STAGE_VERTEX_BIT)
       .AddShaderStage(frag, VK_SHADER_STAGE_FRAGMENT_BIT)
       .setCullMode(VK_CULL_MODE_NONE)
-      .setDepthTest(true, true)
+      .SetDepthTest(true, true)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
       .AddColorBlendAttachment(true)

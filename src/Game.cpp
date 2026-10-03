@@ -90,7 +90,7 @@ void Game::Init() {
           .AddColorBlendAttachment(false)
           .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
           .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
-          .setDepthTest(false, false)
+          .SetDepthTest(false, false)
           .setCullMode(VK_CULL_MODE_NONE)
           .Build(crosshairLayout_->GetHandle(), engine_->getRenderPass().GetHandle()));
 

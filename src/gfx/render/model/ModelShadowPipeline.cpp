@@ -51,7 +51,7 @@ vkcore::Pipeline ModelShadowPipeline::BuildPipeline(const vkcore::Device& device
       .AddShaderStage(fragment, VK_SHADER_STAGE_FRAGMENT_BIT)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
-      .setDepthTest(true, true)
+      .SetDepthTest(true, true)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
       .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }

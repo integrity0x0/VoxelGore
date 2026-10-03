@@ -18,6 +18,7 @@ using MaterialId = uint32_t;
 static constexpr MaterialId kInvalidMaterialId = std::numeric_limits<MaterialId>::max();
 
 struct Material {
+  MaterialId id = kInvalidMaterialId;
   const vkcore::SampledTexture* texture;
   vkcore::DescriptorSet descriptorSet;
 

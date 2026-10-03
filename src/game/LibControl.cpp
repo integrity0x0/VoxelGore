@@ -100,7 +100,7 @@ const LibControl::FnEntry LibControl::kControlFunctions[] = {
 };
 
 LibControl::LibControl(ControlState& state, const script::LuaState& luaState)
-    : state_(&state), L_(luaState.get()) {
+    : state_(&state), L_(luaState.Get()) {
   lua_newtable(L_);
   registerClosures(kControlFunctions, std::size(kControlFunctions));
   lua_setglobal(L_, "control");

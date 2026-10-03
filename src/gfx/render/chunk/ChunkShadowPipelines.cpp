@@ -53,7 +53,7 @@ vkcore::Pipeline ChunkShadowPipelines::BuildPipeline(VkRenderPass shadowRenderPa
                           offsetof(ChunkMeshBuilder::Vertex, blockSurfaceId))
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
-      .setDepthTest(true, true)
+      .SetDepthTest(true, true)
       .setCullMode(VK_CULL_MODE_BACK_BIT)
       .Build(pipelineLayout_.GetHandle(), shadowRenderPass);
 }

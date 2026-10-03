@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <span>
 
 #include "LuaState.h"
 
@@ -17,11 +18,11 @@ namespace script {
 
 class LuaScript {
  public:
-  LuaScript(const LuaState& luaState, const std::vector<char>& bytes, std::string_view chunkName);
+  LuaScript(const LuaState& luaState, std::span<const std::byte> bytes, std::string_view chunkName);
 
   void Call(const char* functionName, int nargs = 0, int nresults = 0) const;
-  bool HasFunction(const char* functionName) const;
-  lua_State* GetState() const { return GetRawState(); }
+  [[nodiscard]] bool HasFunction(const char* functionName) const;
+  [[nodiscard]] lua_State* GetState() const { return GetRawState(); }
 
   LuaScript(const LuaScript&) = delete;
   LuaScript& operator=(const LuaScript&) = delete;
@@ -30,9 +31,12 @@ class LuaScript {
   ~LuaScript();
 
  private:
-  lua_State* GetRawState() const;
+  lua_State* GetRawState() const {
+    return luaState_.get().Get();
+  };
 
-  const LuaState* luaState_;
+ private:
+  std::reference_wrapper<const LuaState> luaState_;
   int envRef_;
 };
 

@@ -6,6 +6,7 @@
 #include "../../../vkcore/pipeline/PipelineLayout.h"
 #include "../../../vkcore/pipeline/RenderPass.h"
 #include "../../../vkcore/resource/DescriptorSetLayout.h"
+#include "../../common/shader/ShaderCompiler.h"
 
 namespace gfx {
 class UiRenderPipeline {
@@ -14,11 +15,16 @@ class UiRenderPipeline {
     glm::vec2 ndcScale;
   };
 
-  UiRenderPipeline(const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout, const vkcore::RenderPass& renderPass);
+  UiRenderPipeline(const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout,
+                   const vkcore::RenderPass& renderPass, const ShaderCompiler& shaderCompiler);
+  
+  [[nodiscard]] const vkcore::PipelineLayout& GetLayout() const { return pipelineLayout_; }
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(
       const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout);
-  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device, const vkcore::RenderPass& renderPass);
+  [[nodiscard]] vkcore::Pipeline BuildPipeline(const vkcore::Device& device,
+                                               const vkcore::RenderPass& renderPass,
+                                               const ShaderCompiler& shaderCompiler);
  private:
   vkcore::PipelineLayout pipelineLayout_;
   vkcore::Pipeline pipeline_;

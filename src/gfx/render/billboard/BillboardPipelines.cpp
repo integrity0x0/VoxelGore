@@ -69,7 +69,7 @@ vkcore::Pipeline BillboardPipelines::BuildPipeline(const vkcore::Device& device,
           {0, 0},
           {1280, 720},
       })
-      .setDepthTest(true, depthWriteEnable)
+      .SetDepthTest(true, depthWriteEnable)
       .AddColorBlendAttachment(colorBlendEnable)
       .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
       .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)

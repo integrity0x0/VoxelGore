@@ -121,7 +121,7 @@ class GraphicsPipelineCreator {
     return *this;
   }
 
-  GraphicsPipelineCreator& setDepthTest(bool testEnable, bool writeEnable,
+  GraphicsPipelineCreator& SetDepthTest(bool testEnable, bool writeEnable,
                                         VkCompareOp op = VK_COMPARE_OP_LESS) {
     depthStencil_.depthTestEnable = testEnable ? VK_TRUE : VK_FALSE;
     depthStencil_.depthWriteEnable = writeEnable ? VK_TRUE : VK_FALSE;

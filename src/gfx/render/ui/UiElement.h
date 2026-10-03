@@ -28,7 +28,9 @@ class UiElement {
 
   virtual ~UiElement();
 
-  [[nodiscard]] virtual UiNodeType GetNodeType() const = 0;
+  [[nodiscard]] virtual UiNodeType GetNodeType() const {
+    return UiNodeType::Undefined;
+  };
 
   [[nodiscard]] const UiLength2& GetPos() const { return pos_; }
   [[nodiscard]] const UiLength2& GetSize() const { return size_; }
@@ -68,6 +70,16 @@ class UiElement {
   [[nodiscard]] float GetRadius() const { return radius_; }
 
   void SetRadius(float radius) { radius_ = radius; }
+
+  [[nodiscard]] const std::string GetId() const { return id_; }
+  
+  [[nodiscard]] const glm::vec4 GetColor() const {
+    return color_;
+  }
+
+  void SetColor(const glm::vec4& color) {
+    color_ = color;
+  }
 
   virtual void Render(UiRenderer& renderer);
 

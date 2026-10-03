@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <utility>
 #include <glm/glm.hpp>
 
 #include "../../UvRegion.h"
@@ -36,12 +37,15 @@ struct UiPadding {
 };
 
 struct UiTextureRegion {
-  Material material;
+  std::reference_wrapper<const Material> material;
   UvRegion region = {
       .min = glm::vec2(0.0f),
       .max = glm::vec2(1.0f),
       .arrayLayer = 0,
   };
+
+  UiTextureRegion(const Material& material, const UvRegion& region) 
+      : material(material), region(region) {}
 };
 
 }  // namespace gfx
