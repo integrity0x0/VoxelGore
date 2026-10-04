@@ -10,4 +10,4 @@ struct UiQuadInstance {
   glm::vec4 color;
   float radius;
 };
-}  // namespace gfx
+}  // namespace gfx	

@@ -40,6 +40,7 @@ void Ui::Push(std::string_view path) {
   }
 
   if (result.page) {
+    result.page->Relayout(screen_);
     pagesStack_.push(result.page.get());
     cached_[std::string(path)] = std::move(result.page);    
   }
@@ -54,7 +55,14 @@ void Ui::Clear() {
   cached_.clear();
 }
 
-void Ui::Resize(VkExtent2D extent) { ndcScale_ = 2.0f / glm::vec2(extent.width, extent.height); }
+void Ui::Resize(VkExtent2D extent) { 
+  glm::vec2 screenSize(extent.width, extent.height);
+  screen_ = {glm::vec2(0.0f), screenSize};
+  ndcScale_ = 2.0f / screenSize; 
+  for (auto& it : cached_) {
+    it.second->Relayout(screen_);
+  }
+}
 
 void Ui::Render(VkCommandBuffer cmd, uint32_t currentFrame) {
   if (UiPage* page = pagesStack_.top()) {
@@ -63,4 +71,4 @@ void Ui::Render(VkCommandBuffer cmd, uint32_t currentFrame) {
     page->Render(renderer_);
   }
 }
-}  // namespace gfx
+}  // namespace gfx\

@@ -21,6 +21,12 @@ UiElement* UiPage::FindById(std::string_view id) const {
   return it == byId_.end() ? nullptr : it->second;
 }
 
+void UiPage::Relayout(const UiRect& screen) {
+  for (auto& root : roots_) {
+    root->Relayout(screen);
+  }
+}
+
 void UiPage::Render(UiRenderer& renderer) {
   for (auto& root : roots_) root->Render(renderer);
   renderer.Render();

@@ -32,7 +32,7 @@ class UiPage {
   void AttachScript(script::LuaScript&& script) { script_.emplace(std::move(script)); }
   [[nodiscard]] const std::optional<script::LuaScript>& GetScript() { return script_; }
 
-  //void Relayout(const UiRect& screen, float uiScale);
+  void Relayout(const UiRect& screen);
   void Render(UiRenderer& renderer);
  private:
   using ElementsById = std::unordered_map<std::string, UiElement*, util::StringHash, std::equal_to<>>;

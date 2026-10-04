@@ -52,4 +52,13 @@ struct UiTextureRegion {
       : material(material), region(region) {}
 };
 
+struct UiInsets {
+  float left = 0.0f, top = 0.0f, right = 0.0f, bottom = 0.0f;
+};
+
+struct UiLayout {
+  UiRect rect;
+  UiInsets padding;
+};
+
 }  // namespace gfx

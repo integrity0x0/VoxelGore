@@ -6,29 +6,28 @@ UiElement::UiElement(std::string_view id, const UiElement* parent) : id_(id), pa
 
 void UiElement::Render(UiRenderer& renderer) {
   RenderBg(renderer);
-
-  renderer.Submit({pos_.x.value, pos_.y.value}, {size_.x.value, size_.y.value}, image_, color_,
+  renderer.Submit(resolvedLayout_.rect.pos, resolvedLayout_.rect.size, image_, color_,
                   radius_);
 }
 
 void UiElement::RenderBg(UiRenderer& renderer) {
   if (!padding_) return;
 
-  const auto& padding = *padding_;
+  const auto& p = resolvedLayout_.padding;
+  const auto& r = resolvedLayout_.rect;
 
-  const glm::vec2 pos{pos_.x.value - padding.left.value, pos_.y.value - padding.top.value};
-
-  const glm::vec2 size{size_.x.value + padding.left.value + padding.right.value,
-                       size_.y.value + padding.top.value + padding.bottom.value};
+  const glm::vec2 pos(r.pos.x - p.left, r.pos.y - p.top);
+  const glm::vec2 size(r.size.x + p.left + p.right, r.size.y + p.top + p.bottom);
 
   renderer.Submit(pos, size, bgImage_, bgColor_, radius_);
 }
 
 void UiElement::Relayout(const UiRect& rect) {
-  layoutSize_.x =
+  auto& layoutSize = resolvedLayout_.rect.size;
+  layoutSize.x =
       size_.x.unit == UiUnit::Percent ? size_.x.value * rect.size.x / 100.0f : size_.x.value;
 
-  layoutSize_.y =
+  layoutSize.y =
       size_.y.unit == UiUnit::Percent ? size_.y.value * rect.size.y / 100.0f : size_.y.value;
 
   const float posX =
@@ -43,12 +42,30 @@ void UiElement::Relayout(const UiRect& rect) {
   const float pivotFactorX = kAlignmentFactors[static_cast<size_t>(pivot_.x)];
   const float pivotFactorY = kAlignmentFactors[static_cast<size_t>(pivot_.y)];
 
-  layoutPos_.x = rect.pos.x + rect.size.x * anchorFactorX + posX - layoutSize_.x * pivotFactorX;
+  auto& layoutPos = resolvedLayout_.rect.pos;
 
-  layoutPos_.y = rect.pos.y + rect.size.y * anchorFactorY + posY - layoutSize_.y * pivotFactorY;
+  layoutPos.x = rect.pos.x + rect.size.x * anchorFactorX + posX - layoutSize.x * pivotFactorX;
 
-  const UiRect childRect{.pos = layoutPos_, .size = layoutSize_};
+  layoutPos.y = rect.pos.y + rect.size.y * anchorFactorY + posY - layoutSize.y * pivotFactorY;
+  
+  if (padding_) {
+    auto& padding = resolvedLayout_.padding;
 
-  for (auto& child : children_) child->Relayout(childRect);
+    padding.left = padding_->left.unit == UiUnit::Percent
+                       ? padding_->left.value / 100.0f * rect.size.x
+                       : padding_->left.value;
+
+    padding.top = padding_->top.unit == UiUnit::Percent
+                       ? padding_->top.value / 100.0f * rect.size.y
+                       : padding_->top.value;
+
+    padding.right = padding_->right.unit == UiUnit::Percent
+                       ? padding_->right.value / 100.0f * rect.size.x
+                       : padding_->right.value;
+
+    padding.bottom = padding_->bottom.unit == UiUnit::Percent
+                       ? padding_->bottom.value / 100.0f * rect.size.y
+                       : padding_->bottom.value;
+  }
 }
 }  // namespace gfx

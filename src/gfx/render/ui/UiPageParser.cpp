@@ -393,14 +393,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseElement(const Context& ctxt,
 
   auto uiElement = it->second(ctxt, element, parent, result);
 
-  for (const auto* child = element->FirstChildElement(); child;
-       child = child->NextSiblingElement()) {
-    auto parsed = ParseElement(ctxt, child, uiElement.get(), result);
-
-    if (parsed) {
-      std::ignore = uiElement->AddChild(std::move(parsed));
-    }
-  }
+  
   return uiElement;
 }
 
@@ -417,6 +410,16 @@ std::unique_ptr<UiElement> UiPageParser::ParseContainer(const Context& ctxt,
   ParseCommonAttributes(ctxt, *container, a);
 
   a.ReportUnknown();
+
+  for (const auto* child = element->FirstChildElement(); child;
+       child = child->NextSiblingElement()) {
+    auto parsed = ParseElement(ctxt, child, container.get(), result);
+
+    if (parsed) {
+      container->AddChild(std::move(parsed));
+    }
+  }
+
   return container;
 }
 

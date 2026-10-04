@@ -27,18 +27,7 @@ class UiElement {
   // Identity
   [[nodiscard]] std::string_view GetId() const { return id_; }
   [[nodiscard]] const UiElement* GetParent() const { return parent_; }
-
-  // Hierarchy
-  [[nodiscard]] const std::vector<std::unique_ptr<UiElement>>& GetChildren() const {
-    return children_;
-  }
-
-  [[nodiscard]] UiElement& AddChild(std::unique_ptr<UiElement>&& child) {
-    assert(child);
-    children_.emplace_back(std::move(child));
-    return *children_.back();
-  }
-
+  
   // Transform
   [[nodiscard]] const UiLength2& GetPos() const { return pos_; }
   void SetPos(const UiLength2& position) { pos_ = position; }
@@ -67,6 +56,14 @@ class UiElement {
 
   void SetBgImage(std::optional<UiTextureRegion> image) { bgImage_ = std::move(image); }
 
+  [[nodiscard]] const std::optional<float>& GetBgRadius() const {
+    return bgRadius_;
+  }
+
+  void SetBgRadius(const std::optional<float>& bgRadius) {
+    bgRadius_ = bgRadius;
+  }
+
   [[nodiscard]] float GetRadius() const { return radius_; }
   void SetRadius(float radius) { radius_ = radius; }
 
@@ -78,10 +75,15 @@ class UiElement {
   [[nodiscard]] bool IsVisible() const { return visible_; }
   void SetVisible(bool visible) { visible_ = visible; }
 
+  [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
+    return {};
+  }
+
+  const UiLayout& GetResolvedLayout() const { return resolvedLayout_; }
+
   virtual void Relayout(const UiRect& rect);
 
  protected:
-  void SetParent(const UiElement* parent) { parent_ = parent; }
   virtual void RenderBg(UiRenderer& renderer);
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
       0.0f, 0.5f, 1.0f};
@@ -90,7 +92,6 @@ class UiElement {
   // Identity / hierarchy
   std::string id_;
   const UiElement* parent_ = nullptr;
-  std::vector<std::unique_ptr<UiElement>> children_;
 
   // Transform
   UiLength2 pos_;
@@ -104,13 +105,13 @@ class UiElement {
   std::optional<UiTextureRegion> image_;
   glm::vec4 bgColor_ = glm::vec4(1.0f);
   std::optional<UiTextureRegion> bgImage_;
-  float radius_ = 0.0f;
-
+  float radius_ = 0.0f; 
+  std::optional<float> bgRadius_;
   // Properties
   bool visible_ = true;
 
-  glm::vec4 layoutPos_ = glm::vec4(0.0f);
-  glm::vec4 layoutSize_ = glm::vec4(0.0f);
+  bool layoutDirty_ = false;
+  UiLayout resolvedLayout_;
 };
 
 }  // namespace gfx

@@ -35,6 +35,7 @@ class Ui {
   UiRenderer renderer_;
   std::unordered_map<std::string, std::unique_ptr<UiPage>, util::StringHash, std::equal_to<>> cached_;
   std::stack<UiPage*> pagesStack_;
+  UiRect screen_;
   glm::vec2 ndcScale_ = glm::vec2(1.0f);
 };
 }  // namespace gfx
