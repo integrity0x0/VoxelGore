@@ -20,5 +20,5 @@ VoxelGore
 .vs
 VoxelGore.vcxproj.user 
 out
-shaderc_shader.dll
+shaderc_shared.dll
 lua51.dllза
