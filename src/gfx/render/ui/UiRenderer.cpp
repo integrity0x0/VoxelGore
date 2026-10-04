@@ -19,16 +19,33 @@ UiRenderer::UiRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bu
   }
 }
 
+void UiRenderer::BeginFrame(VkCommandBuffer cmd, uint32_t currentFrame) {
+  assert(currentFrame < frames_.size());
+  cmd_ = cmd;
+  currentFrame_ = currentFrame;
+  instanceOffset_ = instanceCount_ = 0;
+  bindedMaterial_ = kInvalidMaterialId;
+  pipeline_.Bind(cmd);
+
+  frames_[currentFrame].vertexBuffer.BindVertex(cmd_);
+}
+
 void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
-                        const std::optional<UiTextureRegion>& texture, const glm::vec4& color) {
+                        const std::optional<UiTextureRegion>& texture, const glm::vec4& color,
+                        float radius) {
   if (static_cast<size_t>(instanceOffset_ + instanceCount_ + 1) > kMaxInstances) return;
 
   auto& frame = frames_[currentFrame_];
-  
-  const UiTextureRegion& region = texture ? *texture : blankTexture_;
+
+  const bool hasValidTexture = texture && texture->material.get().id != kInvalidMaterialId;
+  const UiTextureRegion& region = hasValidTexture ? *texture : blankTexture_;
 
   if (region.material.get().id != bindedMaterial_) {
+    if (instanceCount_ > 0) Render();
+
     region.material.get().descriptorSet.Bind(cmd_, pipeline_.GetLayout().GetHandle());
+
+    bindedMaterial_ = region.material.get().id;
   }
 
   const glm::vec2 uvMin = region.region.min;
@@ -41,7 +58,7 @@ void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
       .size = size,
       .uvRect = {uvMin.x, uvMin.y, uvMax.x, uvMax.y},
       .color = color,
-      .radius = 0.0f
+      .radius = radius,
   };
 
   ++instanceCount_;
@@ -50,9 +67,7 @@ void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
 void UiRenderer::Render() {
   auto& frame = frames_[currentFrame_];
 
-  frame.vertexBuffer.BindVertex(cmd_);
-
-  device_.get().GetDispatchTable().vkCmdDraw(cmd_, 6, instanceCount_, 0, 0);
+  device_.get().GetDispatchTable().vkCmdDraw(cmd_, 6, instanceCount_, 0, instanceOffset_);
 
   instanceOffset_ += instanceCount_;
   instanceCount_ = 0;

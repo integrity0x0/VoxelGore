@@ -32,7 +32,7 @@ bool Fence::isSignaled() const {
   VkResult result = device_->GetDispatchTable().vkGetFenceStatus(device_->GetHandle(), fence_.get());
   if (result == VK_SUCCESS) return true;
   if (result == VK_NOT_READY) return false;
-  SystemError::Check(result, "failed to Get fence status");
+  SystemError::Check(result, "failed to get fence status");
   return false;
 }
 

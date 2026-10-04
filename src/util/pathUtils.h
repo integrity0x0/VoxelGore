@@ -7,9 +7,9 @@
 
 namespace util {
 
-static std::string NormalizePath(const std::string& raw) {
+static std::string NormalizePath(std::string_view raw) {
   std::vector<std::string> parts;
-  std::stringstream ss(raw);
+  std::stringstream ss(raw.data());
   std::string segment;
 
   while (std::getline(ss, segment, '/')) {

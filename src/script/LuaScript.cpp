@@ -2,14 +2,12 @@
 
 namespace script {
 
-lua_State* LuaScript::GetRawState() const { return luaState_->get(); }
-
 LuaScript::LuaScript(const LuaState& luaState, std::span<const std::byte> bytes,
                      std::string_view chunkName)
-    : luaState_(&luaState), envRef_(LUA_NOREF) {
+    : luaState_(luaState), envRef_(LUA_NOREF) {
   lua_State* L = GetRawState();
 
-  if (luaL_loadbuffer(L, bytes.data(), bytes.size(), chunkName.data()) != LUA_OK) {
+  if (luaL_loadbuffer(L, reinterpret_cast<const char*>(bytes.data()), bytes.size(), chunkName.data()) != LUA_OK) {
     std::string error = lua_tostring(L, -1);
     lua_pop(L, 1);
     throw std::runtime_error("Lua compile error [" + std::string(chunkName) + "]: " + error);

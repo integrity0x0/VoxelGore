@@ -9,8 +9,12 @@
 
 namespace gfx {
 
-enum class UiAlignX { Left, Center, Right };
-enum class UiAlignY { Top, Center, Bottom };
+enum class UiAlignX { Left, Center, Right, Count };
+enum class UiAlignY { Top, Center, Bottom, Count };
+
+struct UiRect {
+  glm::vec2 pos, size;
+};
 
 struct UiPoint {
   UiAlignX x = UiAlignX::Left;
@@ -44,7 +48,7 @@ struct UiTextureRegion {
       .arrayLayer = 0,
   };
 
-  UiTextureRegion(const Material& material, const UvRegion& region) 
+  UiTextureRegion(const Material& material, const UvRegion& region = {}) 
       : material(material), region(region) {}
 };
 

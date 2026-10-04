@@ -23,20 +23,20 @@ class WorldSession {
 
   void SetVoxel(const glm::ivec3& worldPos, uint16_t voxelId);
 
-  World& world() { return *world_; }
-  const World& world() const { return *world_; }
+  World& GetWorld() { return *world_; }
+  const World& GetWorld() const { return *world_; }
 
-  BlockManager& blocks() { return *blockManager_; }
+  BlockManager& GetBlocks() { return *blockManager_; }
   const BlockManager& blocks() const { return *blockManager_; }
 
-  Lighting& lighting() { return *lighting_; }
-  const Lighting& lighting() const { return *lighting_; }
+  Lighting& GetLighting() { return *lighting_; }
+  const Lighting& GetLighting() const { return *lighting_; }
 
   CollisionResolver& collision() { return *collisionResolver_; }
   EntityFactory& entities() { return *entityFactory_; }
   gm::ComponentRegistry& components() { return world_->components(); }
 
-  const gm::Enviroment& enviroment() const { return *enviroment_; }
+  const gm::Enviroment& GetEnviroment() const { return *enviroment_; }
  private:
   std::unique_ptr<World> world_;
   std::unique_ptr<BlockManager> blockManager_;

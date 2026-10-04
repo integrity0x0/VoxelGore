@@ -43,14 +43,14 @@ class Engine {
   void endRenderPass();
   void endFrame(uint32_t imageIndex);
   uint32_t getCurrentFrameIndex() const { return currentFrame; }
-  uint32_t getFramesInFlightCount() const { return framesInFlight; }
+  uint32_t GetFramesCount() const { return framesInFlight; }
   VkExtent2D extent() const;
   const vkcore::CommandBuffer& getCommandBuffer() const { return *commandBuffers[currentFrame]; }
   const vkcore::CommandPool& getCommandPool() const { return *commandPool; }
   const vkcore::Device& getDevice() const { return *device; }
-  const vkcore::RenderPass& getRenderPass() const { return *renderPass; }
+  const vkcore::RenderPass& GetRenderPass() const { return *renderPass; }
   vkcore::MemoryAllocator& memoryAllocator() { return *memoryAllocator_; }
-  vkcore::BufferAllocator& bufferAllocator() { return *bufferAllocator_; }
+  vkcore::BufferAllocator& GetBufferAllocator() { return *bufferAllocator_; }
   const vkcore::DeviceQueue& getGraphicsQueue() const {
     return device->getQueues()[graphicsQueueIndex];
   }
@@ -59,7 +59,7 @@ class Engine {
     return device->getQueues()[presentQueueIndex];
   }
 
-  vkcore::TransferContext& transferContext() { return *transferCtxt; }
+  vkcore::TransferContext& GetTransferContext() { return *transferCtxt; }
 
   void recreateSwapchain();
   void destroySurface();

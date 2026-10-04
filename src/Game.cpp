@@ -59,18 +59,18 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
 
 #endif
 
-constexpr uint32_t kWorldW = 4;
+constexpr uint32_t kWorldW = 1;
 constexpr uint32_t kWorldH = 1;
-constexpr uint32_t kWorldD = 4;
+constexpr uint32_t kWorldD = 1;
 
 void Game::Init() {
   const vkcore::Device& device = engine_->getDevice();
 
   session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
 
-  render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, core::kAssetsPrefix);
+  render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, luaState_, core::kAssetsPrefix);
 
-  gfx::ShaderCompiler& compiler = render_->shaderCompiler();
+  gfx::ShaderCompiler& compiler = render_->GetShaderCompiler();
 
   vkcore::ShaderModule crosshairVert = gfx::CompileShaderModule(
       compiler, device, core::kShadersPrefix + "crosshair.vert", shaderc_vertex_shader);
@@ -92,7 +92,7 @@ void Game::Init() {
           .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
           .SetDepthTest(false, false)
           .setCullMode(VK_CULL_MODE_NONE)
-          .Build(crosshairLayout_->GetHandle(), engine_->getRenderPass().GetHandle()));
+          .Build(crosshairLayout_->GetHandle(), engine_->GetRenderPass().GetHandle()));
 
   const glm::vec3 worldCenter((kWorldW * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
                               (kWorldH * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
@@ -105,11 +105,11 @@ void Game::Init() {
 
   blockPreviewRenderer_ = std::make_unique<gfx::BlockPreviewRenderer>(
       device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(),
-      compiler, render_->chunks().GetBlockRenderData());
+      compiler, render_->GetChunks().GetBlockRenderData());
 
-  std::ignore = render_->textures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
+  std::ignore = render_->GetTextures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
 
-  render_->textures().AddResolver(
+  render_->GetTextures().AddResolver(
       "blocks.", [this](std::string_view remainder) -> std::optional<vkcore::SampledTexture> {
         const auto id = ParseBlockIdFromPreviewSuffix(remainder);
         if (!id) return std::nullopt;
@@ -120,7 +120,7 @@ void Game::Init() {
 
   lastFrameTime_ = std::chrono::steady_clock::now();
 
-  std::cout << "[INFO] Game started. Chunks: " << session_->world().chunks().getChunks().size()
+  std::cout << "[INFO] Game started. Chunks: " << session_->GetWorld().GetChunks().getChunks().size()
             << "\n";
 }
 
@@ -237,7 +237,7 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
   player_->UpdateMovement(controlState_, dt_);
 
   if (controlState_.breakBlock) {
-    player_->TryBreak(*session_, &render_->particles());
+    player_->TryBreak(*session_, &render_->GetParticles());
   }
 
   if (controlState_.interact) {
@@ -255,7 +255,7 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
 
   render_->UpdateParticles(dt_, frame);
 
-  render_->UpdateGameData(frame, player_->camera(), screenW, screenH, session_->enviroment());
+  render_->UpdateGameData(frame, player_->camera(), screenW, screenH, session_->GetEnviroment());
 
   render_->RenderShadowPass(cmd, frame);
 

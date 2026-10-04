@@ -19,6 +19,7 @@
 #include "gfx/common/shader/ShaderCompiler.h"
 #include "gfx/Settings.h"
 #include "gfx/render/shadow/ShadowContext.h"
+#include "gfx/render/ui/Ui.h"
 
 class Engine;
 
@@ -30,7 +31,7 @@ namespace gfx {
 
 class RenderWorld {
  public:
-  RenderWorld(Engine& engine, gm::WorldSession& session, const std::string& assetsPrefix);
+  RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaState& luaState, const std::string& assetsPrefix);
 
   void UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex);
   void UpdateParticles(float dt, uint32_t frameIndex);
@@ -40,15 +41,15 @@ class RenderWorld {
   void Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex, const core::Camera& camera);
   void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex);
 
-  ChunkRenderer& chunks() { return *chunkRenderer_; }
-  ParticleEngine& particles() { return *particleEngine_; }
-  TextureManager& textures() { return *textureManager_; }
-  GameDataBinding& gameData() { return *gameDataBinding_; }
+  ChunkRenderer& GetChunks() { return *chunkRenderer_; }
+  ParticleEngine& GetParticles() { return *particleEngine_; }
+  TextureManager& GetTextures() { return *textureManager_; }
+  GameDataBinding& GetGameData() { return *gameDataBinding_; }
 
-  Atlas& blockAtlas() { return chunkRenderer_->GetAtlas(); }
+  Atlas& GetBlockAtlas() { return chunkRenderer_->GetAtlas(); }
 
-  ShaderCompiler& shaderCompiler() { return *shaderCompiler_; }
-  const ShaderCompiler& shaderCompiler() const { return *shaderCompiler_; }
+  ShaderCompiler& GetShaderCompiler() { return *shaderCompiler_; }
+  const ShaderCompiler& GetShaderCompiler() const { return *shaderCompiler_; }
 
   void CollectEntities(uint32_t frameIndex);
 
@@ -72,6 +73,8 @@ class RenderWorld {
   std::unique_ptr<EntityRenderSystem> entityRenderSystem_;
   std::unique_ptr<SkyboxRenderer> skyboxRenderer_;
   std::unique_ptr<Skybox> nightSkybox_;
+  std::unique_ptr<MaterialManager> materialManager_;
+  std::unique_ptr<Ui> ui_;
 };
 
 }  // namespace gfx

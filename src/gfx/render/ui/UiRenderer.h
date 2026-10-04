@@ -12,22 +12,25 @@
 namespace gfx {
 class UiRenderer {
  public:
+  struct PushData {
+    glm::vec2 ndcScale;
+  };
+
   UiRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
              const vkcore::DescriptorSetLayout& materialLayout,
              const vkcore::RenderPass& renderPass,
              const ShaderCompiler& shaderCompiler,
              const UiTextureRegion& blankTexture, uint32_t framesCount);
 
-  void BeginFrame(VkCommandBuffer cmd, uint32_t currentFrame) {
-    assert(currentFrame < frames_.size());
-    cmd_ = cmd;
-    currentFrame_ = currentFrame;
-    instanceOffset_ = instanceCount_ = 0;
+  void BeginFrame(VkCommandBuffer cmd, uint32_t currentFrame);
 
-    pipeline_.Bind(cmd);
+  void PushConstants(VkCommandBuffer cmd, const PushData& pushData) {
+    pipeline_.GetLayout().PushConstants(
+        cmd, VK_SHADER_STAGE_VERTEX_BIT, 0,
+        {reinterpret_cast<const std::byte*>(&pushData), sizeof(PushData)});
   }
-
-  void Submit(glm::vec2 pos, glm::vec2 size, const std::optional<UiTextureRegion>& texture, const glm::vec4& color);
+  void Submit(glm::vec2 pos, glm::vec2 size, const std::optional<UiTextureRegion>& texture,
+              const glm::vec4& color, float radius = 0.0f);
   void Render();
 
 private:

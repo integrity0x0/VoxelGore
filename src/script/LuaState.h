@@ -18,7 +18,7 @@ class LuaState {
  public:
   LuaState();
 
-  lua_State* Get() const;
+  lua_State* get() const;
 
  private:
   std::unique_ptr<lua_State, LuaStateDeleter> state_;

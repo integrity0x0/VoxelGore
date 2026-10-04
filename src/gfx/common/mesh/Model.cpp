@@ -10,7 +10,7 @@ Model::Model(ModelId id, const vkcore::Device& device, std::vector<Submesh>&& su
 void Model::Draw(VkCommandBuffer cmd, const vkcore::PipelineLayout& pipelineLayout,
                  VkBuffer instanceBuffer, VkDeviceSize instanceOffset,
                  uint32_t instanceCount) const {
-  const MaterialManager::Material* lastMaterial = nullptr;
+  const Material* lastMaterial = nullptr;
 
   for (const auto& sub : submeshes_) {
     if (sub.material != lastMaterial && sub.material) {

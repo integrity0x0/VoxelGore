@@ -22,8 +22,8 @@ class World {
   EntityManager& entities() { return entityManager_; }
   const EntityManager& entities() const { return entityManager_; }
   ComponentRegistry& components() { return registry_; }
-  ChunkManager& chunks() { return chunkManager_; }
-  const ChunkManager& chunks() const { return chunkManager_; }
+  ChunkManager& GetChunks() { return chunkManager_; }
+  const ChunkManager& GetChunks() const { return chunkManager_; }
 
  private:
   EntityManager entityManager_;

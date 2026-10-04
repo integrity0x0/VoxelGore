@@ -70,7 +70,7 @@ class Game {
   gm::ControlState controlState_;
   bool cursorLocked_ = true;
 
-  VkExtent2D uiExtent_{};
+  VkExtent2D uiExtent_ = {};
 
   std::chrono::steady_clock::time_point lastFrameTime_{};
   std::chrono::steady_clock::time_point lastFpsTime_{};

@@ -50,8 +50,8 @@ LoadedImage LoadImagePixels(std::string_view path) {
   }
 
   loadedImage = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(fileBuffer.data()),
-                                      static_cast<int>(fileBuffer.size()), &result.width,
-                                      &result.height, &nrChannels, STBI_rgb_alpha);
+                                      static_cast<int>(fileBuffer.size()), &result.GetWidth,
+                                      &result.GetHeight, &nrChannels, STBI_rgb_alpha);
 
 #else
 

@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <unordered_set>
+#include <sstream>
 
 #include "../../../util/files.h"
+#include "../../../util/pathUtils.h"
 
 namespace gfx {
 
@@ -215,17 +217,158 @@ std::optional<glm::vec4> ParseColor(std::string_view text) {
   return glm::vec4(*r, *g, *b, a) / 255.0f;
 }
 
-void ParseCommonAttributes(UiElement& element, AttrReader& a) {
+std::optional<UiPadding> ParsePadding(std::string_view text) {
+  std::istringstream stream(text.data());
+  std::array<UiLength, 4> values;
+  size_t count = 0;
+
+  std::string token;
+  while (stream >> token) {
+    if (count >= values.size()) return std::nullopt;
+
+    auto value = ParseLength(token);
+    if (!value) return std::nullopt;
+
+    values[count++] = *value;
+  }
+
+  if (count == 0) return std::nullopt;
+
+  switch (count) {
+    case 1:
+      return UiPadding{
+          .left = values[0],
+          .top = values[0],
+          .right = values[0],
+          .bottom = values[0],
+      };
+
+    case 2:
+      return UiPadding{
+          .left = values[1],
+          .top = values[0],
+          .right = values[1],
+          .bottom = values[0],
+      };
+
+    case 3:
+      return UiPadding{
+          .left = values[1],
+          .top = values[0],
+          .right = values[1],
+          .bottom = values[2],
+      };
+
+    case 4:
+      return UiPadding{
+          .left = values[3],
+          .top = values[0],
+          .right = values[1],
+          .bottom = values[2],
+      };
+  }
+
+  return std::nullopt;
+}
+
+struct UiImagePath {
+  std::string path;
+  std::optional<glm::vec4> rect;  // x, y, width, height
+};
+
+std::optional<UiImagePath> ParseImage(std::string_view text) {
+  text = Trim(text);
+
+  const size_t hash = text.find('#');
+
+  if (hash == std::string_view::npos) {
+    if (text.empty()) return std::nullopt;
+    return UiImagePath{std::string(text), std::nullopt};
+  }
+
+  const std::string_view path = Trim(text.substr(0, hash));
+  const std::string_view rectText = Trim(text.substr(hash + 1));
+
+  if (path.empty() || rectText.empty()) return std::nullopt;
+
+  std::istringstream stream{std::string(rectText)};
+
+  float x, y, width, height;
+  char comma;
+
+  if (!(stream >> x >> comma) || comma != ',') return std::nullopt;
+  if (!(stream >> y >> comma) || comma != ',') return std::nullopt;
+  if (!(stream >> width >> comma) || comma != ',') return std::nullopt;
+  if (!(stream >> height)) return std::nullopt;
+
+  std::string extra;
+  if (stream >> extra) return std::nullopt;
+
+  if (width <= 0.0f || height <= 0.0f) return std::nullopt;
+
+  return UiImagePath{std::string(path), glm::vec4{x, y, width, height}};
+}
+
+std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
+                                            const UiImagePath& path) {
+  if (path.path.empty()) return std::nullopt;
+
+  std::string pathStr = util::NormalizePath(ctxt.assetRoot + path.path);
+  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Load(pathStr));
+  if (!material) return std::nullopt;
+
+  UiTextureRegion result{
+      *material,
+      {
+          .min = glm::vec2(0.0f),
+          .max = glm::vec2(1.0f),
+          .arrayLayer = 0,
+      },
+  };
+
+  if (!path.rect) return result;
+
+  const glm::vec2 textureSize = glm::vec2(material->texture->GetWidth(), material->texture->GetHeight());
+
+  if (textureSize.x <= 0.0f || textureSize.y <= 0.0f) return std::nullopt;
+
+  const glm::vec4& rect = *path.rect;
+  const float x = rect.x;
+  const float y = rect.y;
+  const float width = rect.z;
+  const float height = rect.w;
+
+  if (x < 0.0f || y < 0.0f || x + width > textureSize.x || y + height > textureSize.y) {
+    return std::nullopt;
+  }
+
+  result.region.min = {x / textureSize.x, y / textureSize.y};
+  result.region.max = {(x + width) / textureSize.x, (y + height) / textureSize.y};
+
+  return result;
+}
+
+void ParseCommonAttributes(const UiPageParser::Context& ctxt, UiElement& element, AttrReader& a) {
   element.SetPos(a.GetOr("pos", ParseLength2, UiLength2{}));
   element.SetSize(a.GetOr("size", ParseLength2, UiLength2{}));
 
-  element.SetAnchor(a.GetOr("anchor", ParsePoint, UiPoint{}));
+  const UiPoint anchor = a.GetOr("anchor", ParsePoint, UiPoint{});
+  element.SetAnchor(anchor);
+  element.SetPivot(a.GetOr("pivot", ParsePoint, anchor));
   element.SetPivot(a.GetOr("pivot", ParsePoint, UiPoint{}));
 
   element.SetVisible(a.GetOr("visible", ParseBool, true));
   element.SetRadius(a.GetOr("radius", ParseFloat, 0.0f));
   element.SetColor(a.GetOr("color", ParseColor, glm::vec4(1.0f)));
-
+  if (auto image = a.Get("image", ParseImage)) {
+    element.SetImage(ResolveImage(ctxt, *image));
+  }
+  element.SetPadding(a.Get("padding", ParsePadding));
+  element.SetBgColor(a.GetOr("bg-color", ParseColor, glm::vec4(1.0f)));
+  if (auto image = a.Get("bg-image", ParseImage)) {
+    element.SetBgImage(ResolveImage(ctxt, *image));
+  }
+  element.SetVisible(a.GetOr("visible", ParseBool, true));
 }
 
 }  // namespace
@@ -236,7 +379,8 @@ const std::unordered_map<std::string, UiPageParser::ElementParserFn> UiPageParse
     {"text", &UiPageParser::ParseText},
 };
 
-std::unique_ptr<UiElement> UiPageParser::ParseElement(const tinyxml2::XMLElement* element,
+std::unique_ptr<UiElement> UiPageParser::ParseElement(const Context& ctxt,
+                                                      const tinyxml2::XMLElement* element,
                                                       const UiElement* parent,
                                                       UiPageParseResult& result) {
   const auto it = kElementParsers.find(element->Name());
@@ -247,20 +391,21 @@ std::unique_ptr<UiElement> UiPageParser::ParseElement(const tinyxml2::XMLElement
     return nullptr;
   }
 
-  auto uiElement = it->second(element, parent, result);
+  auto uiElement = it->second(ctxt, element, parent, result);
 
   for (const auto* child = element->FirstChildElement(); child;
        child = child->NextSiblingElement()) {
-    auto parsed = ParseElement(child, uiElement.get(), result);
+    auto parsed = ParseElement(ctxt, child, uiElement.get(), result);
 
     if (parsed) {
-      uiElement->AddChild(std::move(parsed));
+      std::ignore = uiElement->AddChild(std::move(parsed));
     }
   }
   return uiElement;
 }
 
-std::unique_ptr<UiElement> UiPageParser::ParseContainer(const tinyxml2::XMLElement* element,
+std::unique_ptr<UiElement> UiPageParser::ParseContainer(const Context& ctxt,
+                                                        const tinyxml2::XMLElement* element,
                                                         const UiElement* parent,
                                                         UiPageParseResult& result) {
   AttrReader a(*element, result);
@@ -269,13 +414,14 @@ std::unique_ptr<UiElement> UiPageParser::ParseContainer(const tinyxml2::XMLEleme
 
   auto container = std::make_unique<UiContainer>(id, parent);
 
-  ParseCommonAttributes(*container, a);
+  ParseCommonAttributes(ctxt, *container, a);
 
   a.ReportUnknown();
   return container;
 }
 
-std::unique_ptr<UiElement> UiPageParser::ParseButton(const tinyxml2::XMLElement* element,
+std::unique_ptr<UiElement> UiPageParser::ParseButton(const Context& ctxt,
+                                                     const tinyxml2::XMLElement* element,
                                                      const UiElement* parent,
                                                      UiPageParseResult& result) {
   AttrReader a(*element, result);
@@ -284,7 +430,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseButton(const tinyxml2::XMLElement*
 
   auto button = std::make_unique<UiButton>(id, parent);
 
-  ParseCommonAttributes(*button, a);
+  ParseCommonAttributes(ctxt, *button, a);
 
   // TODO: image, button-specific attributes.
 
@@ -292,7 +438,8 @@ std::unique_ptr<UiElement> UiPageParser::ParseButton(const tinyxml2::XMLElement*
   return button;
 }
 
-std::unique_ptr<UiElement> UiPageParser::ParseText(const tinyxml2::XMLElement* element,
+std::unique_ptr<UiElement> UiPageParser::ParseText(const Context& ctxt,
+                                                   const tinyxml2::XMLElement* element,
                                                    const UiElement* parent,
                                                    UiPageParseResult& result) {
   AttrReader a(*element, result);
@@ -301,7 +448,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseText(const tinyxml2::XMLElement* e
 
   auto text = std::make_unique<UiText>(id, parent);
 
-  ParseCommonAttributes(*text, a);
+  ParseCommonAttributes(ctxt, *text, a);
 
   // TODO: text-specific attributes.
 
@@ -352,13 +499,14 @@ UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& c
   UiPageProps props;
   auto scriptPath = ParsePageAttributes(root, props, result);
 
-  result.page = std::make_unique<UiPage>(props);
   std::vector<std::unique_ptr<UiElement>> elements;
   for (const auto* child = root->FirstChildElement(); child; child = child->NextSiblingElement()) {
-    if (auto element = ParseElement(child, nullptr, result)) {
+    if (auto element = ParseElement(ctxt, child, nullptr, result)) {
       elements.emplace_back(std::move(element));
     }
   }
+
+  result.page = std::make_unique<UiPage>(props, std::move(elements));
 
   if (result.HasErrors()) return result;
 

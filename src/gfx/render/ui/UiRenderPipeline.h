@@ -17,7 +17,11 @@ class UiRenderPipeline {
 
   UiRenderPipeline(const vkcore::Device& device, const vkcore::DescriptorSetLayout& materialLayout,
                    const vkcore::RenderPass& renderPass, const ShaderCompiler& shaderCompiler);
-  
+
+  void Bind(VkCommandBuffer cmd) const {
+    pipeline_.Bind(cmd);
+  }
+
   [[nodiscard]] const vkcore::PipelineLayout& GetLayout() const { return pipelineLayout_; }
  private:
   [[nodiscard]] vkcore::PipelineLayout BuildPipelineLayout(

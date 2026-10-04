@@ -23,6 +23,7 @@ UiElement* UiPage::FindById(std::string_view id) const {
 
 void UiPage::Render(UiRenderer& renderer) {
   for (auto& root : roots_) root->Render(renderer);
+  renderer.Render();
 }
 
 }  // namespace gfx

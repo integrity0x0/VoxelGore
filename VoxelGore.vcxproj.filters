@@ -158,8 +158,9 @@
     <ClCompile Include="src\gfx\render\ui\UiText.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderPipeline.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiStateTable.cpp" />
-    <ClCompile Include="src\gfx\render\ui\UiElementParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiPage.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
+    <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -336,10 +337,11 @@
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
     <ClInclude Include="src\gfx\render\ui\UiTypes.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
-    <ClInclude Include="src\gfx\render\ui\UiVertex.h" />
+    <ClInclude Include="src\gfx\render\ui\UiQuadInstance.h" />
     <ClInclude Include="src\gfx\render\ui\UiStateTable.h" />
-    <ClInclude Include="src\gfx\render\ui\UiElementParser.h" />
     <ClInclude Include="src\gfx\render\ui\UiPage.h" />
+    <ClInclude Include="src\gfx\render\ui\UiPageParser.h" />
+    <ClInclude Include="src\gfx\render\ui\Ui.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

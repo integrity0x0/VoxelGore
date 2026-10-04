@@ -16,7 +16,7 @@ namespace gm {
 
 PlayerController::PlayerController(WorldSession& session, const glm::vec3& spawnPos)
     : session_(&session) {
-  playerEntity_ = session.world().CreateEntity();
+  playerEntity_ = session.GetWorld().CreateEntity();
   session.components().Storage<HitboxComponent>().Add(playerEntity_.id,
                                                       HitboxComponent{
                                                           .pos = spawnPos,
@@ -130,7 +130,7 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
     return;
   }
 
-  auto voxel = session.world().chunks().getVoxel(hit->ipos);
+  auto voxel = session.GetWorld().GetChunks().getVoxel(hit->ipos);
   if (!voxel) return;
 
   if (particles) {

@@ -19,17 +19,17 @@ layout(location = 0) out VertexData {
   vec2 local;
   flat vec2 halfSize;
   flat float radius;
-} oVertex;
+} oVert;
 
 const vec2 kCorners[6] = vec2[](vec2(0, 0), vec2(0, 1), vec2(1, 1),
                                vec2(0, 0), vec2(1, 1), vec2(1, 0));
 
 void main() {
-  vec2 c = kCorner[gl_VertexIndex];
+  vec2 c = kCorners[gl_VertexIndex];
   gl_Position = vec4((aPos + c * aSize) * pc.ndcScale - 1.0, 0.0, 1.0);
-  oVertex.local = (c - 0.5) * aSize;
-  oVertex.uv = mix(aUvRect.xy, aUvRect.zw, c);
-  oVertex.color = aColor;
-  oVertex.halfSize = aSize * 0.5;
-  oVertex.radius = aRadius;
+  oVert.local = (c - 0.5) * aSize;
+  oVert.uv = mix(aUvRect.xy, aUvRect.zw, c);
+  oVert.color = aColor;
+  oVert.halfSize = aSize * 0.5;
+  oVert.radius = aRadius;
 }

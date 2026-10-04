@@ -324,8 +324,8 @@ bool Engine::beginFrame(uint32_t& imageIndex) {
   int32_t w = ANativeWindow_getWidth(app->window);
   int32_t h = ANativeWindow_getHeight(app->window);
 
-  if (static_cast<uint32_t>(w) != swapchain->extent().width ||
-      static_cast<uint32_t>(h) != swapchain->extent().height) {
+  if (static_cast<uint32_t>(w) != swapchain->extent().GetWidth ||
+      static_cast<uint32_t>(h) != swapchain->extent().GetHeight) {
     recreateSwapchain();
   }
 #endif

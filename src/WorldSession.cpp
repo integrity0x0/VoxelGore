@@ -25,10 +25,10 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
   blockManager_->Load(assetsPrefix + "blocks/ice.json");
   blockManager_->Load(assetsPrefix + "blocks/tnt.json");
 
-  lighting_ = std::make_unique<Lighting>(world_->chunks(), *blockManager_);
+  lighting_ = std::make_unique<Lighting>(world_->GetChunks(), *blockManager_);
   lighting_->LightUp();
 
-  collisionResolver_ = std::make_unique<CollisionResolver>(world_->chunks(), *blockManager_);
+  collisionResolver_ = std::make_unique<CollisionResolver>(world_->GetChunks(), *blockManager_);
   physicsSystem_ = std::make_unique<PhysicsSystem>(*collisionResolver_);
   healthSystem_ = std::make_unique<HealthSystem>();
 
@@ -48,7 +48,7 @@ void WorldSession::SetVoxel(const glm::ivec3& worldPos, uint16_t voxelId) {
 
   Voxel v{};
   v.id = voxelId;
-  world_->chunks().setVoxel(worldPos, v);
+  world_->GetChunks().setVoxel(worldPos, v);
 
   const auto t1 = std::chrono::high_resolution_clock::now();
   lighting_->OnVoxelSetted(worldPos, {voxelId});

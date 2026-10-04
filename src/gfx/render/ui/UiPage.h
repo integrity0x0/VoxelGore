@@ -40,7 +40,6 @@ class UiPage {
  private:
   UiPageProps props_;
   std::vector<std::unique_ptr<UiElement>> roots_;
-
   ElementsById byId_;
   std::optional<script::LuaScript> script_;
 };

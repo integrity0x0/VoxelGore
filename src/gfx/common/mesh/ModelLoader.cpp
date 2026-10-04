@@ -56,7 +56,7 @@ namespace gfx {
 std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
                                        vkcore::TransferContext& transferCtxt,
                                        vkcore::BufferAllocator& bufferAllocator,
-                                       MaterialManager& materialCache, std::string_view path) {
+                                       MaterialManager& materialManager, std::string_view path) {
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
   std::vector<tinyobj::material_t> materials;
@@ -178,8 +178,9 @@ std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
 
     transferCtxt.Flush();
 
-    const MaterialManager::Material* material =
-        bucket.texturePath.empty() ? nullptr : materialCache.Require(bucket.texturePath);
+    const Material* material = bucket.texturePath.empty()
+                                   ? nullptr
+                                   : materialManager.TryGet(materialManager.Load(bucket.texturePath));
 
     submeshes.push_back(Model::Submesh{
         Mesh(device, std::move(vertexBuffer), static_cast<uint32_t>(bucket.vertices.size()),

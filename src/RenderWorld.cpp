@@ -6,25 +6,26 @@
 
 namespace gfx {
 
-RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::string& assetsPrefix)
+RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
+                         script::LuaState& luaState, const std::string& assetsPrefix)
     : engine_(&engine), session_(&session) {
   const auto& device = engine.getDevice();
   auto& memoryAllocator = engine.memoryAllocator();
 
   shaderCompiler_ = std::make_unique<ShaderCompiler>(assetsPrefix);
 
-  gameDataBinding_ = std::make_unique<GameDataBinding>(device, engine.bufferAllocator(),
-                                                       engine.getFramesInFlightCount());
+  gameDataBinding_ = std::make_unique<GameDataBinding>(device, engine.GetBufferAllocator(),
+                                                       engine.GetFramesCount());
 
   textureManager_ =
-      std::make_unique<TextureManager>(device, engine.transferContext(), memoryAllocator);
+      std::make_unique<TextureManager>(device, engine.GetTransferContext(), memoryAllocator);
 
   shadowCtxt_ = std::make_unique<ShadowContext>(device, memoryAllocator);
   shaderCompiler_->AddDefinition("SHADOWS_ENABLED", "1");
 
   skyboxRenderer_ =
-      std::make_unique<SkyboxRenderer>(device, engine.bufferAllocator(), engine.transferContext(),
-                                       engine.getRenderPass(), *gameDataBinding_, *shaderCompiler_);
+      std::make_unique<SkyboxRenderer>(device, engine.GetBufferAllocator(), engine.GetTransferContext(),
+                                       engine.GetRenderPass(), *gameDataBinding_, *shaderCompiler_);
 
   std::array<std::string, 6> nightPaths = {
       assetsPrefix + "skybox/night/right.png", assetsPrefix + "skybox/night/left.png",
@@ -33,48 +34,52 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, const std::s
   };
 
   nightSkybox_ =
-      std::make_unique<Skybox>(Skybox::Load(device, engine.transferContext(), memoryAllocator,
+      std::make_unique<Skybox>(Skybox::Load(device, engine.GetTransferContext(), memoryAllocator,
                                             skyboxRenderer_->descriptorPool(),
                                             skyboxRenderer_->GetDescriptorSetLayout(), nightPaths, 4u)
                                    .value());
 
   modelCache_ =
-      std::make_unique<ModelCache>(device, engine.transferContext(), engine.bufferAllocator(),
-                                   *textureManager_, engine.getFramesInFlightCount());
+      std::make_unique<ModelCache>(device, engine.GetTransferContext(), engine.GetBufferAllocator(),
+                                   *textureManager_, engine.GetFramesCount());
 
   modelRenderer_ = std::make_unique<ModelRenderer>(
-      device, engine.bufferAllocator(), engine.getRenderPass(), *gameDataBinding_,
+      device, engine.GetBufferAllocator(), engine.GetRenderPass(), *gameDataBinding_,
       modelCache_->materialSetLayout(), shadowCtxt_.get(),
       *shaderCompiler_,
-      engine.getFramesInFlightCount());
+      engine.GetFramesCount());
 
   chunkRenderer_ = std::make_unique<ChunkRenderer>(
-      device, engine.transferContext(), engine.getGraphicsQueue(), memoryAllocator,
-      engine.getRenderPass(), *gameDataBinding_, shadowCtxt_.get(), *shaderCompiler_,
-      session.world().chunks(), session.lighting(), session.blocks(),
-      engine.getFramesInFlightCount());
+      device, engine.GetTransferContext(), engine.getGraphicsQueue(), memoryAllocator,
+      engine.GetRenderPass(), *gameDataBinding_, shadowCtxt_.get(), *shaderCompiler_,
+      session.GetWorld().GetChunks(), session.GetLighting(), session.GetBlocks(),
+      engine.GetFramesCount());
 
-  billboardRenderer_ = std::make_unique<BillboardRenderer>(device, engine.getRenderPass(),
+  billboardRenderer_ = std::make_unique<BillboardRenderer>(device, engine.GetRenderPass(),
                                                            *gameDataBinding_, *shaderCompiler_);
 
-  billboardsAtlas_ = std::make_unique<Atlas>(device, engine.transferContext(), memoryAllocator,
+  billboardsAtlas_ = std::make_unique<Atlas>(device, engine.GetTransferContext(), memoryAllocator,
                                              glm::ivec2{4096, 4096}, 4);
   if (!billboardsAtlas_->Load(kBlankTexturePath, kBlankTextureKey))
     throw std::runtime_error("Unable to load blank texture: " + kBlankTexturePath);
 
-  if (!billboardsAtlas_->Load(kBlankTexturePath, "saaaaa"))
-    throw std::runtime_error("Unable to load blank texture: " + kBlankTexturePath);
-  generalBucket_ = &billboardRenderer_->CreateBucket(engine.bufferAllocator(), *billboardsAtlas_,
-                                                     engine.getFramesInFlightCount());
+  generalBucket_ = &billboardRenderer_->CreateBucket(engine.GetBufferAllocator(), *billboardsAtlas_,
+                                                     engine.GetFramesCount());
   blockBucket_ = &billboardRenderer_->CreateBucket(
-      engine.bufferAllocator(), chunkRenderer_->GetAtlas(), engine.getFramesInFlightCount());
+      engine.GetBufferAllocator(), chunkRenderer_->GetAtlas(), engine.GetFramesCount());
 
   particleEngine_ = std::make_unique<ParticleEngine>(
-      *billboardsAtlas_, chunkRenderer_->GetBlockRenderData(), session.blocks(),
-      session.world().chunks(), session.lighting(), session.enviroment(), *generalBucket_,
+      *billboardsAtlas_, chunkRenderer_->GetBlockRenderData(), session.GetBlocks(),
+      session.GetWorld().GetChunks(), session.GetLighting(), session.GetEnviroment(), *generalBucket_,
       *blockBucket_);
 
   entityRenderSystem_ = std::make_unique<EntityRenderSystem>(*modelCache_, *billboardsAtlas_);
+  materialManager_ = std::make_unique<MaterialManager>(device, *textureManager_);
+  ui_ =
+      std::make_unique<Ui>(device, engine.GetBufferAllocator(), engine.GetRenderPass(),
+                           *shaderCompiler_, luaState, *materialManager_, engine.GetFramesCount());
+  ui_->Resize(engine.extent());
+  ui_->Push(core::kAssetsPrefix + "ui/game.xml");
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {
@@ -125,6 +130,8 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
 
   chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Translucent);
   billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Translucent, frameIndex);
+
+  ui_->Render(cmd, frameIndex);
 }
 
 void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
@@ -139,7 +146,7 @@ void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {
 
 void RenderWorld::CollectEntities(uint32_t frameIndex) {
   entityRenderSystem_->Render(session_->components(), *modelRenderer_, *particleEngine_, *generalBucket_,
-                              session_->world(), session_->lighting(), session_->enviroment(),
+                              session_->GetWorld(), session_->GetLighting(), session_->GetEnviroment(),
                               frameIndex);
   modelRenderer_->UploadInstances(frameIndex);
 }

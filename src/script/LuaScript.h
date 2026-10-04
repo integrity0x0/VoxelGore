@@ -32,7 +32,7 @@ class LuaScript {
 
  private:
   lua_State* GetRawState() const {
-    return luaState_.get().Get();
+    return luaState_.get().get();
   };
 
  private:

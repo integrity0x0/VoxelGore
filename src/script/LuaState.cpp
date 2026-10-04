@@ -59,11 +59,11 @@ LuaState::LuaState() : state_(luaL_newstate()) {
   }
   luaL_openlibs(state_.get());
 #ifdef __ANDROID__
-  lua_pushcfunction(state_.Get(), lua_print_to_logcat);
+  lua_pushcfunction(state_.get(), lua_print_to_logcat);
 #endif
   lua_setglobal(state_.get(), "print");
 }
 
-lua_State* LuaState::Get() const { return state_.get(); }
+lua_State* LuaState::get() const { return state_.get(); }
 
 }  // namespace script
