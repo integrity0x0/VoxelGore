@@ -4,13 +4,13 @@ namespace core {
 
 InputState::InputState() : keyStates_({}), mouseButtonStates_({}) {}
 
-void InputState::setKeyState(uint32_t keyCode, ButtonState state) {
+void InputState::SetKeyState(uint32_t keyCode, ButtonState state) {
   if (keyCode <= KEY_LAST) {
     keyStates_[keyCode] = state;
   }
 }
 
-void InputState::setMouseButtonState(uint32_t buttonIndex, ButtonState state) {
+void InputState::SetMouseButtonState(uint32_t buttonIndex, ButtonState state) {
   if (buttonIndex < MOUSE_BUTTON_LAST) {
     mouseButtonStates_[buttonIndex] = state;
   }

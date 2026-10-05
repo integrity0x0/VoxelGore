@@ -25,10 +25,10 @@ class InputState {
  public:
   InputState();
 
-  [[nodiscard]] const std::unordered_map<int32_t, Pointer>& pointers() const { return pointers_; }
-  [[nodiscard]] std::unordered_map<int32_t, Pointer>& pointers() { return pointers_; }
+  [[nodiscard]] const std::unordered_map<int32_t, Pointer>& GetPointers() const { return pointers_; }
+  [[nodiscard]] std::unordered_map<int32_t, Pointer>& GetPointers() { return pointers_; }
 
-  [[nodiscard]] bool pressed(uint32_t keyCode) const {
+  [[nodiscard]] bool Pressed(uint32_t keyCode) const {
     return IsInState(keyStates_, keyCode, ButtonState::Pressed);
   }
   [[nodiscard]] bool Down(uint32_t keyCode) const { return IsDownOrHeld(keyStates_, keyCode); }
@@ -46,24 +46,24 @@ class InputState {
     return IsInState(mouseButtonStates_, buttonIndex, ButtonState::Released);
   }
 
-  void setKeyState(uint32_t keyCode, ButtonState state);
-  void setMouseButtonState(uint32_t buttonIndex, ButtonState state);
+  void SetKeyState(uint32_t keyCode, ButtonState state);
+  void SetMouseButtonState(uint32_t buttonIndex, ButtonState state);
 
   void AddOrUpdatePointer(int32_t pointerId, const Pointer& ptr) { pointers_[pointerId] = ptr; }
 
   void RemovePointer(int32_t pointerId) { pointers_.erase(pointerId); }
 
-  void setCursorPos(float x, float y) {
+  void SetCursorPos(float x, float y) {
     cursorDeltaX_ += x - cursorPosX_;
     cursorDeltaY_ += y - cursorPosY_;
     cursorPosX_ = x;
     cursorPosY_ = y;
   }
 
-  [[nodiscard]] float cursorX() const { return cursorPosX_; }
-  [[nodiscard]] float cursorY() const { return cursorPosY_; }
-  [[nodiscard]] float cursorDeltaX() const { return cursorDeltaX_; }
-  [[nodiscard]] float cursorDeltaY() const { return cursorDeltaY_; }
+  [[nodiscard]] float GetCursorX() const { return cursorPosX_; }
+  [[nodiscard]] float GetCursorY() const { return cursorPosY_; }
+  [[nodiscard]] float GetCursorDeltaX() const { return cursorDeltaX_; }
+  [[nodiscard]] float GetCursorDeltaY() const { return cursorDeltaY_; }
 
   void Reset();
 

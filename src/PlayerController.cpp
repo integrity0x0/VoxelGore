@@ -52,19 +52,19 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
   control.interact = state.MousePressed(GLFW_MOUSE_BUTTON_RIGHT);
 
   for (int i = 0; i < 8; ++i) {
-    if (state.pressed(GLFW_KEY_1 + i)) {
+    if (state.Pressed(GLFW_KEY_1 + i)) {
       control.hotbarSlot = i + 1;
     }
   }
 
-  if (state.pressed(GLFW_KEY_ESCAPE)) {
+  if (state.Pressed(GLFW_KEY_ESCAPE)) {
     cursorLocked = !cursorLocked;
     glfwSetInputMode(window.window(), GLFW_CURSOR,
                      cursorLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
   }
 
   if (cursorLocked) {
-    camera_.Rotate(state.cursorDeltaX(), state.cursorDeltaY());
+    camera_.Rotate(state.GetCursorDeltaX(), state.GetCursorDeltaY());
   }
 }
 #endif

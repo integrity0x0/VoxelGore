@@ -17,9 +17,9 @@ class InputGlfw {
     if (key < 0) return;
 
     if (action == GLFW_PRESS) {
-      state_.setKeyState(static_cast<uint32_t>(key), ButtonState::Pressed);
+      state_.SetKeyState(static_cast<uint32_t>(key), ButtonState::Pressed);
     } else if (action == GLFW_RELEASE) {
-      state_.setKeyState(static_cast<uint32_t>(key), ButtonState::Released);
+      state_.SetKeyState(static_cast<uint32_t>(key), ButtonState::Released);
     }
   }
 
@@ -27,7 +27,7 @@ class InputGlfw {
     if (button < 0) return;
 
     if (action == GLFW_PRESS) {
-      state_.setMouseButtonState(static_cast<uint32_t>(button), ButtonState::Pressed);
+      state_.SetMouseButtonState(static_cast<uint32_t>(button), ButtonState::Pressed);
 
       if (button == GLFW_MOUSE_BUTTON_LEFT) {
         Pointer p;
@@ -37,10 +37,10 @@ class InputGlfw {
         state_.AddOrUpdatePointer(kMousePointerId, p);
       }
     } else if (action == GLFW_RELEASE) {
-      state_.setMouseButtonState(static_cast<uint32_t>(button), ButtonState::Released);
+      state_.SetMouseButtonState(static_cast<uint32_t>(button), ButtonState::Released);
 
       if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        auto& pointers = state_.pointers();
+        auto& pointers = state_.GetPointers();
         auto it = pointers.find(kMousePointerId);
         if (it != pointers.end()) it->second.phase = Pointer::Phase::Ended;
       }
@@ -51,9 +51,9 @@ class InputGlfw {
     float nx = static_cast<float>(x);
     float ny = static_cast<float>(y);
 
-    state_.setCursorPos(nx, ny);
+    state_.SetCursorPos(nx, ny);
 
-    auto& pointers = state_.pointers();
+    auto& pointers = state_.GetPointers();
     auto it = pointers.find(kMousePointerId);
     if (it == pointers.end()) return;
 

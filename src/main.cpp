@@ -9,8 +9,8 @@
 int main() {
   glfwInit();
 
-  std::atomic<uint64_t> frameCount{0};
-  std::atomic<bool> running{true};
+  std::atomic<uint64_t> frameCount = {0};
+  std::atomic<bool> running = {true};
 
   std::thread fpsThread([&]() {
     while (running.load(std::memory_order_relaxed)) {

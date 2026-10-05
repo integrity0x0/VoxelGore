@@ -121,8 +121,10 @@
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiCheckbox.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiContainer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiPage.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderer.cpp" />
@@ -285,13 +287,14 @@
     <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\ui\UiButton.h" />
+    <ClInclude Include="src\gfx\render\ui\UiCheckbox.h" />
     <ClInclude Include="src\gfx\render\ui\UiContainer.h" />
     <ClInclude Include="src\gfx\render\ui\UiElement.h" />
+    <ClInclude Include="src\gfx\render\ui\UiInputRouter.h" />
     <ClInclude Include="src\gfx\render\ui\UiPage.h" />
     <ClInclude Include="src\gfx\render\ui\UiPageParser.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderer.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
-    <ClInclude Include="src\gfx\render\ui\UiStateOverrides.h" />
     <ClInclude Include="src\gfx\render\ui\UiStateTable.h" />
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
     <ClInclude Include="src\gfx\render\ui\UiTypes.h" />

@@ -11,13 +11,14 @@ vkcore::PipelineLayout UiRenderPipeline::BuildPipelineLayout(const vkcore::Devic
   range.size = sizeof(PushConstant);
   range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
   return vkcore::PipelineLayout(device, std::to_array({&materialLayout}), std::to_array({range}));
-} 
+}
 
 vkcore::Pipeline UiRenderPipeline::BuildPipeline(const vkcore::Device& device,
                                                  const vkcore::RenderPass& renderPass,
                                                  const ShaderCompiler& shaderCompiler) {
-  vkcore::ShaderModule vert =
-      CompileShaderModule(shaderCompiler, device, core::kShadersPrefix + "ui.vert", shaderc_vertex_shader);
+  vkcore::ShaderModule vert = CompileShaderModule(
+      shaderCompiler, device, core::kShadersPrefix + "ui.vert", shaderc_vertex_shader);
+
   vkcore::ShaderModule frag = CompileShaderModule(
       shaderCompiler, device, core::kShadersPrefix + "ui.frag", shaderc_fragment_shader);
 

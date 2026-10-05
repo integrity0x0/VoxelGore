@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <sstream>
+#include <filesystem>
 
 #include "../../../util/files.h"
 #include "../../../util/pathUtils.h"
@@ -513,7 +514,7 @@ UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& c
 
   if (result.HasErrors()) return result;
 
-  if (scriptPath) {
+  if (scriptPath || std::filesystem::exists(std::string(xmlPath) + ".lua")) {
     auto fileBytes = util::ReadFileBytes(*scriptPath);
     if (fileBytes.empty()) {
       result.Error("Unable to open lua script: " + *scriptPath);

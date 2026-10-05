@@ -1,7 +1,11 @@
 #pragma once
 
-#include "UiElement.h"
+#include "UiContainer.h"
 
 namespace gfx {
-using UiButton = UiElement;
+class UiButton final : public UiContainer {
+ public:
+ private:
+  
+};
 }  // namespace gfx

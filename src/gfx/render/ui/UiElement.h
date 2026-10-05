@@ -71,6 +71,16 @@ class UiElement {
 
   void SetPadding(std::optional<UiPadding> padding) { padding_ = std::move(padding); }
 
+  // State
+  [[nodiscard]] UiStateFlags GetState() const {
+    return currentState_;
+  }
+
+  void SetState(UiStateFlags state) {
+    prevState_ = currentState_;
+    currentState_ = state;
+  }
+
   // Properties
   [[nodiscard]] bool IsVisible() const { return visible_; }
   void SetVisible(bool visible) { visible_ = visible; }
@@ -79,16 +89,23 @@ class UiElement {
     return {};
   }
 
-  const UiLayout& GetResolvedLayout() const { return resolvedLayout_; }
+  [[nodiscard]] bool Contains(glm::vec2 pos) const {
+    const UiRect& rect = resolvedLayout_.rect;
+    return pos.x >= rect.pos.x && pos.x <= rect.pos.x + rect.size.x && pos.y >= rect.pos.y &&
+           pos.y <= rect.pos.y + rect.size.y;
+  }
+
+  [[nodiscard]] const UiLayout& GetResolvedLayout() const { return resolvedLayout_; }
 
   virtual void Relayout(const UiRect& rect);
 
  protected:
   virtual void RenderBg(UiRenderer& renderer);
+
+ protected:
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
       0.0f, 0.5f, 1.0f};
   static_assert(static_cast<size_t>(UiAlignX::Count) == static_cast<size_t>(UiAlignY::Count));
- private:
   // Identity / hierarchy
   std::string id_;
   const UiElement* parent_ = nullptr;
@@ -110,8 +127,11 @@ class UiElement {
   // Properties
   bool visible_ = true;
 
-  bool layoutDirty_ = false;
-  UiLayout resolvedLayout_;
+  UiStateFlags prevState_ = {};
+  UiStateFlags currentState_ = {};
+
+  mutable bool layoutDirty_ = false;
+  mutable UiLayout resolvedLayout_;
 };
 
 }  // namespace gfx

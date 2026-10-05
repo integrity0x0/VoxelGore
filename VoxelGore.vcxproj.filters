@@ -161,6 +161,8 @@
     <ClCompile Include="src\gfx\render\ui\UiPage.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiCheckbox.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -333,7 +335,6 @@
     <ClInclude Include="src\gfx\render\ui\UiContainer.h" />
     <ClInclude Include="src\gfx\render\ui\UiElement.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderer.h" />
-    <ClInclude Include="src\gfx\render\ui\UiStateOverrides.h" />
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
     <ClInclude Include="src\gfx\render\ui\UiTypes.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
@@ -342,6 +343,8 @@
     <ClInclude Include="src\gfx\render\ui\UiPage.h" />
     <ClInclude Include="src\gfx\render\ui\UiPageParser.h" />
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
+    <ClInclude Include="src\gfx\render\ui\UiCheckbox.h" />
+    <ClInclude Include="src\gfx\render\ui\UiInputRouter.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

@@ -6,7 +6,7 @@
 
 namespace gfx {
 
-class UiContainer final : public UiElement {
+class UiContainer : public UiElement {
  public:
   UiContainer(std::string_view id, const UiElement* parent) : UiElement(id, parent) {}
   ~UiContainer() override {}

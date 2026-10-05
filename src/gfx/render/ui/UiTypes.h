@@ -61,4 +61,24 @@ struct UiLayout {
   UiInsets padding;
 };
 
+
+enum class UiStateFlags {
+  Disabled = 1 << 0,
+  Hovered = 1 << 1,
+  Held = 1 << 2,
+  Checked = 1 << 3,
+};
+
+struct UiStateOverrides {
+  std::optional<UiPadding> padding;
+  std::optional<glm::vec4> bgColor;
+  std::optional<UiTextureRegion> bgImage;
+  std::optional<UiTextureRegion> image;
+  std::optional<glm::vec4> color;
+
+  std::optional<std::string> text;
+  std::optional<float> scale;
+};
+
+
 }  // namespace gfx
