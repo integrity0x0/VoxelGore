@@ -14,7 +14,13 @@ struct UiCameraSwipe {
 class UiInputRouter {
  public:
   UiCameraSwipe RouteInput(const core::InputState& input,
-                             const std::vector<std::unique_ptr<UiElement>>& roots);
+                           const std::vector<std::unique_ptr<UiElement>>& roots);
+  void UpdateHover(UiElement* newHover);
+
+  void ProcessPointer(int32_t id, const core::Pointer& p,
+                      std::span<const std::unique_ptr<UiElement>> roots, UiCameraSwipe& swipe);
+  void Reset();
+
  private:
   struct TouchOwner {
     UiElement* element = nullptr;
@@ -29,5 +35,6 @@ class UiInputRouter {
   void ProcessPointer(const core::Pointer& pointer);
  private:
   std::vector<TouchOwner> owners_; 
+  UiElement* hovered_ = nullptr;
 };
 }  // namespace gfx

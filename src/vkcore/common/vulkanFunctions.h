@@ -235,13 +235,13 @@ struct DeviceDispatchTable {
   PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
   PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
   PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
-  PFN_vkCmdBlitImage vkCmdBlitImage;
-  PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
-  PFN_vkCmdSetViewport vkCmdSetViewport;
-  PFN_vkCmdSetScissor vkCmdSetScissor;
-  PFN_vkCmdPushConstants vkCmdPushConstants;
-  PFN_vkCreateSampler vkCreateSampler;
-  PFN_vkDestroySampler vkDestroySampler;
+  PFN_vkCmdBlitImage vkCmdBlitImage = nullptr;
+  PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier = nullptr;
+  PFN_vkCmdSetViewport vkCmdSetViewport = nullptr;
+  PFN_vkCmdSetScissor vkCmdSetScissor = nullptr;
+  PFN_vkCmdPushConstants vkCmdPushConstants = nullptr;
+  PFN_vkCreateSampler vkCreateSampler = nullptr;
+  PFN_vkDestroySampler vkDestroySampler = nullptr;
 
   std::optional<SwapchainDispatchTable> swapchainTable = std::nullopt;
 };

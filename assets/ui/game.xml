@@ -1,4 +1,7 @@
 <page>
-	<container pos="256" size="256" radius="128.0" image="images/noise.png"
-	padding="32" bg-color="#FF000010"/>
+	<container pos="256" size="256" radius="128.0" 
+	 color="#FF0000FF">
+		<button anchor="center" pivot="left, bottom" color="#00FF00FF" size="90%" radius="30"
+				padding="5%" bg-color="#FF00FFFF"/>
+	</container>
 </page>

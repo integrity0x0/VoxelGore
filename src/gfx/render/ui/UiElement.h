@@ -7,6 +7,7 @@
 #include <string_view>
 #include <vector>
 #include <array>
+#include <span>
 
 #include "../../UvRegion.h"
 #include "../../common/texture/MaterialManager.h"
@@ -69,17 +70,7 @@ class UiElement {
 
   [[nodiscard]] const std::optional<UiPadding>& GetPadding() const { return padding_; }
 
-  void SetPadding(std::optional<UiPadding> padding) { padding_ = std::move(padding); }
-
-  // State
-  [[nodiscard]] UiStateFlags GetState() const {
-    return currentState_;
-  }
-
-  void SetState(UiStateFlags state) {
-    prevState_ = currentState_;
-    currentState_ = state;
-  }
+  void SetPadding(std::optional<UiPadding> padding) { padding_ = std::move(padding); }\
 
   // Properties
   [[nodiscard]] bool IsVisible() const { return visible_; }
@@ -87,6 +78,13 @@ class UiElement {
 
   [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
     return {};
+  }
+
+  [[nodiscard]] bool IsHovered() const { return hovered_; }
+
+  void ApplyHover(bool hovered) {
+    prevHovered_ = hovered_;
+    hovered_ = hovered;
   }
 
   [[nodiscard]] bool Contains(glm::vec2 pos) const {
@@ -127,8 +125,8 @@ class UiElement {
   // Properties
   bool visible_ = true;
 
-  UiStateFlags prevState_ = {};
-  UiStateFlags currentState_ = {};
+  bool hovered_ = false;
+  bool prevHovered_ = false;
 
   mutable bool layoutDirty_ = false;
   mutable UiLayout resolvedLayout_;

@@ -134,6 +134,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PlayerController.cpp" />
     <ClCompile Include="src\RenderWorld.cpp" />
+    <ClCompile Include="src\script\LuaRef.cpp" />
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\util\files.cpp" />
@@ -304,6 +305,7 @@
     <ClInclude Include="src\gfx\UvRegion.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\RenderWorld.h" />
+    <ClInclude Include="src\script\LuaRef.h" />
     <ClInclude Include="src\script\LuaScript.h" />
     <ClInclude Include="src\script\LuaState.h" />
     <ClInclude Include="src\util\containers.h" />

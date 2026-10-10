@@ -54,8 +54,11 @@ class InputState {
   void RemovePointer(int32_t pointerId) { pointers_.erase(pointerId); }
 
   void SetCursorPos(float x, float y) {
-    cursorDeltaX_ += x - cursorPosX_;
-    cursorDeltaY_ += y - cursorPosY_;
+    if (!hasCursor_) {
+      cursorDeltaX_ += x - cursorPosX_;
+      cursorDeltaY_ += y - cursorPosY_;
+      hasCursor_ = true;
+    }
     cursorPosX_ = x;
     cursorPosY_ = y;
   }
@@ -64,6 +67,7 @@ class InputState {
   [[nodiscard]] float GetCursorY() const { return cursorPosY_; }
   [[nodiscard]] float GetCursorDeltaX() const { return cursorDeltaX_; }
   [[nodiscard]] float GetCursorDeltaY() const { return cursorDeltaY_; }
+  [[nodiscard]] bool HasCursor() const { return hasCursor_; }
 
   void Reset();
 
@@ -97,6 +101,7 @@ class InputState {
 
   std::unordered_map<int32_t, Pointer> pointers_;
 
+  bool hasCursor_ = false;
   float cursorPosX_ = 0.0f, cursorPosY_ = 0.0f;
   float cursorDeltaX_ = 0.0f, cursorDeltaY_ = 0.0f;
 };

@@ -5,7 +5,7 @@
 namespace gfx {
 class UiButton final : public UiContainer {
  public:
- private:
-  
+  UiButton(std::string_view id, const UiElement* parent)
+	  : UiContainer(id, parent) {}
 };
 }  // namespace gfx
