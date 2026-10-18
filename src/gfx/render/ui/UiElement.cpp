@@ -22,7 +22,20 @@ void UiElement::RenderBg(UiRenderer& renderer) {
   renderer.Submit(pos, size, bgImage_, bgColor_, radius_);
 }
 
+void UiElement::UpdateLayout(const UiRect& parentRect) {
+  if (layoutDirty_) {
+    Relayout(parentRect);
+    return;
+  }
+  if (!childDirty_) return;
+
+  childDirty_ = false;
+  const UiRect content = resolvedLayout_.rect;
+  for (const auto& child : GetChildren()) child->UpdateLayout(content);
+}
+
 void UiElement::Relayout(const UiRect& rect) {
+  layoutDirty_ = false;
   auto& layoutSize = resolvedLayout_.rect.size;
   layoutSize.x =
       size_.x.unit == UiUnit::Percent ? size_.x.value * rect.size.x / 100.0f : size_.x.value;
@@ -47,7 +60,7 @@ void UiElement::Relayout(const UiRect& rect) {
   layoutPos.x = rect.pos.x + rect.size.x * anchorFactorX + posX - layoutSize.x * pivotFactorX;
 
   layoutPos.y = rect.pos.y + rect.size.y * anchorFactorY + posY - layoutSize.y * pivotFactorY;
-  
+
   if (padding_) {
     auto& padding = resolvedLayout_.padding;
 

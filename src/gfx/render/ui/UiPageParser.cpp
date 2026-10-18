@@ -5,6 +5,7 @@
 #include <sstream>
 #include <filesystem>
 
+#include "../../../core/PathPrefixes.h"
 #include "../../../util/files.h"
 #include "../../../util/pathUtils.h"
 
@@ -356,7 +357,6 @@ void ParseCommonAttributes(const UiPageParser::Context& ctxt, UiElement& element
   const UiPoint anchor = a.GetOr("anchor", ParsePoint, UiPoint{});
   element.SetAnchor(anchor);
   element.SetPivot(a.GetOr("pivot", ParsePoint, anchor));
-  element.SetPivot(a.GetOr("pivot", ParsePoint, UiPoint{}));
 
   element.SetVisible(a.GetOr("visible", ParseBool, true));
   element.SetRadius(a.GetOr("radius", ParseFloat, 0.0f));
@@ -370,6 +370,14 @@ void ParseCommonAttributes(const UiPageParser::Context& ctxt, UiElement& element
     element.SetBgImage(ResolveImage(ctxt, *image));
   }
   element.SetVisible(a.GetOr("visible", ParseBool, true));
+
+  element.SetCallback(UiEventType::Clicked, a.GetOr("on-click", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Released, a.GetOr("on-release", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Cancelled, a.GetOr("on-cancel", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Enabled, a.GetOr("on-enable", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Disabled, a.GetOr("on-disable", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Hovered, a.GetOr("on-hover", ParseString, std::string{}));
+  element.SetCallback(UiEventType::Unhovered, a.GetOr("on-unhover", ParseString, std::string{}));
 }
 
 }  // namespace
@@ -442,6 +450,23 @@ std::unique_ptr<UiElement> UiPageParser::ParseButton(const Context& ctxt,
   return button;
 }
 
+std::unique_ptr<UiCheckbox> UiPageParser::ParseCheckbox(const Context& ctxt,
+                                                        const tinyxml2::XMLElement* element,
+                                                        const UiElement* parent,
+                                                        UiPageParseResult& result) {
+  AttrReader a(*element, result);
+
+  const std::string id = a.GetOr("id", ParseString, std::string{});
+
+  auto checkbox = std::make_unique<UiCheckbox>(id, parent);
+
+  ParseCommonAttributes(ctxt, *checkbox, a);
+
+  checkbox->SetCallback(UiEventType::Clicked, a.GetOr("on-set", ParseString, std::string{}));
+
+  return checkbox;
+}
+
 std::unique_ptr<UiElement> UiPageParser::ParseText(const Context& ctxt,
                                                    const tinyxml2::XMLElement* element,
                                                    const UiElement* parent,
@@ -469,6 +494,8 @@ std::optional<std::string> UiPageParser::ParsePageAttributes(const tinyxml2::XML
   props.input = a.GetOr("input-mode", ParseInputMode, UiInputMode::Passthrough);
 
   auto scriptPath = a.Get("script", ParseString);
+
+  if (scriptPath) scriptPath = core::kAssetsPrefix + scriptPath.value();
 
   a.ReportUnknown();
   return scriptPath;
@@ -520,9 +547,13 @@ UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& c
       result.Error("Unable to open lua script: " + *scriptPath);
       return result;
     }
-    script::LuaScript script(ctxt.luaState, fileBytes, *scriptPath);
 
-    result.page->AttachScript(std::move(script));
+    try {
+      script::LuaScript script(ctxt.luaState, fileBytes, *scriptPath);
+      result.page->AttachScript(std::move(script));
+    } catch (const std::exception& e) {
+      result.Error(e.what());
+    }
   }
 
   return result;

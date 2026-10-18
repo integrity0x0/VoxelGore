@@ -12,6 +12,10 @@ class UiCheckbox final : public UiContainer {
   void SetChecked(bool checked) {
     checked_ = checked;
   }
+
+  void Toggle() {
+    checked_ = !checked_;
+  }
  private:
   bool checked_ = false;
 };

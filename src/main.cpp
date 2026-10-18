@@ -30,10 +30,10 @@ int main() {
 
     Game game(std::move(window));
 
-    while (!game.window().IsShouldClose()) {
+    while (!game.GetWindow().IsShouldClose()) {
       glfwPollEvents();
 
-      if (game.window().IsMinimized()) {
+      if (game.GetWindow().IsMinimized()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
         continue;
       }

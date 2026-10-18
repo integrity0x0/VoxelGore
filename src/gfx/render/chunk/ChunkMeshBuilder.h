@@ -213,7 +213,8 @@ class ChunkMeshBuilder {
   vkcore::BufferAllocator bufferAllocator_;
 
   std::vector<StagingInfo> stagingInfos_;
-
+  std::vector<VkBufferMemoryBarrier> barriers_;
   uint32_t framesCount_;
+
 };
 }  // namespace gfx

@@ -19,6 +19,7 @@
 #include "gfx/common/shader/ShaderCompiler.h"
 #include "gfx/Settings.h"
 #include "gfx/render/shadow/ShadowContext.h"
+#include "gfx/render/ui/UiLibrary.h"
 #include "gfx/render/ui/Ui.h"
 
 class Engine;
@@ -53,6 +54,7 @@ class RenderWorld {
 
   void CollectEntities(uint32_t frameIndex);
 
+  gfx::Ui& GetUi() { return *ui_; }
  private:
   static inline std::string kBlankTexturePath = core::kAssetsPrefix + "images/blank.png";
   static constexpr std::string_view kBlankTextureKey = "blank";
@@ -75,6 +77,7 @@ class RenderWorld {
   std::unique_ptr<Skybox> nightSkybox_;
   std::unique_ptr<MaterialManager> materialManager_;
   std::unique_ptr<Ui> ui_;
+  std::unique_ptr<UiLibrary> uiLib_;
 };
 
 }  // namespace gfx

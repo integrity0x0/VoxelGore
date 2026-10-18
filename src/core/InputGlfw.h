@@ -8,12 +8,12 @@ namespace core {
 
 class InputGlfw {
  public:
-  [[nodiscard]] const InputState& getState() const { return state_; }
-  [[nodiscard]] InputState& getState() { return state_; }
+  [[nodiscard]] const InputState& GetState() const { return state_; }
+  [[nodiscard]] InputState& GetState() { return state_; }
 
-  void endFrame() { state_.Reset(); }
+  void EndFrame() { state_.Reset(); }
 
-  void onKey(int key, int /*scancode*/, int action, int /*mods*/) {
+  void OnKey(int key, int /*scancode*/, int action, int /*mods*/) {
     if (key < 0) return;
 
     if (action == GLFW_PRESS) {
@@ -23,7 +23,7 @@ class InputGlfw {
     }
   }
 
-  void onMouseButton(int button, int action, double x, double y) {
+  void OnMouseButton(int button, int action, double x, double y) {
     if (button < 0) return;
 
     if (action == GLFW_PRESS) {
@@ -47,7 +47,7 @@ class InputGlfw {
     }
   }
 
-  void onCursorPos(double x, double y) {
+  void OnCursorPos(double x, double y) {
     float nx = static_cast<float>(x);
     float ny = static_cast<float>(y);
 
@@ -62,11 +62,11 @@ class InputGlfw {
     p.deltaY += ny - p.currentY;
     p.currentX = nx;
     p.currentY = ny;
-    if (p.phase != Pointer::Phase::Began) p.phase = Pointer::Phase::Moved;
+    if (p.phase == Pointer::Phase::Began) p.phase = Pointer::Phase::Moved;
   }
 
  private:
-  static constexpr int32_t kMousePointerId = -1;
+  static constexpr int32_t kMousePointerId = InputState::kMousePointerId;
 
   InputState state_;
 };

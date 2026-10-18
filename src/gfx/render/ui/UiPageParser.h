@@ -7,6 +7,7 @@
 #include "../../../util/hashers.h"
 #include "UiButton.h"
 #include "UiContainer.h"
+#include "UiCheckbox.h"
 #include "UiElement.h"
 #include "UiPage.h"
 #include "UiStateTable.h"
@@ -73,6 +74,10 @@ class UiPageParser {
                                                               const tinyxml2::XMLElement* element,
                                                               const UiElement* parent,
                                                               UiPageParseResult& result);
+
+  [[nodiscard]] static std::unique_ptr<UiCheckbox> ParseCheckbox(
+      const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
+      UiPageParseResult& result);
 
   [[nodiscard]] static std::unique_ptr<UiElement> ParseText(const Context& ctxt,
                                                             const tinyxml2::XMLElement* element,

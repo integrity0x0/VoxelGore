@@ -1,7 +1,6 @@
 <page>
-	<container pos="256" size="256" radius="128.0" 
-	 color="#FF0000FF">
-		<button anchor="center" pivot="left, bottom" color="#00FF00FF" size="90%" radius="30"
-				padding="5%" bg-color="#FF00FFFF"/>
-	</container>
+	<button size="47" color="#000205C0" radius="14"></button>
+	<button pos="54, 0" size="47" color="#000205C0" radius="14"></button>
+	<button pos="108, 0" size="47" color="#000205C0" radius="14"></button>
+	<button pos="162, 0" size="47" color="#000205C0" radius="14"></button>
 </page>

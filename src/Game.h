@@ -28,14 +28,14 @@ class Game {
  public:
 #ifdef __ANDROID__
   explicit Game(android_app* app);
-  bool Frame(const std::unordered_map<int32_t, core::Pointer>& touches);
+  bool Frame(const core::InputState& inputState);
   bool IsRenderable() const { return engine_ && engine_->IsRenderable(); }
   void OnSurfaceRestored() { engine_->restoreSurface(); }
   void OnSurfaceDestroyed() { engine_->destroySurface(); }
 #else
   explicit Game(std::unique_ptr<core::Window> window);
   bool Frame();
-  core::Window& window() { return *window_; }
+  core::Window& GetWindow() { return *window_; }
 #endif
 
   ~Game();
@@ -55,12 +55,12 @@ class Game {
   std::unique_ptr<core::Window> window_;
 #endif
 
+  script::LuaState luaState_;
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<gm::WorldSession> session_;
   std::unique_ptr<gfx::RenderWorld> render_;
   std::unique_ptr<gm::PlayerController> player_;
 
-  script::LuaState luaState_;
   std::optional<gm::LibControl> libControl_;
   std::unique_ptr<gfx::BlockPreviewRenderer> blockPreviewRenderer_;
 
@@ -76,6 +76,6 @@ class Game {
   std::chrono::steady_clock::time_point lastFpsTime_{};
   float dt_ = 0.0f;
   float frameTime_ = 0.0f;
-  int frameCount_ = 0;
-  int fpsFrames_ = 0;
+  size_t frameCount_ = 0;
+  size_t fpsFrames_ = 0;
 };

@@ -25,7 +25,7 @@ class Window {
  public:
   Window(uint32_t width, uint32_t height, std::string_view title);
   void Update() {
-    input_.endFrame();
+    input_.EndFrame();
     resized_ = false;
   };
   static void Hint(int32_t hint, int32_t value);

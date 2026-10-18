@@ -23,6 +23,9 @@ enum class ButtonState { Up, Pressed, Held, Released };
 
 class InputState {
  public:
+  static constexpr int32_t kMousePointerId = 32;
+  static constexpr int32_t kMaxPointers = kMousePointerId + 1;
+
   InputState();
 
   [[nodiscard]] const std::unordered_map<int32_t, Pointer>& GetPointers() const { return pointers_; }
@@ -31,6 +34,7 @@ class InputState {
   [[nodiscard]] bool Pressed(uint32_t keyCode) const {
     return IsInState(keyStates_, keyCode, ButtonState::Pressed);
   }
+
   [[nodiscard]] bool Down(uint32_t keyCode) const { return IsDownOrHeld(keyStates_, keyCode); }
   [[nodiscard]] bool Released(uint32_t keyCode) const {
     return IsInState(keyStates_, keyCode, ButtonState::Released);
@@ -55,9 +59,12 @@ class InputState {
 
   void SetCursorPos(float x, float y) {
     if (!hasCursor_) {
-      cursorDeltaX_ += x - cursorPosX_;
-      cursorDeltaY_ += y - cursorPosY_;
+      cursorDeltaX_ = 0;
+      cursorDeltaY_ = 0;
       hasCursor_ = true;
+    } else {
+      cursorDeltaX_ = x - cursorPosX_;
+      cursorDeltaY_ = y - cursorPosY_;
     }
     cursorPosX_ = x;
     cursorPosY_ = y;

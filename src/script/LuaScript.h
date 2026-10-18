@@ -1,11 +1,14 @@
 #pragma once
 
+#include <cstddef>
+#include <functional>
+#include <optional>
+#include <span>
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <vector>
-#include <span>
 
+#include "LuaRef.h"
 #include "LuaState.h"
 
 extern "C" {
@@ -21,23 +24,20 @@ class LuaScript {
   LuaScript(const LuaState& luaState, std::span<const std::byte> bytes, std::string_view chunkName);
 
   void Call(const char* functionName, int nargs = 0, int nresults = 0) const;
-  [[nodiscard]] bool HasFunction(const char* functionName) const;
+  [[nodiscard]] bool HasFunction(std::string_view functionName) const;
+
+  [[nodiscard]] std::optional<LuaRef> FindFunction(std::string_view functionName) const;
+
   [[nodiscard]] lua_State* GetState() const { return GetRawState(); }
 
-  LuaScript(const LuaScript&) = delete;
-  LuaScript& operator=(const LuaScript&) = delete;
-  LuaScript(LuaScript&& other) noexcept;
-  LuaScript& operator=(LuaScript&& other) noexcept;
-  ~LuaScript();
-
  private:
-  lua_State* GetRawState() const {
-    return luaState_.get().get();
-  };
+  [[nodiscard]] lua_State* GetRawState() const { return luaState_.get().Get(); }
+ 
+  bool PushFunction(lua_State* L, const char* functionName) const;
 
  private:
   std::reference_wrapper<const LuaState> luaState_;
-  int envRef_;
+  LuaRef envRef_;
 };
 
 }  // namespace script

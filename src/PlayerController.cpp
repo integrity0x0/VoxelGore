@@ -38,7 +38,7 @@ const HitboxComponent& PlayerController::hitbox() const {
 void PlayerController::HandleInput(core::Window& window, ControlState& control,
                                    bool& cursorLocked) {
   auto& input = window.input();
-  const auto& state = input.getState();
+  const auto& state = input.GetState();
 
   control.move.z = 0;
   control.move.x = 0;

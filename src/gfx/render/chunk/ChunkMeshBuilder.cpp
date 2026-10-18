@@ -272,6 +272,24 @@ std::optional<Mesh> ChunkMeshBuilder::MakeMeshLayer(VkCommandBuffer cmd, const S
   vertexRegion.dstOffset = vertexBuffer.GetOffset();
   vertexRegion.size = stream.VertexBytes();
 
+  VkBufferMemoryBarrier barrier = {VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER};
+  barrier.buffer = vertexBuffer.GetHandle();
+  barrier.offset = vertexBuffer.GetOffset();
+  barrier.size = vertexBuffer.GetSize();
+  barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+  barrier.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+  barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+
+  barriers_.emplace_back(barrier);
+
+  barrier.buffer = indexBuffer.GetHandle();
+  barrier.offset = indexBuffer.GetOffset();
+  barrier.size = indexBuffer.GetSize();
+  barrier.dstAccessMask = VK_ACCESS_INDEX_READ_BIT;
+
+  barriers_.emplace_back(barrier);
+
   device_->GetDispatchTable().vkCmdCopyBuffer(cmd, staging.GetBufferHandle(), vertexBuffer.GetHandle(), 1,
                                            &vertexRegion);
 
@@ -306,6 +324,16 @@ std::optional<TranslucentMesh> ChunkMeshBuilder::MakeTranslucentMesh(VkCommandBu
 
   device_->GetDispatchTable().vkCmdCopyBuffer(cmd, staging.GetBufferHandle(), vertexBuffer.GetHandle(), 1,
                                            &vertexRegion);
+  VkBufferMemoryBarrier barrier = {VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER};
+  barrier.buffer = vertexBuffer.GetHandle();
+  barrier.offset = vertexBuffer.GetOffset();
+  barrier.size = vertexBuffer.GetSize();
+  barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+  barrier.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+  barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+
+  barriers_.emplace_back(barrier);
 
   Mesh mesh(*device_, std::move(vertexBuffer), stream.vertexCount());
 
@@ -430,9 +458,9 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
     it = dirtyChunks.erase(it);
   }
 
-  device_->GetDispatchTable().vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, nullptr,
-                                                0, nullptr, 0, nullptr);
+  device_->GetDispatchTable().vkCmdPipelineBarrier(
+      cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, nullptr,
+      static_cast<uint32_t>(barriers_.size()), barriers_.data(), 0, nullptr);
 }
 
 }  // namespace gfx

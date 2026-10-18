@@ -57,13 +57,15 @@ LuaState::LuaState() : state_(luaL_newstate()) {
   if (!state_) {
     throw std::runtime_error("failed to create lua_State");
   }
+
   luaL_openlibs(state_.get());
+
 #ifdef __ANDROID__
   lua_pushcfunction(state_.get(), lua_print_to_logcat);
-#endif
   lua_setglobal(state_.get(), "print");
+#endif
 }
 
-lua_State* LuaState::get() const { return state_.get(); }
+lua_State* LuaState::Get() const { return state_.get(); }
 
 }  // namespace script

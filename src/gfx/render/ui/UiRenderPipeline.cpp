@@ -33,6 +33,8 @@ vkcore::Pipeline UiRenderPipeline::BuildPipeline(const vkcore::Device& device,
     .AddVertexAttribute(4, 0, VK_FORMAT_R32_SFLOAT, offsetof(UiQuadInstance, radius))
     .SetDepthTest(false, false)
     .AddColorBlendAttachment(true)
+    .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)
+    .AddDynamicState(VK_DYNAMIC_STATE_SCISSOR)
     .Build(pipelineLayout_.GetHandle(), renderPass.GetHandle());
 }
 

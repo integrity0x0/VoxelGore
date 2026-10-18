@@ -1,13 +1,14 @@
 #pragma once
 
+#include <array>
+#include <cassert>
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <array>
-#include <span>
 
 #include "../../UvRegion.h"
 #include "../../common/texture/MaterialManager.h"
@@ -15,76 +16,109 @@
 
 namespace gfx {
 
-enum class UiNodeType : uint8_t { Undefined, Container, Text, Image, Button, Checkbox, Slider };
+enum class UiElementType : uint8_t { Undefined, Container, Text, Image, Button, Checkbox, Slider };
 
 class UiElement {
  public:
+  using Callbacks = std::array<UiCallback, static_cast<size_t>(UiEventType::Count)>;
+
   UiElement(std::string_view id, const UiElement* parent);
+
   virtual ~UiElement() = default;
 
   virtual void Render(UiRenderer& renderer);
-  [[nodiscard]] virtual UiNodeType GetNodeType() const { return UiNodeType::Undefined; }
+  [[nodiscard]] virtual UiElementType GetNodeType() const { return UiElementType::Undefined; }
+
+  template <typename T>
+  T* GetAs(UiElementType type) {
+    return type == GetNodeType() ? static_cast<T*>(this) : nullptr;
+  }
 
   // Identity
   [[nodiscard]] std::string_view GetId() const { return id_; }
   [[nodiscard]] const UiElement* GetParent() const { return parent_; }
-  
+
   // Transform
   [[nodiscard]] const UiLength2& GetPos() const { return pos_; }
-  void SetPos(const UiLength2& position) { pos_ = position; }
+  void SetPos(const UiLength2& position) {
+    pos_ = position;
+    MarkLayoutDirty();
+  }
 
   [[nodiscard]] const UiLength2& GetSize() const { return size_; }
-  void SetSize(const UiLength2& size) { size_ = size; }
+  void SetSize(const UiLength2& size) {
+    size_ = size;
+    MarkLayoutDirty();
+  }
 
   [[nodiscard]] const UiPoint& GetAnchor() const { return anchor_; }
-  void SetAnchor(UiPoint anchor) { anchor_ = anchor; }
+  void SetAnchor(UiPoint anchor) {
+    anchor_ = anchor;
+    MarkLayoutDirty();
+  }
 
   [[nodiscard]] const UiPoint& GetPivot() const { return pivot_; }
-  void SetPivot(UiPoint pivot) { pivot_ = pivot; }
+  void SetPivot(UiPoint pivot) {
+    pivot_ = pivot;
+    MarkLayoutDirty();
+  }
 
-  // Appearance
+  [[nodiscard]] const std::optional<UiPadding>& GetPadding() const { return padding_; }
+  void SetPadding(std::optional<UiPadding> padding) {
+    padding_ = std::move(padding);
+    MarkLayoutDirty();
+  }
+
+  // Appearance 
   [[nodiscard]] const glm::vec4& GetColor() const { return color_; }
   void SetColor(const glm::vec4& color) { color_ = color; }
 
   [[nodiscard]] const std::optional<UiTextureRegion>& GetImage() const { return image_; }
-
   void SetImage(std::optional<UiTextureRegion> image) { image_ = std::move(image); }
 
   [[nodiscard]] const glm::vec4& GetBgColor() const { return bgColor_; }
   void SetBgColor(const glm::vec4& color) { bgColor_ = color; }
 
   [[nodiscard]] const std::optional<UiTextureRegion>& GetBgImage() const { return bgImage_; }
-
   void SetBgImage(std::optional<UiTextureRegion> image) { bgImage_ = std::move(image); }
 
-  [[nodiscard]] const std::optional<float>& GetBgRadius() const {
-    return bgRadius_;
-  }
-
-  void SetBgRadius(const std::optional<float>& bgRadius) {
-    bgRadius_ = bgRadius;
-  }
+  [[nodiscard]] const std::optional<float>& GetBgRadius() const { return bgRadius_; }
+  void SetBgRadius(const std::optional<float>& bgRadius) { bgRadius_ = bgRadius; }
 
   [[nodiscard]] float GetRadius() const { return radius_; }
   void SetRadius(float radius) { radius_ = radius; }
-
-  [[nodiscard]] const std::optional<UiPadding>& GetPadding() const { return padding_; }
-
-  void SetPadding(std::optional<UiPadding> padding) { padding_ = std::move(padding); }\
 
   // Properties
   [[nodiscard]] bool IsVisible() const { return visible_; }
   void SetVisible(bool visible) { visible_ = visible; }
 
-  [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
-    return {};
+  [[nodiscard]] UiStateFlags GetStateFlags() const { return stateFlags_; }
+  [[nodiscard]] UiStateFlags& GetStateFlagsRef() { return stateFlags_; }
+
+  [[nodiscard]] bool IsState(UiStateFlags flags) const {
+    return static_cast<bool>(stateFlags_ & flags);
   }
 
-  [[nodiscard]] bool IsHovered() const { return hovered_; }
+  void SetStateFlags(UiStateFlags flags) { stateFlags_ = flags; }
 
-  void ApplyHover(bool hovered) {
-    prevHovered_ = hovered_;
-    hovered_ = hovered;
+  // Callbacks
+  [[nodiscard]] const Callbacks& GetCallbacks() const { return callbacks_; }
+  [[nodiscard]] Callbacks& GetCallbacks() { return callbacks_; }
+
+  [[nodiscard]] UiCallback& GetCallback(UiEventType type) {
+    assert(type < UiEventType::Count);
+    return callbacks_[static_cast<size_t>(type)];
+  }
+
+  void SetCallback(UiEventType type, std::string functionName) {
+    assert(type < UiEventType::Count);
+    UiCallback& callback = GetCallback(type);
+    callback.functionName = std::move(functionName);
+    callback.ref.reset();
+  }
+
+  [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
+    return {};
   }
 
   [[nodiscard]] bool Contains(glm::vec2 pos) const {
@@ -93,17 +127,28 @@ class UiElement {
            pos.y <= rect.pos.y + rect.size.y;
   }
 
+  // Layout
   [[nodiscard]] const UiLayout& GetResolvedLayout() const { return resolvedLayout_; }
+
+  void UpdateLayout(const UiRect& parentRect);
 
   virtual void Relayout(const UiRect& rect);
 
  protected:
+  void MarkLayoutDirty() {
+    layoutDirty_ = true;
+    for (const UiElement* p = parent_; p && !p->layoutDirty_ && !p->childDirty_; p = p->parent_) {
+      p->childDirty_ = true;
+    }
+  }
+
   virtual void RenderBg(UiRenderer& renderer);
 
  protected:
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
       0.0f, 0.5f, 1.0f};
   static_assert(static_cast<size_t>(UiAlignX::Count) == static_cast<size_t>(UiAlignY::Count));
+
   // Identity / hierarchy
   std::string id_;
   const UiElement* parent_ = nullptr;
@@ -120,15 +165,17 @@ class UiElement {
   std::optional<UiTextureRegion> image_;
   glm::vec4 bgColor_ = glm::vec4(1.0f);
   std::optional<UiTextureRegion> bgImage_;
-  float radius_ = 0.0f; 
+  float radius_ = 0.0f;
   std::optional<float> bgRadius_;
+
   // Properties
   bool visible_ = true;
+  UiStateFlags stateFlags_ = {};
 
-  bool hovered_ = false;
-  bool prevHovered_ = false;
+  Callbacks callbacks_;
 
   mutable bool layoutDirty_ = false;
+  mutable bool childDirty_ = false;
   mutable UiLayout resolvedLayout_;
 };
 

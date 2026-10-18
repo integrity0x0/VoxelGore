@@ -163,6 +163,11 @@
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiCheckbox.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiTriggerDispatcher.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiLuaTypes.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiLibrary.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiPageBinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -345,6 +350,13 @@
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
     <ClInclude Include="src\gfx\render\ui\UiCheckbox.h" />
     <ClInclude Include="src\gfx\render\ui\UiInputRouter.h" />
+    <ClInclude Include="src\script\LuaRef.h" />
+    <ClInclude Include="src\gfx\render\ui\UiTriggerDispatcher.h" />
+    <ClInclude Include="src\gfx\render\ui\UiEvents.h" />
+    <ClInclude Include="src\gfx\render\ui\UiElementBinding.h" />
+    <ClInclude Include="src\gfx\render\ui\UiLuaTypes.h" />
+    <ClInclude Include="src\gfx\render\ui\UiLibrary.h" />
+    <ClInclude Include="src\gfx\render\ui\UiPageBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

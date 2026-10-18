@@ -153,6 +153,12 @@ void Game::SetViewportAndScissor(VkCommandBuffer cmd) {
 void Game::UpdateInput() {
 #ifndef __ANDROID__
   player_->HandleInput(*window_, controlState_, cursorLocked_);
+  if (true) {
+    auto cameraSwipe = render_->GetUi().RouteInput(window_->input().GetState());
+    player_->camera().Rotate(window_->input().GetState().GetCursorDeltaX(),
+                             window_->input().GetState().GetCursorDeltaY());
+  }
+
 #endif
 }
 
@@ -177,11 +183,12 @@ bool Game::HandleResize() {
   if (!engine_->IsRenderable()) return false;
   engine_->restoreSurface();
 #endif
-
+  render_->GetUi().Resize(engine_->extent());
   return true;
 }
 
 void Game::UpdateUiSize() {
+
 }
 
 void Game::UpdatePlatform() {
@@ -207,7 +214,7 @@ bool Game::Frame() {
 
 #else
 
-bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
+bool Game::Frame(const core::InputState& inputState) {
   UpdateInput(touches);
 
   if (!HandleResize()) {
@@ -229,8 +236,6 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
     return true;
   }
 
-  UpdateUiSize();
-
   VkCommandBuffer cmd = engine_->getCommandBuffer().GetHandle();
   uint32_t frame = engine_->getCurrentFrameIndex();
 
@@ -246,6 +251,8 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
 
   session_->Update(dt_);
   render_->UpdateDirty(cmd, frame);
+  render_->GetUi().UpdateLayout();
+  std::ignore = render_->GetUi().RouteInput(window_->input().GetState());
   player_->UpdateCamera(dt_);
 
   const float screenW = static_cast<float>(engine_->extent().width);
@@ -258,7 +265,6 @@ bool Game::Frame(const std::unordered_map<int32_t, core::Pointer>& touches) {
   render_->UpdateGameData(frame, player_->camera(), screenW, screenH, session_->GetEnviroment());
 
   render_->RenderShadowPass(cmd, frame);
-
 
   engine_->BeginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
   SetViewportAndScissor(cmd);

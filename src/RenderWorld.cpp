@@ -78,6 +78,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
   ui_ =
       std::make_unique<Ui>(device, engine.GetBufferAllocator(), engine.GetRenderPass(),
                            *shaderCompiler_, luaState, *materialManager_, engine.GetFramesCount());
+  uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());
   ui_->Push(core::kAssetsPrefix + "ui/game.xml");
 }

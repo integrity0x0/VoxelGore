@@ -24,7 +24,7 @@ class UiContainer : public UiElement {
   virtual void Render(UiRenderer& renderer) override;
 
   virtual void Relayout(const UiRect& rect) override;
- private:
+ protected:
   std::vector<std::unique_ptr<UiElement>> children_;
 };
 }  // namespace gfx

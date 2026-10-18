@@ -23,36 +23,65 @@ Ui::Ui(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
        script::LuaState& luaState, MaterialManager& materialManager, uint32_t framesCount)
     : parserCtxt_(luaState, materialManager, core::kAssetsPrefix),
       renderer_(CreateRenderer(device, bufferAllocator, renderPass, shaderCompiler, materialManager,
-                               framesCount)) {}
+                               framesCount)),
+      triggerDispatcher_(luaState) {}
 
 void Ui::Push(std::string_view path) {
   const auto& it = cached_.find(path);
 
+  const UiPage* page = nullptr;
   if (it != cached_.end()) {
-    pagesStack_.push(it->second.get());
+    pages_.emplace_back(it->second.get());
     return;
-  }
+  } else {
+    UiPageParseResult result = UiPageParser::Parse(path, parserCtxt_);
 
-  UiPageParseResult result = UiPageParser::Parse(path, parserCtxt_);
+    for (const auto& it : result.diagnostics) {
+      // TODO: implement logger
+    }
 
-  for (const auto& it : result.diagnostics) {
-    // TODO: add logger
+    if (result.page) {
+      result.page->Relayout(screen_);
+      page = result.page.get();
+      pages_.emplace_back(result.page.get());
+      cached_[std::string(path)] = std::move(result.page);
+    }
   }
+  stackView_ = BuildStackView();
+}
 
-  if (result.page) {
-    result.page->Relayout(screen_);
-    pagesStack_.push(result.page.get());
-    cached_[std::string(path)] = std::move(result.page);    
+Ui::StackView Ui::BuildStackView() const {
+  StackView view = {};
+  for (size_t i = pages_.size(); i-- > 0;) {
+    const UiPageProps& props = pages_[i]->GetProps();
+
+    if (!view.inputCaptured && props.input == UiInputMode::Capture) {
+      view.inputCaptured = true;
+      view.firstInput = i;
+    }
+    if (props.type == UiPageType::Screen) {
+      view.firstRender = i;
+      if (!view.inputCaptured) view.firstInput = i;  // UiPageType::Screen blocks input
+      break;
+    }
   }
+  return view;
 }
 
 void Ui::Pop() {
-  if (!pagesStack_.empty()) pagesStack_.pop();
+  if (!pages_.empty()) pages_.pop_back();
+  stackView_ = BuildStackView();
 }
 
 void Ui::Clear() {
-  pagesStack_ = {};
+  pages_ = {};
   cached_.clear();
+}
+
+void Ui::UpdateLayout() {
+  for (size_t i = stackView_.firstRender; i < pages_.size(); ++i) {
+    pages_[i]->UpdateLayout(screen_);
+  }
 }
 
 void Ui::Resize(VkExtent2D extent) { 
@@ -65,10 +94,18 @@ void Ui::Resize(VkExtent2D extent) {
 }
 
 void Ui::Render(VkCommandBuffer cmd, uint32_t currentFrame) {
-  if (UiPage* page = pagesStack_.top()) {
+  if (pages_.empty()) return;
+  if (UiPage* page = pages_.front()) {
     renderer_.BeginFrame(cmd, currentFrame);
     renderer_.PushConstants(cmd, {ndcScale_});
     page->Render(renderer_);
   }
 }
-}  // namespace gfx\
+
+UiCameraSwipe Ui::RouteInput(const core::InputState& inputState) {
+  UiCameraSwipe swipe =
+      inputRouter_.RouteInput(inputState, pages_, stackView_.inputCaptured, events_);
+  triggerDispatcher_.Dispatch(events_);
+  return swipe;
+}
+}  // namespace gfx

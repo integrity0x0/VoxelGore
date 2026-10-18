@@ -27,15 +27,15 @@ Window* Window::self(GLFWwindow* w) {
 void Window::mouseButtonCallback(GLFWwindow* w, int button, int action, int mods) {
   double x, y;
   glfwGetCursorPos(w, &x, &y);
-  self(w)->input_.onMouseButton(button, action, x, y);
+  self(w)->input_.OnMouseButton(button, action, x, y);
 }
 
 void Window::cursorPosCallback(GLFWwindow* w, double x, double y) {
-  self(w)->input_.onCursorPos(x, y);
+  self(w)->input_.OnCursorPos(x, y);
 }
 
 void Window::keyCallback(GLFWwindow* w, int key, int scancode, int action, int mods) {
-  self(w)->input_.onKey(key, scancode, action, mods);
+  self(w)->input_.OnKey(key, scancode, action, mods);
 }
 
 void Window::framebufferSizeCallback(GLFWwindow* w, int width, int height) {

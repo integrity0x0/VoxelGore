@@ -45,15 +45,18 @@ void InputState::Reset() {
     }
   }
 
+  using Phase = Pointer::Phase;
+
   for (auto it = pointers_.begin(); it != pointers_.end();) {
     it->second.deltaX = 0.0f;
     it->second.deltaY = 0.0f;
     it->second.prevX = it->second.currentX;
     it->second.prevY = it->second.currentY;
-    if (it->second.phase == Pointer::Phase::Ended ||
-        it->second.phase == Pointer::Phase::Cancelled) {
+    if (it->second.phase == Phase::Ended ||
+        it->second.phase == Phase::Cancelled) {
       it = pointers_.erase(it);
     } else {
+      if (it->second.phase == Phase::Began) it->second.phase = Phase::Moved;
       it++;
     }
   }
