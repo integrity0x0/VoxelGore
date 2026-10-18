@@ -369,6 +369,12 @@ void ParseCommonAttributes(const UiPageParser::Context& ctxt, UiElement& element
   if (auto image = a.Get("bg-image", ParseImage)) {
     element.SetBgImage(ResolveImage(ctxt, *image));
   }
+
+  element.SetBorderWidth(a.Get("border", ParseFloat));
+  element.SetBorderColor(a.GetOr("border-color", ParseColor, glm::vec4(1.0f)));
+  if (auto image = a.Get("border-image", ParseImage)) {
+    element.SetImage(ResolveImage(ctxt, *image));
+  }
   element.SetVisible(a.GetOr("visible", ParseBool, true));
 
   element.SetCallback(UiEventType::Clicked, a.GetOr("on-click", ParseString, std::string{}));

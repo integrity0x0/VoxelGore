@@ -121,7 +121,6 @@
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
-    <ClCompile Include="src\gfx\render\ui\UiCheckbox.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiContainer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />

@@ -9,5 +9,6 @@ struct UiQuadInstance {
   glm::vec4 uvRect;
   glm::vec4 color;
   float radius;
+  float borderWidth;
 };
 }  // namespace gfx	

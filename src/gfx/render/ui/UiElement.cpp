@@ -8,6 +8,7 @@ void UiElement::Render(UiRenderer& renderer) {
   RenderBg(renderer);
   renderer.Submit(resolvedLayout_.rect.pos, resolvedLayout_.rect.size, image_, color_,
                   radius_);
+  RenderBorder(renderer);
 }
 
 void UiElement::RenderBg(UiRenderer& renderer) {
@@ -19,9 +20,17 @@ void UiElement::RenderBg(UiRenderer& renderer) {
   const glm::vec2 pos(r.pos.x - p.left, r.pos.y - p.top);
   const glm::vec2 size(r.size.x + p.left + p.right, r.size.y + p.top + p.bottom);
 
-  renderer.Submit(pos, size, bgImage_, bgColor_, radius_);
+  renderer.Submit(pos, size, bgImage_, bgColor_, bgRadius_.value_or(radius_));
 }
 
+void UiElement::RenderBorder(UiRenderer& renderer) {
+  if (!borderWidth_) return;
+
+  const auto& r = resolvedLayout_.rect;
+
+  renderer.Submit(r.pos, r.size, borderImage_, borderColor_, radius_, *borderWidth_);
+  
+}
 void UiElement::UpdateLayout(const UiRect& parentRect) {
   if (layoutDirty_) {
     Relayout(parentRect);

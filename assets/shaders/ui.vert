@@ -8,6 +8,7 @@ layout(location = 1) in vec2 aSize;
 layout(location = 2) in vec4 aUvRect;
 layout(location = 3) in vec4 aColor;
 layout(location = 4) in float aRadius;
+layout(location = 5) in float aBorderWidth;
 
 layout(push_constant) uniform PushData {
   vec2 ndcScale;
@@ -19,6 +20,7 @@ layout(location = 0) out VertexData {
   vec2 local;
   flat vec2 halfSize;
   flat float radius;
+  flat float borderWidth;
 } oVert;
 
 const vec2 kCorners[6] = vec2[](vec2(0, 0), vec2(0, 1), vec2(1, 1),
@@ -32,4 +34,5 @@ void main() {
   oVert.color = aColor;
   oVert.halfSize = aSize * 0.5;
   oVert.radius = aRadius;
+  oVert.borderWidth = aBorderWidth;
 }

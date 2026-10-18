@@ -31,6 +31,7 @@ vkcore::Pipeline UiRenderPipeline::BuildPipeline(const vkcore::Device& device,
     .AddVertexAttribute(2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(UiQuadInstance, uvRect))
     .AddVertexAttribute(3, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(UiQuadInstance, color))
     .AddVertexAttribute(4, 0, VK_FORMAT_R32_SFLOAT, offsetof(UiQuadInstance, radius))
+    .AddVertexAttribute(5, 0, VK_FORMAT_R32_SFLOAT, offsetof(UiQuadInstance, borderWidth))
     .SetDepthTest(false, false)
     .AddColorBlendAttachment(true)
     .AddDynamicState(VK_DYNAMIC_STATE_VIEWPORT)

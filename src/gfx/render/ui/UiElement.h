@@ -85,6 +85,30 @@ class UiElement {
   [[nodiscard]] const std::optional<float>& GetBgRadius() const { return bgRadius_; }
   void SetBgRadius(const std::optional<float>& bgRadius) { bgRadius_ = bgRadius; }
 
+  [[nodiscard]] const std::optional<float>& GetBorderWidth() const {
+    return borderWidth_;
+  }
+  
+  void SetBorderWidth(const std::optional<float>& borderWidth) {
+    borderWidth_ = borderWidth;
+  }
+
+  [[nodiscard]] const std::optional<UiTextureRegion>& GetBorderImage() {
+    return borderImage_;
+  }
+
+  void SetBorderImage(const std::optional<UiTextureRegion>& borderImage) {
+    borderImage_ = borderImage;
+  }
+
+  [[nodiscard]] const glm::vec4& GetBorderColor() {
+    return borderColor_;
+  }
+
+  void SetBorderColor(const glm::vec4& borderColor) {
+    borderColor_ = borderColor;
+  }
+
   [[nodiscard]] float GetRadius() const { return radius_; }
   void SetRadius(float radius) { radius_ = radius; }
 
@@ -143,6 +167,7 @@ class UiElement {
   }
 
   virtual void RenderBg(UiRenderer& renderer);
+  virtual void RenderBorder(UiRenderer& renderer);
 
  protected:
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
@@ -167,6 +192,10 @@ class UiElement {
   std::optional<UiTextureRegion> bgImage_;
   float radius_ = 0.0f;
   std::optional<float> bgRadius_;
+
+  std::optional<float> borderWidth_;
+  glm::vec4 borderColor_ = glm::vec4(1.0f);
+  std::optional<UiTextureRegion> borderImage_;
 
   // Properties
   bool visible_ = true;

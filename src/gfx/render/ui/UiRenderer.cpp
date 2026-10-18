@@ -32,7 +32,7 @@ void UiRenderer::BeginFrame(VkCommandBuffer cmd, uint32_t currentFrame) {
 
 void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
                         const std::optional<UiTextureRegion>& texture, const glm::vec4& color,
-                        float radius) {
+                        float radius, float borderWidth) {
   if (static_cast<size_t>(instanceOffset_ + instanceCount_ + 1) > kMaxInstances) return;
 
   auto& frame = frames_[currentFrame_];
@@ -59,6 +59,7 @@ void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
       .uvRect = {uvMin.x, uvMin.y, uvMax.x, uvMax.y},
       .color = color,
       .radius = radius,
+      .borderWidth = borderWidth
   };
 
   ++instanceCount_;

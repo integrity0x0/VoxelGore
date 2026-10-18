@@ -22,7 +22,7 @@ void UiTriggerDispatcher::Dispatch(UiEventQueue& events) const {
 
     if (lua_pcall(L, 1, 0, 0) != 0) {
       const char* message = lua_tostring(L, -1);
-      std::cout << message << "\n";
+      //std::cout << message << "\n";
       // TODO logger: callback.functionName, message ? message : "non-string error"
     }
 

@@ -161,7 +161,6 @@
     <ClCompile Include="src\gfx\render\ui\UiPage.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
-    <ClCompile Include="src\gfx\render\ui\UiCheckbox.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiTriggerDispatcher.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />

@@ -480,6 +480,42 @@ int SetPadding(lua_State* L) {
   return 0;
 }
 
+int SetBorderWidth(lua_State* L) {
+  UiElement* element = CheckElement(L, 1);
+
+  if (lua_isnoneornil(L, 2)) {
+    element->SetBorderWidth(std::nullopt);
+    return 0;
+  }
+
+  const lua_Number width = luaL_checknumber(L, 2);
+  if (width < 0.0) return luaL_argerror(L, 2, "border width must be >= 0");
+
+  element->SetBorderWidth(static_cast<float>(width));
+  return 0;
+}
+
+int GetBorderWidth(lua_State* L) {
+  UiElement* element = CheckElement(L, 1);
+
+  if (auto width = element->GetBorderWidth()) {
+    PushLength(L, {*width, UiUnit::Px});
+  } else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+int SetBorderColor(lua_State* L) {
+  CheckElement(L)->SetBorderColor(CheckColor(L, 2));
+  return 0;
+}
+
+int GetBorderColor(lua_State* L) {
+  PushColor(L, CheckElement(L)->GetBorderColor());
+  return 1;
+}
+
 // -----------------------------------------------------------------------------
 // Properties
 // -----------------------------------------------------------------------------
@@ -612,6 +648,10 @@ void UiElementBinding::Register(const script::LuaState& state) {
     SetFunction(L, -1, "SetBgRadius", SetBgRadius);
     SetFunction(L, -1, "GetPadding", GetPadding);
     SetFunction(L, -1, "SetPadding", SetPadding);
+    SetFunction(L, -1, "SetBorderColor", SetBorderColor);
+    SetFunction(L, -1, "GetBorderColor", GetBorderColor);
+    SetFunction(L, -1, "SetBorderWidth", SetBorderWidth);
+    SetFunction(L, -1, "GetBorderColor", GetBorderColor);
 
     // Properties
     SetFunction(L, -1, "IsVisible", IsVisible);
