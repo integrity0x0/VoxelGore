@@ -12,6 +12,7 @@
 #include "UiPage.h"
 #include "UiStateTable.h"
 #include "UiText.h"
+#include "UiImage.h"
 
 namespace gfx {
 enum class UiSeverity { Error, Warning };
@@ -67,6 +68,10 @@ class UiPageParser {
                                                                UiPageParseResult& result);
 
   [[nodiscard]] static std::unique_ptr<UiElement> ParseContainer(
+      const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
+      UiPageParseResult& result);
+
+   [[nodiscard]] static std::unique_ptr<UiElement> ParseImage(
       const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
       UiPageParseResult& result);
 

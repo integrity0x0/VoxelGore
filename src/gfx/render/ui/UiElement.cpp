@@ -6,7 +6,7 @@ UiElement::UiElement(std::string_view id, const UiElement* parent) : id_(id), pa
 
 void UiElement::Render(UiRenderer& renderer) {
   RenderBg(renderer);
-  renderer.Submit(resolvedLayout_.rect.pos, resolvedLayout_.rect.size, image_, color_,
+  renderer.Submit(resolvedLayout_.rect.pos, resolvedLayout_.rect.size, std::nullopt, color_,
                   radius_);
   RenderBorder(renderer);
 }

@@ -62,14 +62,21 @@ struct UiLayout {
   UiInsets padding;
 };
 
-enum class UiStateFlags {
-  Disabled = 1 << 0,
-  Hovered = 1 << 1,
-  Held = 1 << 2,
-  Checked = 1 << 3,
+enum class UiState : uint32_t {
+  Disabled,
+  Hovered,
+  Held,
+  Checked,
+  Count
 };
 
-static constexpr size_t kUiStateCount = 4;
+enum class UiStateFlags : uint32_t {
+  None = 0,
+  Disabled = 1 << static_cast<uint32_t>(UiState::Disabled),
+  Hovered = 1 << static_cast<uint32_t>(UiState::Hovered),
+  Held = 1 << static_cast<uint32_t>(UiState::Held),
+  Checked = 1 << static_cast<uint32_t>(UiState::Checked),
+};
 
 constexpr UiStateFlags operator&(UiStateFlags first, UiStateFlags second) {
   return static_cast<UiStateFlags>(static_cast<uint32_t>(first) & static_cast<uint32_t>(second));
@@ -90,17 +97,6 @@ constexpr UiStateFlags& operator|=(UiStateFlags& first, UiStateFlags second) {
 constexpr UiStateFlags& operator&=(UiStateFlags& first, UiStateFlags second) {
   return first = first & second;
 }
-
-struct UiStateOverrides {
-  std::optional<UiPadding> padding;
-  std::optional<glm::vec4> bgColor;
-  std::optional<UiTextureRegion> bgImage;
-  std::optional<UiTextureRegion> image;
-  std::optional<glm::vec4> color;
-
-  std::optional<std::string> text;
-  std::optional<float> scale;
-};
 
 struct UiCallback {
   std::string functionName;
@@ -123,18 +119,18 @@ enum class UiEventType {
 struct UiVisualProps {
   std::optional<glm::vec4> color, bgColor;
   std::optional<float> radius, bgRadius, scale;
-  std::optional<UiTextureRegion> image, bgImage;
+  std::optional<UiTextureRegion> src, bgImage;
   void MergeFrom(const UiVisualProps& o) {
     if (o.color) color = o.color;
     if (o.bgColor) bgColor = o.bgColor;
     if (o.radius) radius = o.radius;
     if (o.bgRadius) bgRadius = o.bgRadius;
     if (o.scale) scale = o.scale;
-    if (o.image) image = o.image;
+    if (o.src) src = o.src;
     if (o.bgImage) bgImage = o.bgImage;
   }
 };
-
+ 
 struct UiLayoutProps {
   std::optional<UiLength2> pos, size;
   std::optional<UiPoint> anchor, pivot;
@@ -148,10 +144,13 @@ struct UiLayoutProps {
   }
 };
 
+
+using UiStateOverrides = std::array<UiVisualProps, static_cast<size_t>(UiState::Count)>;
+
 struct UiStyle {
   UiVisualProps visualProps;
   UiLayoutProps layoutProps;
-  std::array<UiVisualProps, kUiStateCount> stateOverrides;
+  UiStateOverrides stateOverrides;
 };
 
 

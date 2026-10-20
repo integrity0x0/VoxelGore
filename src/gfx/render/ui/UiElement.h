@@ -73,9 +73,6 @@ class UiElement {
   [[nodiscard]] const glm::vec4& GetColor() const { return color_; }
   void SetColor(const glm::vec4& color) { color_ = color; }
 
-  [[nodiscard]] const std::optional<UiTextureRegion>& GetImage() const { return image_; }
-  void SetImage(std::optional<UiTextureRegion> image) { image_ = std::move(image); }
-
   [[nodiscard]] const glm::vec4& GetBgColor() const { return bgColor_; }
   void SetBgColor(const glm::vec4& color) { bgColor_ = color; }
 
@@ -141,6 +138,26 @@ class UiElement {
     callback.ref.reset();
   }
 
+  [[nodiscard]] UiStateOverrides& GetStateOverrides() { return stateOverrides_; }
+
+  [[nodiscard]] const UiStateOverrides& GetStateOverrides() const { return stateOverrides_; }
+
+  [[nodiscard]] UiVisualProps& GetStateOverride(UiState state) {
+    return stateOverrides_[static_cast<size_t>(state)];
+  }
+
+  [[nodiscard]] const UiVisualProps& GetStateOverride(UiState state) const {
+    return stateOverrides_[static_cast<size_t>(state)];
+  }
+
+  void SetStateOverride(UiState state, const UiVisualProps& props) {
+    stateOverrides_[static_cast<size_t>(state)] = props;
+  }
+
+  void SetStateOverride(UiState state, UiVisualProps props) {
+    stateOverrides_[static_cast<size_t>(state)] = std::move(props);
+  }
+
   [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
     return {};
   }
@@ -187,7 +204,6 @@ class UiElement {
 
   // Appearance
   glm::vec4 color_ = glm::vec4(1.0f);
-  std::optional<UiTextureRegion> image_;
   glm::vec4 bgColor_ = glm::vec4(1.0f);
   std::optional<UiTextureRegion> bgImage_;
   float radius_ = 0.0f;
@@ -202,6 +218,8 @@ class UiElement {
   UiStateFlags stateFlags_ = {};
 
   Callbacks callbacks_;
+
+  UiStateOverrides stateOverrides_;
 
   mutable bool layoutDirty_ = false;
   mutable bool childDirty_ = false;

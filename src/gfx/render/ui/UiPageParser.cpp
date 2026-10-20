@@ -278,7 +278,7 @@ struct UiImagePath {
   std::optional<glm::vec4> rect;  // x, y, width, height
 };
 
-std::optional<UiImagePath> ParseImage(std::string_view text) {
+std::optional<UiImagePath> ParseImageRegion(std::string_view text) {
   text = Trim(text);
 
   const size_t hash = text.find('#');
@@ -358,22 +358,17 @@ void ParseCommonAttributes(const UiPageParser::Context& ctxt, UiElement& element
   element.SetAnchor(anchor);
   element.SetPivot(a.GetOr("pivot", ParsePoint, anchor));
 
-  element.SetVisible(a.GetOr("visible", ParseBool, true));
   element.SetRadius(a.GetOr("radius", ParseFloat, 0.0f));
   element.SetColor(a.GetOr("color", ParseColor, glm::vec4(1.0f)));
-  if (auto image = a.Get("image", ParseImage)) {
-    element.SetImage(ResolveImage(ctxt, *image));
-  }
   element.SetPadding(a.Get("padding", ParsePadding));
   element.SetBgColor(a.GetOr("bg-color", ParseColor, glm::vec4(1.0f)));
-  if (auto image = a.Get("bg-image", ParseImage)) {
+  if (auto image = a.Get("bg-image", ParseImageRegion)) {
     element.SetBgImage(ResolveImage(ctxt, *image));
   }
-
   element.SetBorderWidth(a.Get("border", ParseFloat));
   element.SetBorderColor(a.GetOr("border-color", ParseColor, glm::vec4(1.0f)));
-  if (auto image = a.Get("border-image", ParseImage)) {
-    element.SetImage(ResolveImage(ctxt, *image));
+  if (auto image = a.Get("border-image", ParseImageRegion)) {
+    element.SetBorderImage(ResolveImage(ctxt, *image));
   }
   element.SetVisible(a.GetOr("visible", ParseBool, true));
 
@@ -392,7 +387,30 @@ const std::unordered_map<std::string, UiPageParser::ElementParserFn> UiPageParse
     {"container", &UiPageParser::ParseContainer},
     {"button", &UiPageParser::ParseButton},
     {"text", &UiPageParser::ParseText},
+    {"image", &UiPageParser::ParseImage}
 };
+
+[[nodiscard]] std::unique_ptr<UiElement> UiPageParser::ParseImage(const Context& ctxt,
+                                                                  const tinyxml2::XMLElement* element,
+                                                                  const UiElement* parent,
+                                                                  UiPageParseResult& result) {
+  AttrReader a(*element, result);
+
+  const std::string id = a.GetOr("id", ParseString, std::string{});
+
+  auto image = std::make_unique<UiImage>(id, parent);
+
+  ParseCommonAttributes(ctxt, *image, a);
+
+  if (auto imageReg = a.Get("src", ParseImageRegion)) {
+    image->SetSrc(ResolveImage(ctxt, *imageReg));
+  } else {
+    result.Error("Unable to load src image", element->GetLineNum());
+  }
+
+  a.ReportUnknown();
+  return image;
+}
 
 std::unique_ptr<UiElement> UiPageParser::ParseElement(const Context& ctxt,
                                                       const tinyxml2::XMLElement* element,
@@ -451,6 +469,14 @@ std::unique_ptr<UiElement> UiPageParser::ParseButton(const Context& ctxt,
   ParseCommonAttributes(ctxt, *button, a);
 
   // TODO: image, button-specific attributes.
+  for (const auto* child = element->FirstChildElement(); child;
+       child = child->NextSiblingElement()) {
+    auto parsed = ParseElement(ctxt, child, button.get(), result);
+
+    if (parsed) {
+      button->AddChild(std::move(parsed));
+    }
+  }
 
   a.ReportUnknown();
   return button;
@@ -468,7 +494,7 @@ std::unique_ptr<UiCheckbox> UiPageParser::ParseCheckbox(const Context& ctxt,
 
   ParseCommonAttributes(ctxt, *checkbox, a);
 
-  checkbox->SetCallback(UiEventType::Clicked, a.GetOr("on-set", ParseString, std::string{}));
+  checkbox->SetCallback(UiEventType::Setted, a.GetOr("on-set", ParseString, std::string{}));
 
   return checkbox;
 }
