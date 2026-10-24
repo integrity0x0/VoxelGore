@@ -423,6 +423,8 @@ void ChunkMeshBuilder::BuildMeshes(VkCommandBuffer cmd, uint32_t currentFrame,
 
   staging.Reset();
 
+  barriers_.clear();
+
   auto it = dirtyChunks.begin();
 
   while (it != dirtyChunks.end()) {

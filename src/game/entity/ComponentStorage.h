@@ -47,28 +47,25 @@ class ComponentStorage final : public IComponentStorage {
     sparse_[entityId] = kInvalidIndex;
   }
 
-  bool Contains(EntityId entityId) const override {
+  [[nodiscard]] bool Contains(EntityId entityId) const override {
     return static_cast<size_t>(entityId) < sparse_.size() && sparse_[entityId] != kInvalidIndex;
   }
 
-  bool IsEmpty() const { return denseComponents_.empty(); }
+  [[nodiscard]] bool IsEmpty() const { return denseComponents_.empty(); }
 
-  T* Get(EntityId entityId) {
+  [[nodiscard]] const T* Get(EntityId entityId) const {
     if (!Contains(entityId)) return nullptr;
-
     return &denseComponents_[sparse_[entityId]];
   }
 
-  const T* Get(EntityId entityId) const {
-    if (!Contains(entityId)) return nullptr;
-
-    return &denseComponents_[sparse_[entityId]];
+  [[nodiscard]] T* Get(EntityId entityId) {
+    return const_cast<T*>(std::as_const(*this).Get(entityId));
   }
 
-  size_t size() const { return denseComponents_.size(); }
+  [[nodiscard]] size_t GetSize() const { return denseComponents_.size(); }
 
-  std::vector<T>& denseComponents() { return denseComponents_; }
-  const std::vector<EntityId> denseEntities() const { return denseEntities_; };
+  std::vector<T>& GetDenseComponents() { return denseComponents_; }
+  const std::vector<EntityId> GetDenseEntities() const { return denseEntities_; };
   ~ComponentStorage() override = default;
 
  private:

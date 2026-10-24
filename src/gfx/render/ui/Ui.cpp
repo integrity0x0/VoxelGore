@@ -73,6 +73,13 @@ void Ui::Pop() {
   stackView_ = BuildStackView();
 }
 
+UiElement* Ui::FindElement(std::string_view id) {
+  for (auto it = pages_.rbegin(); it != pages_.rend(); ++it) {
+    if (UiElement* e = (*it)->FindById(id)) return e;
+  }
+  return nullptr;
+}
+
 void Ui::Clear() {
   pages_ = {};
   cached_.clear();

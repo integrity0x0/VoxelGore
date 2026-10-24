@@ -6,8 +6,8 @@
 
 namespace gfx {
 
-RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
-                         script::LuaState& luaState, const std::string& assetsPrefix)
+RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaState& luaState,
+                         const std::string& assetsPrefix)
     : engine_(&engine), session_(&session) {
   const auto& device = engine.getDevice();
   auto& memoryAllocator = engine.memoryAllocator();
@@ -23,9 +23,9 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
   shadowCtxt_ = std::make_unique<ShadowContext>(device, memoryAllocator);
   shaderCompiler_->AddDefinition("SHADOWS_ENABLED", "1");
 
-  skyboxRenderer_ =
-      std::make_unique<SkyboxRenderer>(device, engine.GetBufferAllocator(), engine.GetTransferContext(),
-                                       engine.GetRenderPass(), *gameDataBinding_, *shaderCompiler_);
+  skyboxRenderer_ = std::make_unique<SkyboxRenderer>(
+      device, engine.GetBufferAllocator(), engine.GetTransferContext(), engine.GetRenderPass(),
+      *gameDataBinding_, *shaderCompiler_);
 
   std::array<std::string, 6> nightPaths = {
       assetsPrefix + "skybox/night/right.png", assetsPrefix + "skybox/night/left.png",
@@ -33,21 +33,20 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
       assetsPrefix + "skybox/night/front.png", assetsPrefix + "skybox/night/back.png",
   };
 
-  nightSkybox_ =
-      std::make_unique<Skybox>(Skybox::Load(device, engine.GetTransferContext(), memoryAllocator,
-                                            skyboxRenderer_->descriptorPool(),
-                                            skyboxRenderer_->GetDescriptorSetLayout(), nightPaths, 4u)
-                                   .value());
+  nightSkybox_ = std::make_unique<Skybox>(
+      Skybox::Load(device, engine.GetTransferContext(), memoryAllocator,
+                   skyboxRenderer_->descriptorPool(), skyboxRenderer_->GetDescriptorSetLayout(),
+                   nightPaths, 4u)
+          .value());
 
   modelCache_ =
       std::make_unique<ModelCache>(device, engine.GetTransferContext(), engine.GetBufferAllocator(),
                                    *textureManager_, engine.GetFramesCount());
 
-  modelRenderer_ = std::make_unique<ModelRenderer>(
-      device, engine.GetBufferAllocator(), engine.GetRenderPass(), *gameDataBinding_,
-      modelCache_->materialSetLayout(), shadowCtxt_.get(),
-      *shaderCompiler_,
-      engine.GetFramesCount());
+  modelRenderer_ =
+      std::make_unique<ModelRenderer>(device, engine.GetBufferAllocator(), engine.GetRenderPass(),
+                                      *gameDataBinding_, modelCache_->materialSetLayout(),
+                                      shadowCtxt_.get(), *shaderCompiler_, engine.GetFramesCount());
 
   chunkRenderer_ = std::make_unique<ChunkRenderer>(
       device, engine.GetTransferContext(), engine.getGraphicsQueue(), memoryAllocator,
@@ -70,8 +69,8 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
 
   particleEngine_ = std::make_unique<ParticleEngine>(
       *billboardsAtlas_, chunkRenderer_->GetBlockRenderData(), session.GetBlocks(),
-      session.GetWorld().GetChunks(), session.GetLighting(), session.GetEnviroment(), *generalBucket_,
-      *blockBucket_);
+      session.GetWorld().GetChunks(), session.GetLighting(), session.GetEnviroment(),
+      *generalBucket_, *blockBucket_);
 
   entityRenderSystem_ = std::make_unique<EntityRenderSystem>(*modelCache_, *billboardsAtlas_);
   materialManager_ = std::make_unique<MaterialManager>(device, *textureManager_);
@@ -81,6 +80,12 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
   uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());
   ui_->Push(core::kAssetsPrefix + "ui/hud.xml");
+
+  if (auto* el = ui_->FindElement("hpBar")) {
+    if (el->GetNodeType() == UiElementType::Bar) {
+      hpBar_ = reinterpret_cast<UiBar*>(el);
+    }
+  }
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {
@@ -93,20 +98,20 @@ void RenderWorld::UpdateParticles(float dt, uint32_t frameIndex) {
 
 void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
                                  float screenH, const gm::Enviroment& enviroment) {
-  glm::mat4 view = camera.view();
+  glm::mat4 view = camera.GetView();
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;
 
   const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.6f, -0.35f, -0.5f));
 
-  shadowCtxt_->UpdateLightMatrix(sunDir, camera.pos());
+  shadowCtxt_->UpdateLightMatrix(sunDir, camera.GetPos());
 
   UniformGameData data = {};
   data.proj = proj;
   data.view = view;
   data.projView = proj * view;
-  data.cameraPos = camera.pos();
-  data.cameraDir = camera.forward();
+  data.cameraPos = camera.GetPos();
+  data.cameraDir = camera.GetForward();
   data.ambientColor = enviroment.GetColor();  // glm::vec3(0.05f, 0.065f, 0.12f);
   data.fogDensity = 0.015f;
   data.lightProjView = shadowCtxt_->lightViewProj();
@@ -118,19 +123,19 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
                          const core::Camera& camera) {
   gameDataBinding_->Bind(cmd, frameIndex);
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Solid);
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Cutout);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Solid);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Cutout);
 
-  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Solid, frameIndex);
-  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Cutout, frameIndex);
+  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Solid, frameIndex);
+  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Cutout, frameIndex);
 
   modelRenderer_->Render(cmd, frameIndex);
 
   skyboxRenderer_->BindPipeline(cmd);
   skyboxRenderer_->Draw(cmd, *nightSkybox_);
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.pos(), RenderLayer::Translucent);
-  billboardRenderer_->Render(cmd, camera.pos(), RenderLayer::Translucent, frameIndex);
+  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Translucent);
+  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Translucent, frameIndex);
 
   ui_->Render(cmd, frameIndex);
 }

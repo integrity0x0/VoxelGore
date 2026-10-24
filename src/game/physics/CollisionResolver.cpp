@@ -294,8 +294,8 @@ std::optional<RayCastHit> CollisionResolver::Raycast(const glm::vec3& origin, co
   }
 
   auto& storage = registry.Storage<HitboxComponent>();
-  auto& hitboxes = storage.denseComponents();
-  const auto& entities = storage.denseEntities();
+  auto& hitboxes = storage.GetDenseComponents();
+  const auto& entities = storage.GetDenseEntities();
 
   for (size_t i = 0; i < hitboxes.size(); ++i) {
     const HitboxComponent& hb = hitboxes[i];
@@ -326,7 +326,7 @@ bool CollisionResolver::CanPlaceBlock(const glm::ivec3& position,
 
   auto& storage = components.Storage<gm::HitboxComponent>();
 
-  for (const gm::EntityId entity : storage.denseEntities()) {
+  for (const gm::EntityId entity : storage.GetDenseEntities()) {
     const auto& hitbox = storage.Get(entity);
 
     if (!hitbox) {

@@ -28,7 +28,7 @@ class AndroidMaterialReader : public tinyobj::MaterialReader {
       return false;
     }
 
-    const size_t size = static_cast<size_t>(AAsset_getLength(asset));
+    const size_t GetSize = static_cast<size_t>(AAsset_getLength(asset));
     const char* data = static_cast<const char*>(AAsset_getBuffer(asset));
 
     if (!data) {
@@ -37,7 +37,7 @@ class AndroidMaterialReader : public tinyobj::MaterialReader {
       return false;
     }
 
-    std::string mtlData(data, size);
+    std::string mtlData(data, GetSize);
     AAsset_close(asset);
 
     std::istringstream stream(mtlData);
@@ -68,7 +68,7 @@ std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
     throw std::runtime_error("Failed to open model asset: " + std::string(path));
   }
 
-  const size_t size = static_cast<size_t>(AAsset_getLength(asset));
+  const size_t GetSize = static_cast<size_t>(AAsset_getLength(asset));
   const char* data = static_cast<const char*>(AAsset_getBuffer(asset));
 
   if (!data) {
@@ -76,7 +76,7 @@ std::optional<Model> ModelLoader::Load(ModelId id, const vkcore::Device& device,
     throw std::runtime_error("Failed to read model asset: " + std::string(path));
   }
 
-  std::string modelData(data, size);
+  std::string modelData(data, GetSize);
   AAsset_close(asset);
 
   std::istringstream stream(modelData);

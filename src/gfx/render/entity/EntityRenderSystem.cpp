@@ -1,4 +1,5 @@
 #include "EntityRenderSystem.h"
+#include "../../../game/entity/HealthComponent.h"
 
 namespace gfx {
 EntityRenderSystem::EntityRenderSystem(ModelCache& modelCache, Atlas& generalAtlas)
@@ -17,8 +18,8 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
   auto& healthStorage = registry.Storage<gm::HealthComponent>();
   auto& bleedStorage = registry.Storage<gm::BleedComponent>();
 
-  const auto& entities = renderStorage.denseEntities();
-  auto& components = renderStorage.denseComponents();
+  const auto& entities = renderStorage.GetDenseEntities();
+  auto& components = renderStorage.GetDenseComponents();
   const auto& em = world.entities();
 
   for (size_t i = 0; i < entities.size(); ++i) {

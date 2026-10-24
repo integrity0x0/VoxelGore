@@ -11,7 +11,7 @@ class PhysicsSystem {
   explicit PhysicsSystem(CollisionResolver& resolver) : resolver_(&resolver) {}
 
   void Update(ComponentRegistry& registry, float dt) {
-    auto& hitboxes = registry.Storage<HitboxComponent>().denseComponents();
+    auto& hitboxes = registry.Storage<HitboxComponent>().GetDenseComponents();
 
     for (size_t i = 0; i < hitboxes.size(); ++i) {
       resolver_->Collision(hitboxes[i], dt);

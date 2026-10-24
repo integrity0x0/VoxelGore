@@ -3,6 +3,7 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace core {
 
@@ -30,22 +31,27 @@ class Camera {
     viewDirty_ = true;
   }
 
-  [[nodiscard]] const glm::vec3& pos() const {
+  [[nodiscard]] const glm::vec3& GetPos() const {
     return pos_;
   }
 
-  [[nodiscard]] const glm::vec3& forward() const {
+  [[nodiscard]] const glm::vec3& GetForward() const {
     return forward_;
   }
 
-  [[nodiscard]] const glm::vec3& right() const {
+  [[nodiscard]] const glm::vec3& GetRight() const {
     return right_;
   }
 
-  [[nodiscard]] const glm::vec3& up() const { return up_; }
+  [[nodiscard]] const glm::vec3& GetUp() const { return up_; }
 
-  [[nodiscard]] float yaw() const { return yaw_; }
-  [[nodiscard]] float pitch() const { return pitch_; }
+  [[nodiscard]] float GetYaw() const { return yaw_; }
+  [[nodiscard]] float GetPitch() const { return pitch_; }
+
+  void SetRoll(float radians) {
+    roll_ = radians;
+    viewDirty_ = true;
+  }
 
   void LookAt(const glm::vec3& eye, const glm::vec3& target) {
     pos_ = eye;
@@ -55,7 +61,7 @@ class Camera {
     viewDirty_ = true;
   }
 
-  [[nodiscard]] glm::mat4 view() const { 
+  [[nodiscard]] const glm::mat4& GetView() const { 
     if (viewDirty_) UpdateView(); 
     return view_; 
   }
@@ -68,6 +74,7 @@ class Camera {
   glm::vec3 up_ = {0.0f, 1.0f, 0.0f};
   float yaw_ = 0.0f;
   float pitch_ = 0.0f;
+  float roll_ = 0.0f;
   glm::vec3 forward_ = {};
   glm::vec3 right_ = {};
   mutable glm::mat4 view_ = glm::mat4(1.0f);

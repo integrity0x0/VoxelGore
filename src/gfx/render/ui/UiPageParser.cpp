@@ -273,8 +273,16 @@ std::optional<UiImagePath> ParseImageRegion(std::string_view text) {
 std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
                                             const UiImagePath& path) {
   if (path.path.empty()) return std::nullopt;
-  std::string pathStr = util::NormalizePath(ctxt.assetRoot + path.path);
-  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Load(pathStr));
+
+  std::string key;
+  if (path.path.front() == '@') {
+    key = path.path.substr(1);
+    if (key.empty()) return std::nullopt;
+  } else {
+    key = util::NormalizePath(ctxt.assetRoot + path.path);
+  }
+
+  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Load(key));
   if (!material) return std::nullopt;
 
   UiTextureRegion result{

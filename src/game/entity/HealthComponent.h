@@ -19,6 +19,10 @@ struct HealthComponent {
     hurtFlash = kHurtFlashDuration;
   }
 
+  void Revive() {
+    current = max;
+  }
+
   void Heal(float amount) { current = std::min(max, current + amount); }
 };
 

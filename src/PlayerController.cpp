@@ -7,10 +7,12 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+
 #include "gfx/render/particle/ParticleEngine.h"
 #include "WorldSession.h"
 #include "game/entity/BleedComponent.h"
-
+#include "game/entity/HealthComponent.h"
+#include "game/entity/PlayerComponent.h"
 
 namespace gm {
 
@@ -19,18 +21,22 @@ PlayerController::PlayerController(WorldSession& session, const glm::vec3& spawn
   playerEntity_ = session.GetWorld().CreateEntity();
   session.components().Storage<HitboxComponent>().Add(playerEntity_.id,
                                                       HitboxComponent{
-                                                          .pos = spawnPos,
+                                                          .pos = kSpawnpoint,
                                                           .size = glm::vec3(0.6f, 1.8f, 0.6f),
                                                           .vel = glm::vec3(0.0f),
                                                       });
+
+  session.components().Storage<HealthComponent>().Add(playerEntity_.id, HealthComponent{});
+  session.components().Storage<PlayerComponent>().Add(playerEntity_.id,
+                                                      PlayerComponent(kSpawnpoint));
   camera_.LookAt(spawnPos, spawnPos + glm::vec3(1, 0, 0));
 }
 
-HitboxComponent& PlayerController::hitbox() {
+HitboxComponent& PlayerController::GetHitbox() {
   return *session_->components().Storage<HitboxComponent>().Get(playerEntity_.id);
 }
 
-const HitboxComponent& PlayerController::hitbox() const {
+const HitboxComponent& PlayerController::GetHitbox() const {
   return *session_->components().Storage<HitboxComponent>().Get(playerEntity_.id);
 }
 
@@ -70,10 +76,10 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
 #endif
 
 void PlayerController::UpdateMovement(ControlState& control, float /*dt*/) {
-  auto& hb = hitbox();
+  auto& hb = GetHitbox();
 
-  glm::vec3 flatForward(cosf(glm::radians(camera_.yaw())), 0.0f, sinf(glm::radians(camera_.yaw())));
-  glm::vec3 flatRight = glm::normalize(glm::cross(flatForward, camera_.up()));
+  glm::vec3 flatForward(cosf(glm::radians(camera_.GetYaw())), 0.0f, sinf(glm::radians(camera_.GetYaw())));
+  glm::vec3 flatRight = glm::normalize(glm::cross(flatForward, camera_.GetUp()));
   glm::vec3 moveDir = flatForward * static_cast<float>(control.move.z) +
                       flatRight * static_cast<float>(control.move.x);
 
@@ -90,15 +96,23 @@ void PlayerController::UpdateMovement(ControlState& control, float /*dt*/) {
 }
 
 void PlayerController::UpdateCamera(float dt) {
-  auto& hb = hitbox();
+  auto& hb = GetHitbox();
   cameraShake_.Update(dt, hb.vel * glm::vec3(1, 0, 1), hb.grounded);
-  camera_.SetPos(
-      hb.pos + glm::vec3(0.0f, kEyeHeight, 0.0f) * 0.5f + cameraShake_.getPositionOffset());
+
+  const glm::vec3 off = cameraShake_.GetPositionOffset();
+  const glm::vec3& fwd = camera_.GetForward();
+  const glm::vec3& right = camera_.GetRight();
+  const glm::vec3 up = glm::cross(right, fwd);
+
+  const glm::vec3 shakeWorld = right * off.x + up * off.y + fwd * off.z;
+
+  camera_.SetPos(hb.pos + glm::vec3(0.0f, kEyeHeight * 0.5f, 0.0f) + shakeWorld);
+  camera_.SetRoll(cameraShake_.GetRoll());
 }
 
 void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* particles) {
   auto hit =
-      session.collision().Raycast(camera_.pos(), camera_.forward(), session.components(),
+      session.collision().Raycast(camera_.GetPos(), camera_.GetForward(), session.components(),
                                          kReachDistance);
   if (!hit) return;
 
@@ -116,10 +130,10 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
       bleed->normal = hit->normal;
     }
 
-    glm::vec3 dir = hb->pos - hitbox().pos;
+    glm::vec3 dir = hb->pos - GetHitbox().pos;
     dir.y = 0.0f;
     if (glm::length2(dir) < 0.0001f) {
-      dir = camera_.forward();
+      dir = camera_.GetForward();
       dir.y = 0.0f;
     }
     dir = glm::normalize(dir);
@@ -143,7 +157,7 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
 
 void PlayerController::TryPlace(WorldSession& session, uint32_t blockId) {
   auto hit =
-      session.collision().Raycast(camera_.pos(), camera_.forward(), session.components(),
+      session.collision().Raycast(camera_.GetPos(), camera_.GetForward(), session.components(),
                                          kReachDistance);
   if (!hit) return;
 
@@ -151,6 +165,38 @@ void PlayerController::TryPlace(WorldSession& session, uint32_t blockId) {
   if (!session.collision().CanPlaceBlock(placePos, session.components())) return;
 
   session.SetVoxel(placePos, static_cast<uint16_t>(blockId));
+}
+
+void PlayerController::UpdateDamage(float dt) {
+  auto& hb = GetHitbox();
+  auto* hl = session_->components().Storage<HealthComponent>().Get(playerEntity_.id);
+  if (!hl) return;
+
+  constexpr glm::vec3 kDown{0.0f, -1.0f, 0.0f};
+
+  if (hb.pos.y < 0.0f) {
+    constexpr float kVoidDps = 25.0f;
+    hl->Damage(kVoidDps * dt);
+  }
+
+  if (!hb.grounded) {
+    if (wasGrounded_) {
+      fallStartY_ = hb.pos.y;
+    }
+  } else if (!wasGrounded_) {
+    const float fallDistance = fallStartY_ - hb.pos.y;
+    if (fallDistance > kSafeFall) {
+      const float damage = (fallDistance - kSafeFall) * kDamagePerBlock;
+      hl->Damage(damage);
+
+      float traumaAmount = glm::clamp(damage / hl->max * 1.5f, 0.1f, 0.7f);
+      cameraShake_.Impulse(kDown, 2.0f + damage * 0.05f, traumaAmount);
+    } else if (fallDistance > 1.5f) {
+      cameraShake_.Impulse(kDown, fallDistance * 0.4f, 0.0f);
+    }
+  }
+
+  wasGrounded_ = hb.grounded;
 }
 
 }  // namespace gm

@@ -3,6 +3,7 @@
 #include <charconv>
 #include <iostream>
 
+#include "game/entity/HealthComponent.h"
 #include "core/PathPrefixes.h"
 
 #ifdef __ANDROID__
@@ -53,6 +54,14 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
   frameTime_ = 1.0f / static_cast<float>(refreshRate);
 
   Init();
+
+  if (auto* bar = render_->GetHpBar()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      bar->SetValue(hp->current);
+      bar->SetMax(hp->max);
+    }
+  }
 
   glfwSetInputMode(window_->window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
@@ -155,7 +164,7 @@ void Game::UpdateInput() {
   player_->HandleInput(*window_, controlState_, cursorLocked_);
   if (true) {
     auto cameraSwipe = render_->GetUi().RouteInput(window_->input().GetState());
-    player_->camera().Rotate(window_->input().GetState().GetCursorDeltaX(),
+    player_->GetCamera().Rotate(window_->input().GetState().GetCursorDeltaX(),
                              window_->input().GetState().GetCursorDeltaY());
   }
 
@@ -250,11 +259,19 @@ bool Game::Frame(const core::InputState& inputState) {
   }
 
   session_->Update(dt_);
+
+  if (auto* bar = render_->GetHpBar()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      bar->SetValue(hp->current);
+    }
+  }
+
   render_->UpdateDirty(cmd, frame);
   render_->GetUi().UpdateLayout();
   std::ignore = render_->GetUi().RouteInput(window_->input().GetState());
   player_->UpdateCamera(dt_);
-
+  player_->UpdateDamage(dt_);
   const float screenW = static_cast<float>(engine_->extent().width);
   const float screenH = static_cast<float>(engine_->extent().height);
   
@@ -262,14 +279,14 @@ bool Game::Frame(const core::InputState& inputState) {
 
   render_->UpdateParticles(dt_, frame);
 
-  render_->UpdateGameData(frame, player_->camera(), screenW, screenH, session_->GetEnviroment());
+  render_->UpdateGameData(frame, player_->GetCamera(), screenW, screenH, session_->GetEnviroment());
 
   render_->RenderShadowPass(cmd, frame);
 
   engine_->BeginRenderPass(imageIndex, 0.53f, 0.81f, 0.92f);
   SetViewportAndScissor(cmd);
 
-  render_->Render(cmd, dt_, frame, player_->camera());
+  render_->Render(cmd, dt_, frame, player_->GetCamera());
 
   crosshairPipeline_->Bind(cmd);
   engine_->getDevice().GetDispatchTable().vkCmdDraw(cmd, 4, 1, 0, 0);

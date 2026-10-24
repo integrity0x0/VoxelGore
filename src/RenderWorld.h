@@ -55,6 +55,8 @@ class RenderWorld {
   void CollectEntities(uint32_t frameIndex);
 
   gfx::Ui& GetUi() { return *ui_; }
+
+  UiBar* GetHpBar() { return hpBar_; }
  private:
   static inline std::string kBlankTexturePath = core::kAssetsPrefix + "images/blank.png";
   static constexpr std::string_view kBlankTextureKey = "blank";
@@ -78,6 +80,7 @@ class RenderWorld {
   std::unique_ptr<MaterialManager> materialManager_;
   std::unique_ptr<Ui> ui_;
   std::unique_ptr<UiLibrary> uiLib_;
+  UiBar* hpBar_ = nullptr;
 };
 
 }  // namespace gfx

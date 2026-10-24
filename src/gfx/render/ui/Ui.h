@@ -22,6 +22,8 @@ class Ui {
   void Pop();
 
   void Clear();
+  
+  UiElement* FindElement(std::string_view id);
 
   void Render(VkCommandBuffer cmd, uint32_t currentFrame);
 
