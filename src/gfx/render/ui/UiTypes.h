@@ -76,6 +76,7 @@ enum class UiStateFlags : uint32_t {
   Hovered = 1 << static_cast<uint32_t>(UiState::Hovered),
   Held = 1 << static_cast<uint32_t>(UiState::Held),
   Checked = 1 << static_cast<uint32_t>(UiState::Checked),
+  All = UINT32_MAX
 };
 
 constexpr UiStateFlags operator&(UiStateFlags first, UiStateFlags second) {
@@ -116,18 +117,53 @@ enum class UiEventType {
   Count
 };
 
+enum class UiFillFrom {
+  Left, Right, Top, Bottom, CenterX, CenterY, Count
+};
+
+struct UiResolvedVisual {
+  glm::vec4 color{1.0f}, bgColor{0.0f}, borderColor{1.0f}, fillColor{1.0f};
+  float radius = 0.0f, bgRadius = 0.0f, fillRadius, borderWidth = 0.0f, scale = 1.0f;
+  std::optional<UiTextureRegion> src, bgImage, borderImage, fillImage;
+  UiFillFrom fillFrom = UiFillFrom::Left;
+};
+
 struct UiVisualProps {
-  std::optional<glm::vec4> color, bgColor;
-  std::optional<float> radius, bgRadius, scale;
-  std::optional<UiTextureRegion> src, bgImage;
+  std::optional<glm::vec4> color, bgColor, borderColor, fillColor;
+  std::optional<float> radius, bgRadius, borderWidth, scale, fillRadius;
+  std::optional<UiTextureRegion> src, bgImage, borderImage, fillImage;
+  std::optional<UiFillFrom> fillFrom;
+
   void MergeFrom(const UiVisualProps& o) {
     if (o.color) color = o.color;
     if (o.bgColor) bgColor = o.bgColor;
+    if (o.borderColor) borderColor = o.borderColor;
     if (o.radius) radius = o.radius;
     if (o.bgRadius) bgRadius = o.bgRadius;
+    if (o.borderWidth) borderWidth = o.borderWidth;
     if (o.scale) scale = o.scale;
     if (o.src) src = o.src;
     if (o.bgImage) bgImage = o.bgImage;
+    if (o.borderImage) borderImage = o.borderImage;
+    if (o.fillFrom) fillFrom = o.fillFrom;
+    if (o.fillColor) fillColor = o.fillColor;
+    if (o.fillImage) fillImage = o.fillImage;
+  }
+
+  void ApplyTo(UiResolvedVisual& r) const {
+    if (color) r.color = *color;
+    if (bgColor) r.bgColor = *bgColor;
+    if (borderColor) r.borderColor = *borderColor;
+    if (radius) r.radius = *radius;
+    if (bgRadius) r.bgRadius = *bgRadius;
+    if (borderWidth) r.borderWidth = *borderWidth;
+    if (scale) r.scale = *scale;
+    if (src) r.src = src;
+    if (bgImage) r.bgImage = bgImage;
+    if (borderImage) r.borderImage = borderImage;
+    if (fillColor) r.fillColor = *fillColor;
+    if (fillImage) r.fillImage = *fillImage;
+    if (fillRadius) r.fillRadius = *fillRadius;
   }
 };
  
@@ -151,6 +187,13 @@ struct UiStyle {
   UiVisualProps visualProps;
   UiLayoutProps layoutProps;
   UiStateOverrides stateOverrides;
+
+  void MergeFrom(const UiStyle& o) {
+    visualProps.MergeFrom(o.visualProps);
+    layoutProps.MergeFrom(o.layoutProps);
+    for (size_t i = 0; i < stateOverrides.size(); ++i)
+      stateOverrides[i].MergeFrom(o.stateOverrides[i]);
+  }
 };
 
 

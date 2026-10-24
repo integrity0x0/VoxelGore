@@ -3,10 +3,11 @@
 #include "UiElement.h"
 
 namespace gfx {
-class UiImage : public UiElement {
+class UiImage final : public UiElement {
  public:
   UiImage(std::string_view id, const UiElement* parent)
       : UiElement(id, parent) {}
+  [[nodiscard]] UiElementType GetNodeType() const override { return UiElementType::Image; }
 
   const std::optional<UiTextureRegion>& GetSrc() const {
     return src_;
@@ -16,7 +17,6 @@ class UiImage : public UiElement {
     src_ = src;
   }
 
-  void Render(UiRenderer& renderer) override;
  private:
   std::optional<UiTextureRegion> src_;
 };

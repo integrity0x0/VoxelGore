@@ -80,7 +80,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session,
                            *shaderCompiler_, luaState, *materialManager_, engine.GetFramesCount());
   uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());
-  ui_->Push(core::kAssetsPrefix + "ui/game.xml");
+  ui_->Push(core::kAssetsPrefix + "ui/hud.xml");
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {

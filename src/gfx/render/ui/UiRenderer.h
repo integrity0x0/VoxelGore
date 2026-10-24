@@ -12,6 +12,8 @@
 namespace gfx {
 class UiRenderer {
  public:
+  static constexpr float kNoBorder = -1.0f;
+
   struct PushData {
     glm::vec2 ndcScale;
   };
@@ -30,7 +32,7 @@ class UiRenderer {
         {reinterpret_cast<const std::byte*>(&pushData), sizeof(PushData)});
   }
   void Submit(glm::vec2 pos, glm::vec2 size, const std::optional<UiTextureRegion>& texture,
-              const glm::vec4& color, float radius = 0.0f, float borderWidth = -1.0f);
+              const glm::vec4& color, float radius = 0.0f, float borderWidth = kNoBorder);
   void Render();
 
 private:

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <tinyxml2.h>
-
 #include <unordered_map>
 
 #include "../../../util/hashers.h"
@@ -10,9 +9,9 @@
 #include "UiCheckbox.h"
 #include "UiElement.h"
 #include "UiPage.h"
-#include "UiStateTable.h"
 #include "UiText.h"
 #include "UiImage.h"
+#include "UiBar.h"
 
 namespace gfx {
 enum class UiSeverity { Error, Warning };
@@ -53,45 +52,56 @@ class UiPageParser {
             const std::string& assetRoot)
         : luaState(luaState), materialManager(materialManager), assetRoot(assetRoot) {}
   };
+
+  struct ParsingState {
+    Context ctxt;
+    UiPageParseResult result;
+    std::unordered_map<std::string, UiStyle> styles;
+
+    ParsingState(Context ctxt) : ctxt(ctxt) {}
+  };
+
   UiPageParser() = delete;
 
   [[nodiscard]] static UiPageParseResult Parse(std::string_view xmlPath, const Context& ctxt);
 
  private:
+
   [[nodiscard]] static std::optional<std::string> ParsePageAttributes(
       const tinyxml2::XMLElement* element, UiPageProps& props,
-      UiPageParseResult& result);
+      ParsingState& state);
 
-  [[nodiscard]] static std::unique_ptr<UiElement> ParseElement(const Context& ctxt,
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseElement(UiPageParser::ParsingState& st,
                                                                const tinyxml2::XMLElement* element,
-                                                               const UiElement* parent,
-                                                               UiPageParseResult& result);
+                                                               const UiElement* parent);
+
+  static void ParseStyles(const tinyxml2::XMLElement& xml, ParsingState& state);
 
   [[nodiscard]] static std::unique_ptr<UiElement> ParseContainer(
-      const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
-      UiPageParseResult& result);
+      UiPageParser::ParsingState& st, const tinyxml2::XMLElement* element, const UiElement* parent);
 
-   [[nodiscard]] static std::unique_ptr<UiElement> ParseImage(
-      const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
-      UiPageParseResult& result);
+   [[nodiscard]] static std::unique_ptr<UiElement> ParseImage(UiPageParser::ParsingState& st,
+                                                             const tinyxml2::XMLElement* element,
+                                                             const UiElement* parent);
 
-  [[nodiscard]] static std::unique_ptr<UiElement> ParseButton(const Context& ctxt,
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseButton(UiPageParser::ParsingState& st,
                                                               const tinyxml2::XMLElement* element,
-                                                              const UiElement* parent,
-                                                              UiPageParseResult& result);
+                                                              const UiElement* parent);
 
-  [[nodiscard]] static std::unique_ptr<UiCheckbox> ParseCheckbox(
-      const Context& ctxt, const tinyxml2::XMLElement* element, const UiElement* parent,
-      UiPageParseResult& result);
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseCheckbox(
+      UiPageParser::ParsingState& st, const tinyxml2::XMLElement* element, const UiElement* parent);
 
-  [[nodiscard]] static std::unique_ptr<UiElement> ParseText(const Context& ctxt,
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseBar(
+      UiPageParser::ParsingState& st, const tinyxml2::XMLElement* element, const UiElement* parent);
+
+
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseText(UiPageParser::ParsingState& st,
                                                             const tinyxml2::XMLElement* element,
-                                                            const UiElement* parent,
-                                                            UiPageParseResult& result);
-
+                                                            const UiElement* parent);
  private:
-  using ElementParserFn = std::unique_ptr<UiElement> (*)(const Context& ctxt, const tinyxml2::XMLElement*,
-                                                         const UiElement*, UiPageParseResult&);
+  using ElementParserFn = std::unique_ptr<UiElement> (*)(ParsingState& st, const tinyxml2::XMLElement*,
+                                                         const UiElement*);
   static const std::unordered_map<std::string, ElementParserFn> kElementParsers;
+  
 };
 }  // namespace gfx

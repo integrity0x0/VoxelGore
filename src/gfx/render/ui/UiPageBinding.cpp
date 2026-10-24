@@ -17,7 +17,7 @@ UiPage* CheckPage(lua_State* L, int index = 1) {
   return *userdata;
 }
 
-void SetFunction(lua_State* L, int table, const char* name, lua_CFunction function) {
+void SetFunction(lua_State* L, int table, const char* name, lua_CFunction function) {  
   table = AbsIndex(L, table);
   lua_pushcfunction(L, function);
   lua_setfield(L, table, name);

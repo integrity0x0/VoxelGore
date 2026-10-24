@@ -11,6 +11,10 @@ class UiContainer : public UiElement {
   UiContainer(std::string_view id, const UiElement* parent) : UiElement(id, parent) {}
   ~UiContainer() override {}
 
+  [[nodiscard]] virtual UiElementType GetNodeType() const override {
+    return UiElementType::Container;
+  }
+
   [[nodiscard]] std::span<const std::unique_ptr<UiElement>> GetChildren() const override {
     return children_;
   }

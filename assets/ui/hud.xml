@@ -1,0 +1,99 @@
+<page id="hud" input-mode="passthrough" script="ui/game.xml.lua">
+	<styles>
+		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
+
+		<style name="btn" extends="panel" pivot="center">
+			<state name="hover" border-color="#8BB4C850"/>
+			<state name="held" scale="0.75"/>
+		</style>
+		<style name="topBtn" extends="btn" size="47" radius="11"/>
+		<style name="slot" extends="btn" size="48" radius="8" color="#01020464"/>
+		<style name="slotSelected" extends="slot" color="#080D146D" border-color="#F0D04B">
+			<state name="hover" border-color="#FFE066"/>
+		</style>
+
+		<style name="chip" extends="panel" size="85, 40" radius="9"/>
+		<style name="coin" anchor="left, center" pos="11, 0" size="19" radius="9.5" border="1"/>
+		<style name="coinGold" extends="coin" color="#BC9D3613" border-color="#BC9D3630"/>
+		<style name="coinGem" extends="coin" color="#3D8DB112" border-color="#4999B630"/>
+
+		<style name="icon" anchor="center" size="22"/>
+
+		<style name="gridLine" anchor="center" color="#6291A917"/>
+		<style name="mapDot" size="5" radius="2.5" color="#87A9B82D"/>
+
+		<style name="statRow" size="200, 19"/>
+		<style name="statIcon" size="19"/>
+		<style name="statBar" pos="24, 3" size="176, 13" radius="3" padding="1"
+			bg-color="#05070B" color="#05070B" border="1" border-color="#35404F"
+			fill-radius="2" fill-from="left"/>
+	</styles>
+
+	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
+		<button id="btnSettings" style="topBtn" pos="23.5, 23.5">
+			<image style="icon" src="images/settings_gear.png" interactive="false"/>
+		</button>
+		<button id="btnChat" style="topBtn" pos="77.5, 23.5">
+			<image style="icon" src="images/chat.png" interactive="false"/>
+		</button>
+		<button id="btnFriends" style="topBtn" pos="131.5, 23.5">
+			<image style="icon" src="images/friends.png" interactive="false"/>
+		</button>
+		<button id="btnRating" style="topBtn" pos="185.5, 23.5">
+			<image style="icon" src="images/star.png" interactive="false"/>
+		</button>
+	</container>
+
+	<container id="currency" anchor="right, top" pos="-14, 13" size="229, 40" visible="false">
+		<container id="money" style="chip">
+			<container style="coinGold"/>
+		</container>
+		<container id="gems" style="chip" pos="93, 0">
+			<container style="coinGem"/>
+		</container>
+		<button id="shop" style="btn" pos="207.5, 20" size="43, 40" radius="9">
+			<image style="icon" src="images/shop.png" interactive="false"/>
+		</button>
+	</container>
+
+	<container id="minimap" style="panel" anchor="right, top" pos="-18, 82" size="132" radius="66">
+		<container anchor="center" size="104" radius="52"
+			color="#6291A909" border="1" border-color="#6291A914"/>
+		<container id="mapGrid" anchor="center" size="104" radius="52" visible="false">
+			<container style="gridLine" size="104, 1"/>
+			<container style="gridLine" size="1, 104"/>
+			<container style="mapDot" pos="30%, 31%"/>
+			<container style="mapDot" pos="68%, 38%"/>
+			<container style="mapDot" pos="61%, 71%"/>
+		</container>
+		<container id="playerMarker" anchor="center" size="9" radius="4.5" color="#55D67C"/>
+	</container>
+
+	<container id="bottom" anchor="center, bottom" pos="0, -18" size="420, 109" visible="false">
+		<container id="stats" size="420, 44" visible="false">
+			<container id="hp" style="statRow" visible="false">
+				<image style="statIcon" src="images/heart.png" interactive="false"/>
+				<bar id="hpBar" style="statBar" fill-color="#FF1738"/>
+			</container>
+			<container id="armor" style="statRow" pos="220, 0" visible="false">
+				<image style="statIcon" src="images/armor.png" interactive="false"/>
+				<bar id="armorBar" style="statBar" fill-color="#168BFF"/>
+			</container>
+			<container id="thirst" style="statRow" pos="0, 24" visible="false">
+				<image style="statIcon" src="images/thirst.png" interactive="false"/>
+				<bar id="thirstBar" style="statBar" fill-color="#00D9FF"/>
+			</container>
+		</container>
+
+		<container id="hotbar" style="panel" anchor="center, top" pos="0, 51" size="420, 58" radius="9">
+			<button id="slot0" style="slotSelected" pos="29, 29"/>
+			<button id="slot1" style="slot" pos="81, 29"/>
+			<button id="slot2" style="slot" pos="133, 29"/>
+			<button id="slot3" style="slot" pos="185, 29"/>
+			<button id="slot4" style="slot" pos="237, 29"/>
+			<button id="slot5" style="slot" pos="289, 29"/>
+			<button id="slot6" style="slot" pos="341, 29"/>
+			<button id="more" style="slot" pos="392, 28" size="46"/>
+		</container>
+	</container>
+</page>

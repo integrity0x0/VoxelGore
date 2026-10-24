@@ -19,11 +19,11 @@ UiCameraSwipe UiInputRouter::RouteInput(const core::InputState& input,
 void UiInputRouter::UpdateHover(UiElement* newHovered, UiEventQueue& queue) {
   if (newHovered == hovered_) return;
   if (hovered_) {
-    hovered_->GetStateFlagsRef() &= ~UiStateFlags::Hovered;
+    hovered_->RemoveStateFlags(UiStateFlags::Hovered);
     queue.emplace(UiEventType::Unhovered, *hovered_);
   }
   if (newHovered) {
-    newHovered->GetStateFlagsRef() |= UiStateFlags::Hovered;
+    newHovered->AddStateFlags(UiStateFlags::Hovered);
     queue.emplace(UiEventType::Hovered, *newHovered);
   }
   hovered_ = newHovered;
@@ -79,7 +79,7 @@ void UiInputRouter::BeginTouch(TouchOwner& owner, const core::Pointer& p,
   }
 
   owner = {Role::Element, hit};
-  hit->GetStateFlagsRef() |= UiStateFlags::Held;
+  hit->AddStateFlags(UiStateFlags::Held);
   queue.emplace(UiEventType::Clicked, *hit);
 }
 
@@ -100,7 +100,7 @@ void UiInputRouter::EndTouch(TouchOwner& owner, const core::Pointer& p, UiEventQ
 void UiInputRouter::ReleaseOwner(TouchOwner& owner, bool released, UiEventQueue& queue) {
   if (owner.role == TouchOwner::Role::Element) {
     UiElement& element = *owner.element;
-    element.GetStateFlagsRef() &= ~UiStateFlags::Held;
+    element.RemoveStateFlags(UiStateFlags::Held);
     queue.emplace(released ? UiEventType::Released : UiEventType::Cancelled, element);
   }
   owner = {};
@@ -118,7 +118,7 @@ UiElement* UiInputRouter::HitTest(glm::vec2 pos,
   for (size_t i = elements.size(); i-- > 0;) {
     UiElement& el = *elements[i];
     if (UiElement* child = HitTest(pos, el.GetChildren())) return child;
-    if (el.Contains(pos)) return &el; //TODO: implement interactive flag
+    if (el.Contains(pos) && el.IsEffectivelyInteractive()) return &el; 
   }
   return nullptr;
 }

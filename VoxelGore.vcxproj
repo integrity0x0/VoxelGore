@@ -121,10 +121,10 @@
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiBar.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiContainer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />
-    <ClCompile Include="src\gfx\render\ui\UiImage.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLibrary.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLuaTypes.cpp" />
@@ -133,7 +133,7 @@
     <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderPipeline.cpp" />
-    <ClCompile Include="src\gfx\render\ui\UiStateTable.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiStick.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiText.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiTriggerDispatcher.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -291,6 +291,7 @@
     <ClInclude Include="src\gfx\render\ui\Panel.h" />
     <ClInclude Include="src\gfx\render\ui\TriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\Ui.h" />
+    <ClInclude Include="src\gfx\render\ui\UiBar.h" />
     <ClInclude Include="src\gfx\render\ui\UiButton.h" />
     <ClInclude Include="src\gfx\render\ui\UiCheckbox.h" />
     <ClInclude Include="src\gfx\render\ui\UiContainer.h" />
@@ -304,9 +305,10 @@
     <ClInclude Include="src\gfx\render\ui\UiPage.h" />
     <ClInclude Include="src\gfx\render\ui\UiPageBinding.h" />
     <ClInclude Include="src\gfx\render\ui\UiPageParser.h" />
+    <ClInclude Include="src\gfx\render\ui\UiProp.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderer.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
-    <ClInclude Include="src\gfx\render\ui\UiStateTable.h" />
+    <ClInclude Include="src\gfx\render\ui\UiStick.h" />
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
     <ClInclude Include="src\gfx\render\ui\UiTriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\UiTypes.h" />

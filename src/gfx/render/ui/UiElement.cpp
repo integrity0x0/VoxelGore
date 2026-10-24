@@ -2,35 +2,91 @@
 
 namespace gfx {
 
-UiElement::UiElement(std::string_view id, const UiElement* parent) : id_(id), parent_(parent) {}
+UiRect UiElement::ScaleAround(glm::vec2 pos, glm::vec2 size, glm::vec2 origin, float scale) {
+  return {origin + (pos - origin) * scale, size * scale};
+}
+
+glm::vec2 UiElement::GetPivotPoint() const {
+  const UiRect& r = resolvedLayout_.rect;
+  return {r.pos.x + r.size.x * kAlignmentFactors[static_cast<size_t>(pivot_.x)],
+          r.pos.y + r.size.y * kAlignmentFactors[static_cast<size_t>(pivot_.y)]};
+}
 
 void UiElement::Render(UiRenderer& renderer) {
-  RenderBg(renderer);
-  renderer.Submit(resolvedLayout_.rect.pos, resolvedLayout_.rect.size, std::nullopt, color_,
-                  radius_);
-  RenderBorder(renderer);
+  if (IsEffectivelyVisible()) {
+    RenderBg(renderer);   
+    RenderContent(renderer);
+    RenderBorder(renderer);
+  }
 }
 
 void UiElement::RenderBg(UiRenderer& renderer) {
   if (!padding_) return;
 
+  const UiResolvedVisual& v = GetResolvedVisual();
   const auto& p = resolvedLayout_.padding;
   const auto& r = resolvedLayout_.rect;
 
-  const glm::vec2 pos(r.pos.x - p.left, r.pos.y - p.top);
-  const glm::vec2 size(r.size.x + p.left + p.right, r.size.y + p.top + p.bottom);
+  const glm::vec2 bgPos(r.pos.x - p.left, r.pos.y - p.top);
+  const glm::vec2 bgSize(r.size.x + p.left + p.right, r.size.y + p.top + p.bottom);
 
-  renderer.Submit(pos, size, bgImage_, bgColor_, bgRadius_.value_or(radius_));
+  const auto [pos, size] = ScaleAround(bgPos, bgSize, GetPivotPoint(), v.scale);
+  renderer.Submit(pos, size, v.bgImage, v.bgColor, v.bgRadius * v.scale);
+}
+
+void UiElement::RenderContent(UiRenderer& renderer) {
+  const UiResolvedVisual& v = GetResolvedVisual();
+  const UiRect& r = resolvedLayout_.rect;
+  const auto [pos, size] = ScaleAround(r.pos, r.size, GetPivotPoint(), v.scale);
+  renderer.Submit(pos, size, v.src, v.color, v.radius * v.scale);
 }
 
 void UiElement::RenderBorder(UiRenderer& renderer) {
-  if (!borderWidth_) return;
+  const UiResolvedVisual& v = GetResolvedVisual();
+  if (v.borderWidth <= 0.0f) return;
 
-  const auto& r = resolvedLayout_.rect;
+  const UiRect& r = resolvedLayout_.rect;
 
-  renderer.Submit(r.pos, r.size, borderImage_, borderColor_, radius_, *borderWidth_);
-  
+  const auto [pos, size] = ScaleAround(r.pos, r.size, GetPivotPoint(), v.scale);
+  renderer.Submit(pos, size, v.borderImage, v.borderColor, v.radius * v.scale,
+                  v.borderWidth * v.scale);
 }
+
+void UiElement::ApplyStyle(const UiStyle& s) {
+  MergeBaseVisual(s.visualProps);
+
+  const UiLayoutProps& l = s.layoutProps;
+  if (l.pos) SetPos(*l.pos);
+  if (l.size) SetSize(*l.size);
+  if (l.anchor) SetAnchor(*l.anchor);
+  if (l.pivot) SetPivot(*l.pivot);
+  if (l.padding) SetPadding(*l.padding);
+
+  for (size_t i = 0; i < s.stateOverrides.size(); ++i) {
+    GetStateOverride(static_cast<UiState>(i)).MergeFrom(s.stateOverrides[i]);
+  }
+}
+
+void UiElement::UpdateVisual() const {
+  visualDirty_ = false;
+
+  UiVisualProps merged = baseVisual_;
+  if (parent_) merged.scale = parent_->GetResolvedVisual().scale;
+
+  for (uint32_t i = 0; i < static_cast<uint32_t>(UiState::Count); ++i) {
+    const auto flag = static_cast<UiStateFlags>(1u << i);
+    if (!IsState(flag)) continue;
+
+    merged.MergeFrom(stateOverrides_[i]);
+  }
+
+  UiResolvedVisual r;
+  merged.ApplyTo(r);
+  if (!merged.bgRadius) r.bgRadius = r.radius;
+  if (!merged.fillRadius) r.fillRadius = r.radius;
+  resolvedVisual_ = std::move(r);
+}
+
 void UiElement::UpdateLayout(const UiRect& parentRect) {
   if (layoutDirty_) {
     Relayout(parentRect);
@@ -77,17 +133,18 @@ void UiElement::Relayout(const UiRect& rect) {
                        ? padding_->left.value / 100.0f * rect.size.x
                        : padding_->left.value;
 
-    padding.top = padding_->top.unit == UiUnit::Percent
-                       ? padding_->top.value / 100.0f * rect.size.y
-                       : padding_->top.value;
+    padding.top =
+        padding_->top.unit == UiUnit::Percent ? padding_->top.value / 100.0f * rect.size.y
+                                                        : padding_->top.value;
 
     padding.right = padding_->right.unit == UiUnit::Percent
-                       ? padding_->right.value / 100.0f * rect.size.x
-                       : padding_->right.value;
+                        ? padding_->right.value / 100.0f * rect.size.x
+                        : padding_->right.value;
 
     padding.bottom = padding_->bottom.unit == UiUnit::Percent
-                       ? padding_->bottom.value / 100.0f * rect.size.y
-                       : padding_->bottom.value;
+                         ? padding_->bottom.value / 100.0f * rect.size.y
+                         : padding_->bottom.value;
   }
 }
+
 }  // namespace gfx
