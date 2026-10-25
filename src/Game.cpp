@@ -12,20 +12,6 @@
 #include <GLFW/glfw3.h>
 #endif
 
-namespace {
-
-std::optional<uint32_t> ParseBlockIdFromPreviewSuffix(std::string_view remainder) {
-  const auto dot = remainder.find('.');
-  if (dot == std::string_view::npos) return std::nullopt;
-  if (remainder.substr(dot + 1) != "preview") return std::nullopt;
-
-  uint32_t id = 0;
-  const auto [ptr, ec] = std::from_chars(remainder.data(), remainder.data() + dot, id);
-  return ec == std::errc{} ? std::optional(id) : std::nullopt;
-}
-
-}  // namespace
-
 #ifdef __ANDROID__
 
 Game::Game(android_app* app) {
@@ -42,10 +28,10 @@ Game::Game(android_app* app) {
 Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
   if (!window_) throw std::runtime_error("Game: window is null");
 
-  engine_ = std::make_unique<Engine>(window_->window());
+  engine_ = std::make_unique<Engine>(window_->GetWindow());
   cursorLocked_ = true;
 
-  GLFWmonitor* monitor = glfwGetWindowMonitor(window_->window());
+  GLFWmonitor* monitor = glfwGetWindowMonitor(window_->GetWindow());
   if (!monitor) monitor = glfwGetPrimaryMonitor();
 
   const GLFWvidmode* mode = glfwGetVideoMode(monitor);
@@ -63,7 +49,7 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
     }
   }
 
-  glfwSetInputMode(window_->window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetInputMode(window_->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 #endif
@@ -112,18 +98,7 @@ void Game::Init() {
   session_->entities().Create("barrel", worldCenter + glm::vec3(4.0f));
   session_->entities().Create("integrity", worldCenter + glm::vec3(10.0f));
 
-  blockPreviewRenderer_ = std::make_unique<gfx::BlockPreviewRenderer>(
-      device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(),
-      compiler, render_->GetChunks().GetBlockRenderData());
-
   std::ignore = render_->GetTextures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
-
-  render_->GetTextures().AddResolver(
-      "blocks.", [this](std::string_view remainder) -> std::optional<vkcore::SampledTexture> {
-        const auto id = ParseBlockIdFromPreviewSuffix(remainder);
-        if (!id) return std::nullopt;
-        return blockPreviewRenderer_->Render(*id);
-      });
 
   libControl_.emplace(controlState_, luaState_);
 
@@ -163,9 +138,9 @@ void Game::UpdateInput() {
 #ifndef __ANDROID__
   player_->HandleInput(*window_, controlState_, cursorLocked_);
   if (true) {
-    auto cameraSwipe = render_->GetUi().RouteInput(window_->input().GetState());
-    player_->GetCamera().Rotate(window_->input().GetState().GetCursorDeltaX(),
-                             window_->input().GetState().GetCursorDeltaY());
+    auto cameraSwipe = render_->GetUi().RouteInput(window_->GetInput().GetState());
+    player_->GetCamera().Rotate(window_->GetInput().GetState().GetCursorDeltaX(),
+                             window_->GetInput().GetState().GetCursorDeltaY());
   }
 
 #endif
@@ -184,7 +159,7 @@ void Game::UpdateInput(const std::unordered_map<int32_t, core::Pointer>& touches
 
 bool Game::HandleResize() {
 #ifndef __ANDROID__
-  if (window_->isResized()) {
+  if (window_->IsResized()) {
     engine_->recreateSwapchain();
   }
   
@@ -269,7 +244,7 @@ bool Game::Frame(const core::InputState& inputState) {
 
   render_->UpdateDirty(cmd, frame);
   render_->GetUi().UpdateLayout();
-  std::ignore = render_->GetUi().RouteInput(window_->input().GetState());
+  std::ignore = render_->GetUi().RouteInput(window_->GetInput().GetState());
   player_->UpdateCamera(dt_);
   player_->UpdateDamage(dt_);
   const float screenW = static_cast<float>(engine_->extent().width);

@@ -58,16 +58,27 @@ class InputState {
   void RemovePointer(int32_t pointerId) { pointers_.erase(pointerId); }
 
   void SetCursorPos(float x, float y) {
-    if (!hasCursor_) {
-      cursorDeltaX_ = 0;
-      cursorDeltaY_ = 0;
-      hasCursor_ = true;
-    } else {
-      cursorDeltaX_ = x - cursorPosX_;
-      cursorDeltaY_ = y - cursorPosY_;
+    if (baselineValid_) {
+      cursorDeltaX_ += x - cursorPosX_;
+      cursorDeltaY_ += y - cursorPosY_;
     }
+    baselineValid_ = true;
+    hasCursor_ = true;
     cursorPosX_ = x;
     cursorPosY_ = y;
+  }
+
+  void SetCursorDisabled(bool disabled) {
+    if (cursorDisabled_ == disabled) return;
+    cursorDisabled_ = disabled;
+    baselineValid_ = false;
+    cursorDeltaX_ = cursorDeltaY_ = 0.0f;
+
+    if (disabled) {
+      if (auto it = pointers_.find(kMousePointerId); it != pointers_.end()) {
+        it->second.phase = Pointer::Phase::Cancelled;
+      }
+    }
   }
 
   [[nodiscard]] float GetCursorX() const { return cursorPosX_; }
@@ -75,7 +86,7 @@ class InputState {
   [[nodiscard]] float GetCursorDeltaX() const { return cursorDeltaX_; }
   [[nodiscard]] float GetCursorDeltaY() const { return cursorDeltaY_; }
   [[nodiscard]] bool HasCursor() const { return hasCursor_; }
-
+  [[nodiscard]] bool IsCursorDisabled() const { return cursorDisabled_; }
   void Reset();
 
  private:
@@ -111,6 +122,8 @@ class InputState {
   bool hasCursor_ = false;
   float cursorPosX_ = 0.0f, cursorPosY_ = 0.0f;
   float cursorDeltaX_ = 0.0f, cursorDeltaY_ = 0.0f;
+  bool cursorDisabled_ = false;
+  bool baselineValid_ = false;
 };
 
 }  // namespace core

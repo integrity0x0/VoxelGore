@@ -9,8 +9,10 @@ UiCameraSwipe UiInputRouter::RouteInput(const core::InputState& input,
     ProcessPointer(pointer.first, pointer.second, pages, captured, cameraSwipe, queue);
   }
 
-  if (input.HasCursor()) {
+  if (input.HasCursor() && !input.IsCursorDisabled()) {
     UpdateHover(HitTestPages({input.GetCursorX(), input.GetCursorY()}, pages), queue);
+  } else {
+    UpdateHover(nullptr, queue);
   }
 
   return cameraSwipe;

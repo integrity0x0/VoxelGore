@@ -3,22 +3,29 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include <memory>
+#include <type_traits>
+
 namespace gfx {
 
 class FreeTypeLibrary {
  public:
-  FreeTypeLibrary() : handle_(InitLib()) {}
+  FreeTypeLibrary();
 
-  [[nodiscard]] FT_Library GetHandle() const { return handle_; }
-
-  ~FreeTypeLibrary() { 
-    if (handle_) FT_Done_FreeType(handle_); 
-  }
+  [[nodiscard]] FT_Library GetHandle() const noexcept { return handle_.get(); }
 
  private:
-  [[nodiscard]] FT_Library InitLib();
+  struct FtLibraryDeleter {
+    void operator()(std::remove_pointer_t<FT_Library>* lib) const noexcept {
+      FT_Done_FreeType(lib);
+    }
+  };
+
+  using FtLibraryPtr = std::unique_ptr<std::remove_pointer_t<FT_Library>, FtLibraryDeleter>;
+
+  [[nodiscard]] static FtLibraryPtr InitLib();
 
  private:
-  FT_Library handle_;
+  FtLibraryPtr handle_;
 };
 }  // namespace gfx

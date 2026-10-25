@@ -47,6 +47,7 @@
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\entity\HealthSystem.cpp" />
     <ClCompile Include="src\game\Enviroment.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -73,6 +74,8 @@
     <ClCompile Include="src\game\voxel\BlockParser.cpp" />
     <ClCompile Include="src\game\voxel\Chunk.cpp" />
     <ClCompile Include="src\game\voxel\ChunkManager.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
+    <ClCompile Include="src\gfx\common\font\FreeTypeLibrary.cpp" />
     <ClCompile Include="src\gfx\common\mesh\IndexedMesh.cpp" />
     <ClCompile Include="src\gfx\common\mesh\Mesh.cpp" />
     <ClCompile Include="src\gfx\common\mesh\Model.cpp" />
@@ -183,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="assets\shaders\UniformGameData.glsl" />
     <ClInclude Include="src\game\entity\BleedComponent.h" />
+    <ClInclude Include="src\game\entity\PlayerComponent.h" />
     <ClInclude Include="src\game\Enviroment.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
@@ -229,6 +233,8 @@
     <ClInclude Include="src\game\voxel\Chunk.h" />
     <ClInclude Include="src\game\voxel\ChunkManager.h" />
     <ClInclude Include="src\game\voxel\Voxel.h" />
+    <ClInclude Include="src\gfx\common\font\FontFace.h" />
+    <ClInclude Include="src\gfx\common\font\FreeTypeLibrary.h" />
     <ClInclude Include="src\gfx\common\mesh\IndexedMesh.h" />
     <ClInclude Include="src\gfx\common\mesh\Mesh.h" />
     <ClInclude Include="src\gfx\common\mesh\Model.h" />
@@ -482,7 +488,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;freetype.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -502,7 +508,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;user32.lib;luajit.lib;lua51.lib;minilua.lib;vulkan-1.lib;freetype.lib;shaderc_combined.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>

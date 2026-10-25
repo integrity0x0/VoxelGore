@@ -62,7 +62,6 @@ class Game {
   std::unique_ptr<gm::PlayerController> player_;
 
   std::optional<gm::LibControl> libControl_;
-  std::unique_ptr<gfx::BlockPreviewRenderer> blockPreviewRenderer_;
 
   std::unique_ptr<vkcore::PipelineLayout> crosshairLayout_;
   std::unique_ptr<vkcore::Pipeline> crosshairPipeline_;

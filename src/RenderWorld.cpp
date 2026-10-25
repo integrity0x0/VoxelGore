@@ -6,6 +6,19 @@
 
 namespace gfx {
 
+namespace {
+
+static std::optional<uint32_t> ParseBlockIdFromPreviewSuffix(std::string_view remainder) {
+  auto dot = remainder.find('.');
+  if (dot == std::string_view::npos) return std::nullopt;
+  if (remainder.substr(dot + 1) != "preview") return std::nullopt;
+
+  uint32_t id;
+  auto [ptr, ec] = std::from_chars(remainder.data(), remainder.data() + dot, id);
+  return ec == std::errc{} ? std::optional(id) : std::nullopt;
+}
+}  // namespace
+
 RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaState& luaState,
                          const std::string& assetsPrefix)
     : engine_(&engine), session_(&session) {
@@ -19,6 +32,8 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
 
   textureManager_ =
       std::make_unique<TextureManager>(device, engine.GetTransferContext(), memoryAllocator);
+
+  
 
   shadowCtxt_ = std::make_unique<ShadowContext>(device, memoryAllocator);
   shaderCompiler_->AddDefinition("SHADOWS_ENABLED", "1");
@@ -54,6 +69,17 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
       session.GetWorld().GetChunks(), session.GetLighting(), session.GetBlocks(),
       engine.GetFramesCount());
 
+  blockPreviewRenderer_ = std::make_unique<gfx::BlockPreviewRenderer>(
+      device, engine_->getCommandPool(), engine_->getGraphicsQueue(), engine_->memoryAllocator(),
+      *shaderCompiler_, chunkRenderer_->GetBlockRenderData());
+
+  textureManager_->AddResolver(
+      "blocks.", [this](std::string_view remainder) -> std::optional<vkcore::SampledTexture> {
+        const auto id = ParseBlockIdFromPreviewSuffix(remainder);
+        if (!id) return std::nullopt;
+        return blockPreviewRenderer_->Render(*id);
+      });
+
   billboardRenderer_ = std::make_unique<BillboardRenderer>(device, engine.GetRenderPass(),
                                                            *gameDataBinding_, *shaderCompiler_);
 
@@ -77,6 +103,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
   ui_ =
       std::make_unique<Ui>(device, engine.GetBufferAllocator(), engine.GetRenderPass(),
                            *shaderCompiler_, luaState, *materialManager_, engine.GetFramesCount());
+
   uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());
   ui_->Push(core::kAssetsPrefix + "ui/hud.xml");
@@ -102,7 +129,7 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;
 
-  const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.6f, -0.35f, -0.5f));
+  const glm::vec3 sunDir = glm::normalize(glm::vec3(-0.6f, -0.35f, -0.5f)); 
 
   shadowCtxt_->UpdateLightMatrix(sunDir, camera.GetPos());
 

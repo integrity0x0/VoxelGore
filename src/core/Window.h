@@ -30,26 +30,29 @@ class Window {
   };
   static void Hint(int32_t hint, int32_t value);
 
-  [[nodiscard]] GLFWwindow* window() const { return window_.get(); }
-  [[nodiscard]] InputGlfw& input() { return input_; }
-  [[nodiscard]] const InputGlfw& input() const { return input_; }
-  [[nodiscard]] uint32_t width() const { return width_; }
-  [[nodiscard]] uint32_t height() const { return height_; }
-  [[nodiscard]] float getAspectRatio() const {
+  [[nodiscard]] GLFWwindow* GetWindow() const { return window_.get(); }
+  [[nodiscard]] InputGlfw& GetInput() { return input_; }
+  [[nodiscard]] const InputGlfw& GetInput() const { return input_; }
+  [[nodiscard]] uint32_t GetWidth() const { return width_; }
+  [[nodiscard]] uint32_t GetHeight() const { return height_; }
+  [[nodiscard]] float GetAspectRatio() const {
     return height_ ? static_cast<float>(width_) / static_cast<float>(height_) : 0.0f;
   }
 
-  void setSize(uint32_t width, uint32_t height) {
+  void SetSize(uint32_t width, uint32_t height) {
     width_ = width;
     height_ = height;
     glfwSetWindowSize(window_.get(), static_cast<int>(width), static_cast<int>(height));
   }
+  
+  void SetCursorDisabled(bool disabled);
+  [[nodiscard]] bool IsCursorDisabled() const { return input_.GetState().IsCursorDisabled(); }
 
-  void setTitle(std::string_view title) { glfwSetWindowTitle(window_.get(), title.data()); }
+  void SetTitle(std::string_view title) { glfwSetWindowTitle(window_.get(), title.data()); }
 
   [[nodiscard]] bool IsShouldClose() const { return glfwWindowShouldClose(window_.get()); }
 
-  void setShouldClose(bool close) { glfwSetWindowShouldClose(window_.get(), close); }
+  void SetShouldClose(bool close) { glfwSetWindowShouldClose(window_.get(), close); }
 
   [[nodiscard]] bool IsMinimized() const {
     return glfwGetWindowAttrib(window_.get(), GLFW_ICONIFIED);
@@ -61,25 +64,25 @@ class Window {
 
   [[nodiscard]] bool IsFocused() const { return glfwGetWindowAttrib(window_.get(), GLFW_FOCUSED); }
 
-  void maximize() { glfwMaximizeWindow(window_.get()); }
+  void Maximize() { glfwMaximizeWindow(window_.get()); }
 
-  void minimize() { glfwIconifyWindow(window_.get()); }
+  void Minimize() { glfwIconifyWindow(window_.get()); }
 
-  void restore() { glfwRestoreWindow(window_.get()); }
+  void Restore() { glfwRestoreWindow(window_.get()); }
 
-  void hide() { glfwHideWindow(window_.get()); }
+  void Hide() { glfwHideWindow(window_.get()); }
 
-  void show() { glfwShowWindow(window_.get()); }
+  void Show() { glfwShowWindow(window_.get()); }
 
-  void setPosition(int32_t x, int32_t y) { glfwSetWindowPos(window_.get(), x, y); }
+  void SetPosition(int32_t x, int32_t y) { glfwSetWindowPos(window_.get(), x, y); }
 
-  [[nodiscard]] std::pair<int32_t, int32_t> getPosition() const {
+  [[nodiscard]] std::pair<int32_t, int32_t> GetPosition() const {
     int32_t x = 0, y = 0;
     glfwGetWindowPos(window_.get(), &x, &y);
     return {x, y};
   }
 
-  [[nodiscard]] bool isResized() const { return resized_; }
+  [[nodiscard]] bool IsResized() const { return resized_; }
 
  private:
   std::unique_ptr<GLFWwindow, GLFWwindowDeleter> window_;
@@ -87,7 +90,7 @@ class Window {
   uint32_t width_, height_;
   bool resized_ = false;
 
-  [[nodiscard]] static Window* self(GLFWwindow* w);
+  [[nodiscard]] static Window* GetSelf(GLFWwindow* w);
 
   static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
   static void mouseButtonCallback(GLFWwindow* w, int button, int action, int mods);

@@ -21,6 +21,7 @@
 #include "gfx/render/shadow/ShadowContext.h"
 #include "gfx/render/ui/UiLibrary.h"
 #include "gfx/render/ui/Ui.h"
+#include "gfx/render/block/BlockPreviewRenderer.h"
 
 class Engine;
 
@@ -65,6 +66,7 @@ class RenderWorld {
   std::unique_ptr<ShaderCompiler> shaderCompiler_;
   std::unique_ptr<GameDataBinding> gameDataBinding_;
   std::unique_ptr<TextureManager> textureManager_;
+  std::unique_ptr<BlockPreviewRenderer> blockPreviewRenderer_;
   std::unique_ptr<ShadowContext> shadowCtxt_;
   std::unique_ptr<ChunkRenderer> chunkRenderer_;
   std::unique_ptr<gfx::Atlas> billboardsAtlas_;

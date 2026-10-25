@@ -168,6 +168,9 @@
     <ClCompile Include="src\gfx\render\ui\UiPageBinding.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiBar.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiStick.cpp" />
+    <ClCompile Include="src\gfx\common\font\FreeTypeLibrary.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
+    <ClCompile Include="src\game\entity\HealthSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -360,6 +363,9 @@
     <ClInclude Include="src\gfx\render\ui\UiProp.h" />
     <ClInclude Include="src\gfx\render\ui\UiBar.h" />
     <ClInclude Include="src\gfx\render\ui\UiStick.h" />
+    <ClInclude Include="src\gfx\common\font\FreeTypeLibrary.h" />
+    <ClInclude Include="src\gfx\common\font\FontFace.h" />
+    <ClInclude Include="src\game\entity\PlayerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

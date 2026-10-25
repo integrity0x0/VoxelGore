@@ -282,7 +282,7 @@ std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
     key = util::NormalizePath(ctxt.assetRoot + path.path);
   }
 
-  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Load(key));
+  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Require(key));
   if (!material) return std::nullopt;
 
   UiTextureRegion result{

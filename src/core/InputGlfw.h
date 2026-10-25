@@ -29,7 +29,7 @@ class InputGlfw {
     if (action == GLFW_PRESS) {
       state_.SetMouseButtonState(static_cast<uint32_t>(button), ButtonState::Pressed);
 
-      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+      if (button == GLFW_MOUSE_BUTTON_LEFT && !state_.IsCursorDisabled()) {
         Pointer p;
         p.startX = p.currentX = static_cast<float>(x);
         p.startY = p.currentY = static_cast<float>(y);
@@ -63,6 +63,12 @@ class InputGlfw {
     p.currentX = nx;
     p.currentY = ny;
     if (p.phase == Pointer::Phase::Began) p.phase = Pointer::Phase::Moved;
+  }
+
+  void SetCursorDisabled(GLFWwindow* window, bool disabled) {
+    if (state_.IsCursorDisabled() == disabled) return;
+    glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    state_.SetCursorDisabled(disabled);
   }
 
  private:

@@ -27,6 +27,8 @@
 		<style name="statBar" pos="24, 3" size="176, 13" radius="3" padding="1"
 			bg-color="#05070B" color="#05070B" border="1" border-color="#35404F"
 			fill-radius="2" fill-from="left"/>
+
+		<style name="slotIcon" size="48" anchor="center"/>
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -86,14 +88,30 @@
 		</container>
 
 		<container id="hotbar" style="panel" anchor="center, top" pos="0, 51" size="420, 58" radius="9">
-			<button id="slot0" style="slotSelected" pos="29, 29"/>
-			<button id="slot1" style="slot" pos="81, 29"/>
-			<button id="slot2" style="slot" pos="133, 29"/>
-			<button id="slot3" style="slot" pos="185, 29"/>
-			<button id="slot4" style="slot" pos="237, 29"/>
-			<button id="slot5" style="slot" pos="289, 29"/>
-			<button id="slot6" style="slot" pos="341, 29"/>
-			<button id="more" style="slot" pos="392, 28" size="46"/>
+			<button id="slot0" style="slotSelected" pos="29, 29">
+				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
+			</button>
+			<button id="slot1" style="slot" pos="81, 29">
+				<image style="slotIcon" src="@blocks.2.preview" interactive="false"/>
+			</button>
+			<button id="slot2" style="slot" pos="133, 29">
+				<image style="slotIcon" src="@blocks.3.preview" interactive="false"/>
+			</button>
+			<button id="slot3" style="slot" pos="185, 29">
+				<image style="slotIcon" src="@blocks.4.preview" interactive="false"/>
+			</button>
+			<button id="slot4" style="slot" pos="237, 29">
+				<image style="slotIcon" src="@blocks.5.preview" interactive="false"/>
+			</button>
+			<button id="slot5" style="slot" pos="289, 29">
+				<image style="slotIcon" src="@blocks.6.preview" interactive="false"/>
+			</button>
+			<button id="slot6" style="slot" pos="341, 29">
+				<image style="slotIcon" src="@blocks.7.preview" interactive="false"/>
+			</button>
+			<button id="slot7" style="slot" pos="392, 28" size="46">
+				<image style="slotIcon" src="@blocks.8.preview" interactive="false"/>
+			</button>
 		</container>
 	</container>
 </page>

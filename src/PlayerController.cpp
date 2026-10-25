@@ -43,7 +43,7 @@ const HitboxComponent& PlayerController::GetHitbox() const {
 #ifndef __ANDROID__
 void PlayerController::HandleInput(core::Window& window, ControlState& control,
                                    bool& cursorLocked) {
-  auto& input = window.input();
+  auto& input = window.GetInput();
   const auto& state = input.GetState();
 
   control.move.z = 0;
@@ -64,9 +64,7 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
   }
 
   if (state.Pressed(GLFW_KEY_ESCAPE)) {
-    cursorLocked = !cursorLocked;
-    glfwSetInputMode(window.window(), GLFW_CURSOR,
-                     cursorLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    window.SetCursorDisabled(!window.IsCursorDisabled());
   }
 
   if (cursorLocked) {
