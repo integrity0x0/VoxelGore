@@ -102,14 +102,14 @@ Texture FinishTexture(const Device& device, TransferContext& transferCtxt, Image
 
   ImageCopyRegion region({}, imageCI.extent, ImageSubresourceLayers(VK_IMAGE_ASPECT_COLOR_BIT));
 
-  TransitionImage(device, transferCtxt.cmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                   VK_PIPELINE_STAGE_TRANSFER_BIT);
 
   LoadDataToImage(device, transferCtxt, data, image, region);
 
   dst = ImageTransitionInfo(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_SHADER_READ_BIT);
 
-  GenMipMaps(device, transferCtxt.cmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+  GenMipMaps(device, transferCtxt.GetCmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
   transferCtxt.Flush();
 
@@ -140,7 +140,7 @@ Texture FinishCubemap(const Device& device, TransferContext& transferCtxt, Image
 
   ImageTransitionInfo dst(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT);
 
-  TransitionImage(device, transferCtxt.cmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                   VK_PIPELINE_STAGE_TRANSFER_BIT);
 
   for (uint32_t face = 0; face < 6u; ++face) {
@@ -151,7 +151,7 @@ Texture FinishCubemap(const Device& device, TransferContext& transferCtxt, Image
 
   dst = ImageTransitionInfo(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_SHADER_READ_BIT);
 
-  GenMipMaps(device, transferCtxt.cmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+  GenMipMaps(device, transferCtxt.GetCmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
   transferCtxt.Flush();
 

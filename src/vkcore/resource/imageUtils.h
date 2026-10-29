@@ -43,6 +43,11 @@ struct ImageSubresourceRange : VkImageSubresourceRange {
 struct ImageTransitionInfo {
   VkImageLayout layout;
   VkAccessFlags accessFlags;
+
+  ImageTransitionInfo() = default;
+
+  ImageTransitionInfo(VkImageLayout layout, VkAccessFlags accessFlags)
+      : layout(layout), accessFlags(accessFlags) {}
 };
 
 extern void TransitionImage(const Device& device, const CommandBuffer& commandBuffer,

@@ -21,7 +21,8 @@ int main() {
       std::cout << "FPS: " << fps << '\n';
     }
   });
-
+  std::vector<int> a;
+  a.capacity();
   try {
     core::Window::Hint(GLFW_RESIZABLE, GLFW_TRUE);
     core::Window::Hint(GLFW_CLIENT_API, GLFW_NO_API);

@@ -2,7 +2,7 @@
 
 namespace gfx {
 
-std::optional<ImageRegion> ImageRegionAllocator::reserve(const glm::ivec2& size) {
+std::optional<ImageRegion> ImageRegionAllocator::Allocate(const glm::ivec2& size) {
   for (uint32_t layer = 0; layer < arrayLayers_; ++layer) {
     auto& regionList = freeRegions_[layer];
     auto it =
@@ -33,7 +33,7 @@ std::optional<ImageRegion> ImageRegionAllocator::reserve(const glm::ivec2& size)
   return std::nullopt;
 }
 
-void ImageRegionAllocator::free(const ImageRegion& region) {
+void ImageRegionAllocator::Free(const ImageRegion& region) {
   throw std::runtime_error("похуй потом");
 }
 

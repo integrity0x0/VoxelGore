@@ -23,8 +23,8 @@ class TransferContext {
 
   Allocation AllocateStagingBuffer(VkDeviceSize size, VkDeviceSize alignment = 0ll);
 
-  const CommandBuffer& cmd() const { return cmd_; }
-  const DeviceQueue& transferQueue() const { return *transferQueue_; }
+  const CommandBuffer& GetCmd() const { return cmd_; }
+  const DeviceQueue& GetTransferQueue() const { return *transferQueue_; }
 
  private:
   const Device* device_;

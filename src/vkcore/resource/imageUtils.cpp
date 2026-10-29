@@ -35,7 +35,7 @@ void LoadDataToImage(const vkcore::Device& device,
   TransferContext::Allocation allocation =
       transferCtxt.AllocateStagingBuffer(data.size());  // if overflowed, returns nullopt
 
-  VkCommandBuffer cmd = transferCtxt.cmd().GetHandle();
+  VkCommandBuffer cmd = transferCtxt.GetCmd().GetHandle();
 
   VkBufferImageCopy region = {};
   region.imageOffset = copyRegion.offset;

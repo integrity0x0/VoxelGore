@@ -25,7 +25,7 @@ void LoadDataToBuffer(const Device& device, TransferContext& transferCtxt,
 
   VkBufferCopy copyRegion = {allocation.bufferOffset, offset, data.size()};
 
-  device.GetDispatchTable().vkCmdCopyBuffer(transferCtxt.cmd().GetHandle(), allocation.buffer,
+  device.GetDispatchTable().vkCmdCopyBuffer(transferCtxt.GetCmd().GetHandle(), allocation.buffer,
                                          dstBuffer.GetHandle(), 1u, &copyRegion);
 }
 

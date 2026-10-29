@@ -29,9 +29,9 @@ class ImageRegionAllocator {
     }
   }
 
-  std::optional<ImageRegion> reserve(const glm::ivec2& size);
+  [[nodiscard]] std::optional<ImageRegion> Allocate(const glm::ivec2& size);
 
-  void free(const ImageRegion& region);
+  void Free(const ImageRegion& region);
 
  private:
   glm::ivec2 size_;
