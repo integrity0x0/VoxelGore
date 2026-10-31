@@ -9,7 +9,8 @@
 namespace gfx {
 class FontManager {
  public:
- private:
+  FontManager(MaterialManager& materialManager);
+private:
   GlyphAtlas atlas_;
   std::unordered_map<std::string, gfx::Font> fonts_;
 };

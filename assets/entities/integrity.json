@@ -3,7 +3,7 @@
   "render": {
     "type": "billboard",
     "resource": "../images/integrity.png",
-    "layer": "translucent",
+    "layer": "cutout",
     "size": [ 2.0, 4.0 ],
     "ignoreLighting": true
   },

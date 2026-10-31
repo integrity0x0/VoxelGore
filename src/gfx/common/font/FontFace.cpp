@@ -32,8 +32,8 @@ void FontFace::SetSize(uint32_t w, uint32_t h) {
 GlyphData FontFace::GetGlyph(char32_t c) {
   FT_Face face = face_.get();
 
-  const FT_UInt index = FT_Get_Char_Index(face, static_cast<FT_ULong>(c));
-
+  FT_UInt index = FT_Get_Char_Index(face, static_cast<FT_ULong>(c));
+   
   if (FT_Error e = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT)) {
     throw std::runtime_error("Failed to load glyph U+" + std::to_string(static_cast<uint32_t>(c)) +
                              ". Error code: " + std::to_string(e));

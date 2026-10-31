@@ -56,6 +56,8 @@ std::optional<ImageRegion> GlyphAtlas::AddGlyph(glm::ivec2 size,
 
   vkcore::TransitionImage(device_, transferCtxt_.get().GetCmd(), image, src, dst,
                           VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+
+  return region;
 }
 
 vkcore::SampledTexture GlyphAtlas::CreateTexture(const vkcore::Device& device,

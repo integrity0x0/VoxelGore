@@ -171,6 +171,7 @@
     <ClCompile Include="src\gfx\common\font\FreeTypeLibrary.cpp" />
     <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
     <ClCompile Include="src\game\entity\HealthSystem.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiSlider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -366,6 +367,7 @@
     <ClInclude Include="src\gfx\common\font\FreeTypeLibrary.h" />
     <ClInclude Include="src\gfx\common\font\FontFace.h" />
     <ClInclude Include="src\game\entity\PlayerComponent.h" />
+    <ClInclude Include="src\gfx\render\ui\UiSlider.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />
