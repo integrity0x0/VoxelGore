@@ -49,11 +49,12 @@ GlyphData FontFace::GetGlyph(char32_t c) {
   const FT_Bitmap& bmp = slot->bitmap;
 
   GlyphData result = {};
-  result.width = static_cast<int32_t>(bmp.width);
-  result.height = static_cast<int32_t>(bmp.rows);
-  result.bearingX = slot->bitmap_left;
-  result.bearingY = slot->bitmap_top;
-  result.advance = static_cast<float>(slot->advance.x) / 64.0f;
+
+  result.info.width = static_cast<int32_t>(bmp.width);
+  result.info.height = static_cast<int32_t>(bmp.rows);
+  result.info.bearingX = slot->bitmap_left;
+  result.info.bearingY = slot->bitmap_top;
+  result.info.advance = static_cast<float>(slot->advance.x) / 64.0f;
 
   result.pixels.resize(static_cast<size_t>(bmp.width) * bmp.rows);
 

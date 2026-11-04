@@ -18,14 +18,14 @@ class BlockManager {
     blocks_.push_back(BlockParser::Parse(id, path));
   }
 
-  [[nodiscard]] const Block* block(uint32_t id) const {
+  [[nodiscard]] const Block* GetBlock(uint32_t id) const {
     if (id >= blocks_.size()) {
       return nullptr;
     }
     return &blocks_[id];
   }
 
-  [[nodiscard]] size_t blockCount() const { return blocks_.size(); }
+  [[nodiscard]] size_t GetBlockCount() const { return blocks_.size(); }
 
  private:
   std::deque<Block> blocks_;

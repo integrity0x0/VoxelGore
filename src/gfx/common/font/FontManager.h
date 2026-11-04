@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "GlyphAtlas.h"
-#include "Font.h"
+#include "FontFamily.h"
 
 namespace gfx {
 class FontManager {
@@ -12,6 +12,6 @@ class FontManager {
   FontManager(MaterialManager& materialManager);
 private:
   GlyphAtlas atlas_;
-  std::unordered_map<std::string, gfx::Font> fonts_;
+  std::unordered_map<std::string, gfx::FontFamily> families_;
 };
 }  // namespace gfx

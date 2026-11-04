@@ -16,7 +16,7 @@ constexpr auto kNeighbourOffsets = std::to_array<glm::ivec3>({
 });
 
 bool PassesLight(const BlockManager* blockManager, uint32_t blockId) {
-  const Block* block = blockManager->block(blockId);
+  const Block* block = blockManager->GetBlock(blockId);
   return block != nullptr && block->isPassingLight();
 }
 

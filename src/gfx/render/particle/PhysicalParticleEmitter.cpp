@@ -10,7 +10,7 @@ bool PhysicalParticleEmitter::IsObstacle(const glm::ivec3& pos) const {
   const auto vox = chunkManager_->getVoxel(pos);
   if (!vox || !vox->id) return false;
 
-  const gm::Block* block = blockManager_->block(vox->id);
+  const gm::Block* block = blockManager_->GetBlock(vox->id);
   return block && block->isObstacle();
 }
 

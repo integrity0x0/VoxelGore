@@ -5,19 +5,23 @@
 
 #include "GlyphAtlas.h"
 #include "FontFace.h"
+#include "FontStyle.h"
 #include "../texture/MaterialManager.h"
 
 namespace gfx {
-enum class FontWeight : uint16_t {
-  Regular = 400,
-  Medium = 500
+struct GlyphRenderInfo {
+  GlyphInfo info;
+  UvRegion uvRegion;
 };
 
 class Font {
  public:
-  Font();
+  Font(FontFace&& fontFace, std::reference_wrapper<GlyphAtlas> glyphAtlas);
+
+  [[nodiscard]] std::optional<GlyphRenderInfo> GetGlyph(char32_t c);
  private:
-  std::reference_wrapper<GlyphAtlas> glyphAtlas_;
   FontFace fontFace_;
+  std::reference_wrapper<GlyphAtlas> glyphAtlas_;
+  std::unordered_map<char32_t, GlyphRenderInfo> glyphs_;
 };
 }  // namespace gfx

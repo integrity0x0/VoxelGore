@@ -9,10 +9,15 @@
 #include "FreeTypeLibrary.h"
 
 namespace gfx {
-struct GlyphData {
+
+struct GlyphInfo {
   int32_t width, height;
   int32_t bearingX, bearingY;
   float advance;
+};
+
+struct GlyphData {
+  GlyphInfo info;
   std::vector<std::byte> pixels;
 };
 

@@ -78,6 +78,7 @@
     <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
     <ClCompile Include="src\gfx\common\font\FontFamily.cpp" />
     <ClCompile Include="src\gfx\common\font\FontManager.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontParser.cpp" />
     <ClCompile Include="src\gfx\common\font\FreeTypeLibrary.cpp" />
     <ClCompile Include="src\gfx\common\font\GlyphAtlas.cpp" />
     <ClCompile Include="src\gfx\common\mesh\IndexedMesh.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="src\gfx\common\font\FontFace.h" />
     <ClInclude Include="src\gfx\common\font\FontFamily.h" />
     <ClInclude Include="src\gfx\common\font\FontManager.h" />
+    <ClInclude Include="src\gfx\common\font\FontParser.h" />
     <ClInclude Include="src\gfx\common\font\FreeTypeLibrary.h" />
     <ClInclude Include="src\gfx\common\font\GlyphAtlas.h" />
     <ClInclude Include="src\gfx\common\mesh\IndexedMesh.h" />

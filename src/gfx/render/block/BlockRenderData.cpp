@@ -17,7 +17,7 @@ BlockRenderData::BlockRenderData(const gm::BlockManager& blockManager, const vkc
     uvBuffers_.emplace_back(device, memoryAllocator, 512u);
   }
 
-  blockInfos_.resize(blockManager.blockCount());
+  blockInfos_.resize(blockManager.GetBlockCount());
 
   Build();
   BuildDescriptors(framesInFlight);
@@ -92,7 +92,7 @@ void BlockRenderData::Build() {
   for (uint32_t blockId = 0; blockId < blockInfos_.size(); blockId++) {
     auto& info = blockInfos_[blockId];
 
-    const gm::Block* block = blockManager_->block(blockId);
+    const gm::Block* block = blockManager_->GetBlock(blockId);
 
     if (!block) {
       continue;

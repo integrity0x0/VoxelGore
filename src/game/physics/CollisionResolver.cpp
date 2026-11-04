@@ -240,7 +240,7 @@ float CollisionResolver::SampleFrictionAtFeet(const Hitbox& hitbox) {
       continue;
     }
 
-    const Block* block = blockManager_->block(voxel->id);
+    const Block* block = blockManager_->GetBlock(voxel->id);
     if (!block) {
       continue;
     }
@@ -249,8 +249,8 @@ float CollisionResolver::SampleFrictionAtFeet(const Hitbox& hitbox) {
     friction = std::max(friction, block->friction());
   }
 
-  if (!foundSurface && blockManager_->block(0)) {
-    return blockManager_->block(0)->friction();
+  if (!foundSurface && blockManager_->GetBlock(0)) {
+    return blockManager_->GetBlock(0)->friction();
   }
 
   return friction;

@@ -172,6 +172,11 @@
     <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
     <ClCompile Include="src\game\entity\HealthSystem.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiSlider.cpp" />
+    <ClCompile Include="src\gfx\common\font\Font.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontFamily.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontManager.cpp" />
+    <ClCompile Include="src\gfx\common\font\GlyphAtlas.cpp" />
+    <ClCompile Include="src\gfx\common\font\FontParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -368,6 +373,11 @@
     <ClInclude Include="src\gfx\common\font\FontFace.h" />
     <ClInclude Include="src\game\entity\PlayerComponent.h" />
     <ClInclude Include="src\gfx\render\ui\UiSlider.h" />
+    <ClInclude Include="src\gfx\common\font\Font.h" />
+    <ClInclude Include="src\gfx\common\font\FontFamily.h" />
+    <ClInclude Include="src\gfx\common\font\FontManager.h" />
+    <ClInclude Include="src\gfx\common\font\GlyphAtlas.h" />
+    <ClInclude Include="src\gfx\common\font\FontParser.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

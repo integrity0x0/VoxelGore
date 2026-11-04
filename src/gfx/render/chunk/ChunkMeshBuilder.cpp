@@ -136,7 +136,7 @@ static bool IsLightBlocking(const gm::Chunk& self,
     return false;
   }
 
-  const gm::Block* block = blockManager.block(voxel.id);
+  const gm::Block* block = blockManager.GetBlock(voxel.id);
 
   if (!block) {
     return true;
@@ -361,7 +361,7 @@ bool ChunkMeshBuilder::BuildChunk(VkCommandBuffer cmd, StagingInfo& staging,
             continue;
           }
 
-          const gm::Block* block = blockManager_->block(v.id);
+          const gm::Block* block = blockManager_->GetBlock(v.id);
 
           if (IsBlocked(*blockRenderData_, chunk, neighbors, localPos + kFaceNormals[face], v.id)) {
             continue;

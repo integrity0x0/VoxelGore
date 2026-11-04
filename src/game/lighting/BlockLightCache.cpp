@@ -7,7 +7,7 @@ const BlockLightData* BlockLightCache::Require(uint32_t blockId) {
     return data;
   }
 
-  const Block* block = blockManager_->block(blockId);
+  const Block* block = blockManager_->GetBlock(blockId);
 
   if (!block || !block->light()) {
     Set(blockId, {

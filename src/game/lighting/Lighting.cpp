@@ -37,7 +37,7 @@ void Lighting::LightUp() {
         if (!voxel.has_value()) {
           break;
         }
-        const auto* block = blockManager_->block(voxel->id);
+        const auto* block = blockManager_->GetBlock(voxel->id);
         const bool isPassingLight = block && block->isPassingLight();
 
         if (const auto* light = blockCache_.Require(voxel->id);
@@ -66,7 +66,7 @@ void Lighting::LightUp() {
 }
 
 void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
-  const Block* block = blockManager_->block(voxel.id);
+  const Block* block = blockManager_->GetBlock(voxel.id);
   const bool isPassingLight = block && block->isPassingLight();
 
   for (auto& channel : channels_) {
@@ -87,7 +87,7 @@ void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
       const auto currentVoxel = chunkManager_->getVoxel(currentPos);
       if (!currentVoxel.has_value()) break;
 
-      const Block* currentBlock = blockManager_->block(currentVoxel->id);
+      const Block* currentBlock = blockManager_->GetBlock(currentVoxel->id);
       if (!currentBlock || !currentBlock->isPassingLight()) break;
 
       sun_.Remove(currentPos);
@@ -100,7 +100,7 @@ void Lighting::OnVoxelSetted(const glm::ivec3& pos, const Voxel& voxel) {
         const auto currentVoxel = chunkManager_->getVoxel(currentPos);
         if (!currentVoxel.has_value()) break;
 
-        const Block* currentBlock = blockManager_->block(currentVoxel->id);
+        const Block* currentBlock = blockManager_->GetBlock(currentVoxel->id);
         if (!currentBlock || !currentBlock->isPassingLight()) break;
 
         sun_.Spread(currentPos, kSunLight);

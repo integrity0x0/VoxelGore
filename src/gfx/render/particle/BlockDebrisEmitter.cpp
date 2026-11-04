@@ -47,7 +47,7 @@ BlockDebrisEmitter::BlockDebrisEmitter(BlockRenderData& renderData,
     : renderData_(&renderData), PhysicalParticleEmitter(chunkManager, blockManager) {}
 
 void BlockDebrisEmitter::Spawn(uint32_t blockId, const glm::vec3& position) {
-  const gm::Block* block = blockManager_->block(blockId);
+  const gm::Block* block = blockManager_->GetBlock(blockId);
   if (!block) return;
 
   const auto& configOpt = block->debrisConfig();
