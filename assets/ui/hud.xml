@@ -1,4 +1,4 @@
-<page id="hud" input-mode="passthrough" script="ui/game.xml.lua">
+<page id="hud" input-mode="passthrough" script="ui/game.lua">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 
@@ -29,6 +29,11 @@
 			fill-radius="2" fill-from="left"/>
 
 		<style name="slotIcon" size="48" anchor="center"/>
+
+		<style name="slotCount"
+			anchor="right, bottom" pivot="right, bottom"
+			pos="-4, -3" size="24, 16"
+			color="#FFFFFF" font="notojp" text="64"/>
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -90,28 +95,51 @@
 		<container id="hotbar" style="panel" anchor="center, top" pos="0, 51" size="420, 58" radius="9">
 			<button id="slot0" style="slotSelected" pos="29, 29">
 				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot1" style="slot" pos="81, 29">
 				<image style="slotIcon" src="@blocks.2.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot2" style="slot" pos="133, 29">
 				<image style="slotIcon" src="@blocks.3.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot3" style="slot" pos="185, 29">
 				<image style="slotIcon" src="@blocks.4.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot4" style="slot" pos="237, 29">
 				<image style="slotIcon" src="@blocks.5.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot5" style="slot" pos="289, 29">
 				<image style="slotIcon" src="@blocks.6.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot6" style="slot" pos="341, 29">
 				<image style="slotIcon" src="@blocks.7.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 			<button id="slot7" style="slot" pos="392, 28" size="46">
 				<image style="slotIcon" src="@blocks.8.preview" interactive="false"/>
+				<text style="slotCount"/>
 			</button>
 		</container>
 	</container>
+
+	<text anchor="left, center" text="hello, niggers" font="notojp"/>
+
+
+	<text anchor="center, center" pos="12, -10"
+      text="☆*: .｡. o(≧▽≦)o .｡.:*☆" font="notojp"
+      font-size="32" color="#FF00FFFF"/>
+
+	<text anchor="center, center" pos="120, 50"
+      text="(〃￣︶￣)人(￣︶￣〃)" font="notojp"
+      font-size="32" color="#FF00FFFF"/>
+
+	<text anchor="left, bottom" pos="12, -10"
+      text="v0.11-alpha" font="notojp"
+      size="11" color="#82909FA0"/>
 </page>

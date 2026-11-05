@@ -84,6 +84,7 @@ void UiElement::UpdateVisual() const {
   merged.ApplyTo(r);
   if (!merged.bgRadius) r.bgRadius = r.radius;
   if (!merged.fillRadius) r.fillRadius = r.radius;
+
   resolvedVisual_ = std::move(r);
 }
 

@@ -73,6 +73,10 @@ const Material* MaterialManager::TryGet(MaterialId id) const {
 MaterialId MaterialManager::Add(const vkcore::SampledTexture& texture) {
   MaterialId id = static_cast<MaterialId>(materials_.size());
 
+  materials_.emplace_back(
+      std::make_unique<Material>(id, &texture, AllocateAndWriteDescriptorSet(texture)));
+
+  return id;
 }
 
 vkcore::DescriptorSet MaterialManager::AllocateAndWriteDescriptorSet(

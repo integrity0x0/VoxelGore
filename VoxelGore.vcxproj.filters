@@ -27,6 +27,9 @@
     <None Include="assets\shaders\shadow.glsl" />
     <None Include="assets\shaders\model_shadow.vert" />
     <None Include="assets\shaders\model_shadow.frag" />
+    <None Include="assets\fonts\rubik.json" />
+    <None Include="assets\fonts\NotoSansSymbols2.json" />
+    <None Include="assets\fonts\notojp.json" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -378,6 +381,9 @@
     <ClInclude Include="src\gfx\common\font\FontManager.h" />
     <ClInclude Include="src\gfx\common\font\GlyphAtlas.h" />
     <ClInclude Include="src\gfx\common\font\FontParser.h" />
+    <ClInclude Include="src\gfx\common\font\Glyph.h" />
+    <ClInclude Include="src\gfx\common\font\FontStyle.h" />
+    <ClInclude Include="src\util\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

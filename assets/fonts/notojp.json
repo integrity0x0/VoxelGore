@@ -1,0 +1,10 @@
+{
+  "name": "notojp",
+  "styles": [
+    {
+      "file": "NotoSansJP-Regular.ttf",
+      "weight": "regular",
+      "italic": false
+    }
+  ]
+}

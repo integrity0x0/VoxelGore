@@ -10,5 +10,10 @@ struct UiQuadInstance {
   glm::vec4 color;
   float radius;
   float borderWidth;
+
+  enum class Type : uint8_t {
+    Shape, Glyph 
+  } type;
+
 };
 }  // namespace gfx	

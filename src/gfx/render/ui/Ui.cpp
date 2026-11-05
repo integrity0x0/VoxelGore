@@ -13,15 +13,15 @@ UiRenderer Ui::CreateRenderer(const vkcore::Device& device, vkcore::BufferAlloca
                           uint32_t framesCount) {
   auto* material = materialManager.TryGet(materialManager.Load(kBlankPath));
   if (!material) throw std::runtime_error("Unable to load blank image:" + kBlankPath);
-  UiTextureRegion reg(*material);
-  return UiRenderer(device, bufferAllocator, materialManager.GetDescriptorSetLayout(), renderPass,
+  UiTextureRegion reg(material->id);
+  return UiRenderer(device, bufferAllocator, materialManager, renderPass,
                     shaderCompiler, reg, framesCount);
 }
 
 Ui::Ui(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
        const vkcore::RenderPass& renderPass, const ShaderCompiler& shaderCompiler,
-       script::LuaState& luaState, MaterialManager& materialManager, uint32_t framesCount)
-    : parserCtxt_(luaState, materialManager, core::kAssetsPrefix),
+       script::LuaState& luaState, MaterialManager& materialManager, FontManager& fontManager, uint32_t framesCount)
+    : parserCtxt_(luaState, materialManager, fontManager, core::kAssetsPrefix),
       renderer_(CreateRenderer(device, bufferAllocator, renderPass, shaderCompiler, materialManager,
                                framesCount)),
       triggerDispatcher_(luaState) {}

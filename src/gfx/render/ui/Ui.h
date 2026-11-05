@@ -15,7 +15,8 @@ class Ui {
  public:
   Ui(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
      const vkcore::RenderPass& renderPass, const ShaderCompiler& shaderCompiler,
-     script::LuaState& luaState, MaterialManager& materialManager, uint32_t framesCount);
+     script::LuaState& luaState, MaterialManager& materialManager, FontManager& fontManager,
+     uint32_t framesCount);
 
   void Push(std::string_view path);
 

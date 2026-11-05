@@ -35,10 +35,10 @@ class MaterialManager {
   MaterialManager(const vkcore::Device& device, TextureManager& textureManager);
 
   [[nodiscard]] MaterialId Require(std::string_view key);
-  [[nodiscard]] MaterialId Load(std::string_view path, std::string_view key);
-  [[nodiscard]] MaterialId Load(std::string_view path) { return Load(path, path); }
+  MaterialId Load(std::string_view path, std::string_view key);
+  MaterialId Load(std::string_view path) { return Load(path, path); }
   [[nodiscard]] MaterialId Find(std::string_view key) const;
-
+  [[nodiscard]] MaterialId Add(const vkcore::SampledTexture& texture);
   [[nodiscard]] const Material& Get(MaterialId id) const;
   [[nodiscard]] const Material* TryGet(MaterialId id) const;
 

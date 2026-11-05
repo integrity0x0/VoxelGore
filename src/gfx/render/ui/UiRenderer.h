@@ -19,7 +19,7 @@ class UiRenderer {
   };
 
   UiRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
-             const vkcore::DescriptorSetLayout& materialLayout,
+             MaterialManager& materialManager,
              const vkcore::RenderPass& renderPass,
              const ShaderCompiler& shaderCompiler,
              const UiTextureRegion& blankTexture, uint32_t framesCount);
@@ -33,6 +33,9 @@ class UiRenderer {
   }
   void Submit(glm::vec2 pos, glm::vec2 size, const std::optional<UiTextureRegion>& texture,
               const glm::vec4& color, float radius = 0.0f, float borderWidth = kNoBorder);
+
+  void SubmitGlyph(glm::vec2 pos, glm::vec2 size, const std::optional<GlyphSlot>& texture,
+              const glm::vec4& color);
   void Render();
 
 private:
@@ -51,6 +54,7 @@ private:
   static constexpr VkDeviceSize kBufferSize = 32 * 1024 * 1024ull;
   static constexpr size_t kMaxInstances = kBufferSize / sizeof(UiQuadInstance);
   std::reference_wrapper<const vkcore::Device> device_;
+  std::reference_wrapper<MaterialManager> materialManager_;
   UiRenderPipeline pipeline_;
   UiTextureRegion blankTexture_;
   std::vector<FrameData> frames_;

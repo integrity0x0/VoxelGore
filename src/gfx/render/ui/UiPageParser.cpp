@@ -286,7 +286,7 @@ std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
   if (!material) return std::nullopt;
 
   UiTextureRegion result{
-      *material,
+      material->id,
       {.min = glm::vec2(0.0f), .max = glm::vec2(1.0f), .arrayLayer = 0},
   };
   if (!path.rect) return result;
@@ -322,7 +322,7 @@ std::optional<std::vector<std::string>> ParseStyleNames(std::string_view text) {
 
 enum class AttrScope { Element, State, Style };
 
-constexpr bool IsVisualProp(UiProp p) { return p >= UiProp::Color && p <= UiProp::BorderImage; }
+constexpr bool IsVisualProp(UiProp p) { return p >= UiProp::Color && p <= UiProp::ShadowColor; }
 
 std::optional<UiState> ParseUiStateName(std::string_view text) {
   static constexpr std::array values{
@@ -432,7 +432,21 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
       case UiProp::FillRadius:
         if (auto v = a.Get(name, ParseFloat)) out.visualProps.fillRadius = *v;
         break;
+      case UiProp::Text:
+        if (auto v = a.Get(name, ParseString)) out.visualProps.text = util::Utf8ToUtf32(*v);
+        break;
+      case UiProp::Font:
+        if (auto v = a.Get(name, ParseString))
+          out.visualProps.font = st.ctxt.fontManager.RequireFamily(*v);
+        break;
+      case UiProp::FontSize:
+        if (auto v = a.Get(name, ParseFloat))
+          out.visualProps.fontSize = *v;
+        break;
 
+      case UiProp::TextShadow:
+        if (auto v = a.Get(name, ParseBool)) break; // TODO: text-shadow
+        break;
       default:
         break;
     }
@@ -703,8 +717,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseText(UiPageParser::ParsingState& s
 
   auto text = std::make_unique<UiText>(id, parent);
 
-
-  // TODO: text-specific attributes.
+  ParseCommon(st, *text, *element, a);
 
   a.ReportUnknown();
   return text;

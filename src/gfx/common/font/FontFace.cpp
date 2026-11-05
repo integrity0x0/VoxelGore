@@ -22,6 +22,9 @@ FontFace::FtFacePtr FontFace::CreateFace(const FreeTypeLibrary& lib) {
 }
 
 void FontFace::SetSize(uint32_t w, uint32_t h) {
+  if (!h) h = w;
+  if (!w) w = h;
+  if (w == currentWidth_ && h == currentHeight_) return;
   if (FT_Error e = FT_Set_Pixel_Sizes(face_.get(), w, h)) {
     throw std::runtime_error("Failed to set pixel size. Error code: " + std::to_string(e));
   }
@@ -29,7 +32,19 @@ void FontFace::SetSize(uint32_t w, uint32_t h) {
   currentHeight_ = h;
 }
 
-GlyphData FontFace::GetGlyph(char32_t c) {
+FontMetrics FontFace::GetMetrics() const {
+  const FT_Size_Metrics& m = face_->size->metrics;
+
+  FontMetrics result;
+  result.ascent = static_cast<float>(m.ascender) / 64.0f;
+  result.descent = static_cast<float>(-m.descender) / 64.0f;
+  result.lineHeight = static_cast<float>(m.height) / 64.0f;
+  return result;
+}
+
+RasterizedGlyph FontFace::Rasterize(char32_t c, uint32_t w, uint32_t h) {
+  SetSize(w, h);
+
   FT_Face face = face_.get();
 
   FT_UInt index = FT_Get_Char_Index(face, static_cast<FT_ULong>(c));
@@ -48,12 +63,12 @@ GlyphData FontFace::GetGlyph(char32_t c) {
   const FT_GlyphSlot slot = face->glyph;
   const FT_Bitmap& bmp = slot->bitmap;
 
-  GlyphData result = {};
+  RasterizedGlyph result = {};
 
-  result.metrics.width = static_cast<int32_t>(bmp.width);
-  result.metrics.height = static_cast<int32_t>(bmp.rows);
-  result.metrics.bearingX = slot->bitmap_left;
-  result.metrics.bearingY = slot->bitmap_top;
+  result.metrics.size.x = static_cast<int32_t>(bmp.width);
+  result.metrics.size.y = static_cast<int32_t>(bmp.rows);
+  result.metrics.bearing.x = slot->bitmap_left;
+  result.metrics.bearing.y = slot->bitmap_top;
   result.metrics.advance = static_cast<float>(slot->advance.x) / 64.0f;
 
   result.pixels.resize(static_cast<size_t>(bmp.width) * bmp.rows);

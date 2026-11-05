@@ -119,7 +119,8 @@ vkcore::SampledTexture GlyphAtlas::CreateTexture() const {
   viewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
   viewCI.subresourceRange.levelCount = 1;
   viewCI.subresourceRange.layerCount = 1;
-
+  viewCI.components.r = viewCI.components.g = viewCI.components.b = VK_COMPONENT_SWIZZLE_ONE;
+  viewCI.components.a = VK_COMPONENT_SWIZZLE_R;
   VkSamplerCreateInfo samplerCI = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
   samplerCI.magFilter = VK_FILTER_LINEAR;
   samplerCI.minFilter = VK_FILTER_LINEAR;

@@ -9,21 +9,19 @@
 namespace gfx {
 class FontFamily {
  public:
-  FontFamily(std::string&& name) : name_(std::move(name)) {}
-  FontFamily(const std::string& name) : name_(name) {}
+  explicit FontFamily(const std::string& name, GlyphAtlas& atlas) : name_(name), atlas_(atlas) {}
 
   [[nodiscard]] const std::string& GetName() const { return name_; }
 
-  void AddFont(gfx::Font&& font);
+  void AddFont(FontStyle style, FontFace&& face);
 
-  [[nodiscard]] const gfx::Font* GetFont(FontStyle style) {
-    auto it = std::find(fonts_.begin(), fonts_.end(), style);
-
-    return it != fonts_.end() ? it->get() : nullptr;
-  }
+  [[nodiscard]] gfx::Font* FindFont(FontStyle style);
 
  private:
+  [[nodiscard]] std::optional<size_t> FindBestMatch(FontStyle style) const;
+ private:
   std::string name_;
+  std::reference_wrapper<GlyphAtlas> atlas_;
   std::vector<std::unique_ptr<gfx::Font>> fonts_;
 };
 }  // namespace gfx

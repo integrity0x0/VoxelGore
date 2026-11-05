@@ -11,7 +11,13 @@
 
 namespace gfx {
 
-struct GlyphData {
+struct FontMetrics {
+  float ascent = 0.0f;
+  float descent = 0.0f;
+  float lineHeight = 0.0f;
+};
+
+struct RasterizedGlyph {
   GlyphMetrics metrics;
   std::vector<std::byte> pixels;
 };
@@ -20,18 +26,14 @@ class FontFace {
  public:
   FontFace(const FreeTypeLibrary& lib, std::vector<std::byte>&& bytes);
 
-  FontFace(const FontFace&) = delete;
-  FontFace& operator=(const FontFace&) = delete;
-  FontFace(FontFace&&) noexcept = default;
-  FontFace& operator=(FontFace&&) = delete;
-
-  void SetSize(uint32_t w, uint32_t h);
-  void SetSize(uint32_t w) { SetSize(w, 0); }
-
   [[nodiscard]] uint32_t GetCurrentWidth() const { return currentWidth_; }
   [[nodiscard]] uint32_t GetCurrentHeight() const { return currentHeight_; }
 
-  [[nodiscard]] GlyphData GetGlyph(char32_t c);
+  [[nodiscard]] RasterizedGlyph Rasterize(char32_t c, uint32_t w = 16, uint32_t h = 0);
+
+  [[nodiscard]] FontMetrics GetMetrics() const;
+
+  void SetSize(uint32_t w, uint32_t h = 0);
 
  private:
   struct FtFaceDeleter {
@@ -41,6 +43,7 @@ class FontFace {
   using FtFacePtr = std::unique_ptr<std::remove_pointer_t<FT_Face>, FtFaceDeleter>;
 
   [[nodiscard]] FtFacePtr CreateFace(const FreeTypeLibrary& lib);
+
 
  private:
   std::vector<std::byte> bytes_;

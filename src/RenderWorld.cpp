@@ -100,9 +100,14 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
 
   entityRenderSystem_ = std::make_unique<EntityRenderSystem>(*modelCache_, *billboardsAtlas_);
   materialManager_ = std::make_unique<MaterialManager>(device, *textureManager_);
+
+  fontManager_ = std::make_unique<FontManager>(device, memoryAllocator, engine.GetTransferContext(),
+                                               *materialManager_, ftLib_);
+
   ui_ =
       std::make_unique<Ui>(device, engine.GetBufferAllocator(), engine.GetRenderPass(),
-                           *shaderCompiler_, luaState, *materialManager_, engine.GetFramesCount());
+                             *shaderCompiler_, luaState, *materialManager_,
+                             *fontManager_, engine.GetFramesCount());
 
   uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());

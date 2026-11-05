@@ -22,6 +22,7 @@
 #include "gfx/render/ui/UiLibrary.h"
 #include "gfx/render/ui/Ui.h"
 #include "gfx/render/block/BlockPreviewRenderer.h"
+#include "gfx/common/font/FontManager.h"
 
 class Engine;
 
@@ -80,6 +81,8 @@ class RenderWorld {
   std::unique_ptr<SkyboxRenderer> skyboxRenderer_;
   std::unique_ptr<Skybox> nightSkybox_;
   std::unique_ptr<MaterialManager> materialManager_;
+  FreeTypeLibrary ftLib_;
+  std::unique_ptr<FontManager> fontManager_;
   std::unique_ptr<Ui> ui_;
   std::unique_ptr<UiLibrary> uiLib_;
   UiBar* hpBar_ = nullptr;

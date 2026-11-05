@@ -1,0 +1,10 @@
+{
+  "name": "notosanssymbols2",
+  "styles": [
+    {
+      "file": "NotoSansSymbols2-Regular.ttf",
+      "weight": "regular",
+      "italic": false
+    }
+  ]
+}

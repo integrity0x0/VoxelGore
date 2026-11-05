@@ -2,13 +2,14 @@
 
 namespace gfx {
 UiRenderer::UiRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
-                       const vkcore::DescriptorSetLayout& materialLayout,
+                       MaterialManager& materialManager,
                        const vkcore::RenderPass& renderPass,
                        const ShaderCompiler& shaderCompiler,
                        const UiTextureRegion& blankTexture,
                        uint32_t framesCount) 
 	: device_(device),
-    pipeline_(device, materialLayout, renderPass, shaderCompiler),
+    materialManager_(materialManager),
+    pipeline_(device, materialManager.GetDescriptorSetLayout(), renderPass, shaderCompiler),
     blankTexture_(blankTexture) {
   frames_.reserve(framesCount);
   for (size_t i = 0; i < static_cast<size_t>(framesCount); ++i) {
@@ -37,15 +38,17 @@ void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
 
   auto& frame = frames_[currentFrame_];
 
-  const bool hasValidTexture = texture && texture->material.get().id != kInvalidMaterialId;
+  const bool hasValidTexture = texture && texture->materialId != kInvalidMaterialId;
   const UiTextureRegion& region = hasValidTexture ? *texture : blankTexture_;
 
-  if (region.material.get().id != bindedMaterial_) {
+  if (region.materialId != bindedMaterial_) {
     if (instanceCount_ > 0) Render();
 
-    region.material.get().descriptorSet.Bind(cmd_, pipeline_.GetLayout().GetHandle());
+    materialManager_.get()
+        .Get(region.materialId)
+        .descriptorSet.Bind(cmd_, pipeline_.GetLayout().GetHandle());
 
-    bindedMaterial_ = region.material.get().id;
+    bindedMaterial_ = region.materialId;
   }
 
   const glm::vec2 uvMin = region.region.min;
@@ -53,14 +56,46 @@ void UiRenderer::Submit(glm::vec2 pos, glm::vec2 size,
 
   UiQuadInstance& instance = *(frame.mapped + (instanceOffset_ + instanceCount_));
 
-  instance = {
-      .pos = pos,
-      .size = size,
-      .uvRect = {uvMin.x, uvMin.y, uvMax.x, uvMax.y},
-      .color = color,
-      .radius = radius,
-      .borderWidth = borderWidth
-  };
+  instance = {.pos = pos,
+              .size = size,
+              .uvRect = {uvMin.x, uvMin.y, uvMax.x, uvMax.y},
+              .color = color,
+              .radius = radius,
+              .borderWidth = borderWidth,
+              .type = UiQuadInstance::Type::Shape};
+
+  ++instanceCount_;
+}
+
+void UiRenderer::SubmitGlyph(glm::vec2 pos, glm::vec2 size, const std::optional<GlyphSlot>& slot,
+                             const glm::vec4& color) {
+  if (static_cast<size_t>(instanceOffset_ + instanceCount_ + 1) > kMaxInstances) return;
+  if (!slot || slot->materialId == kInvalidMaterialId) return;
+
+  auto& frame = frames_[currentFrame_];
+
+  if (slot->materialId != bindedMaterial_) {
+    if (instanceCount_ > 0) Render();
+
+    materialManager_.get()
+        .Get(slot->materialId)
+        .descriptorSet.Bind(cmd_, pipeline_.GetLayout().GetHandle());
+
+    bindedMaterial_ = slot->materialId;
+  }
+
+  const glm::vec2 uvMin = slot->region.min;
+  const glm::vec2 uvMax = slot->region.max;
+
+  UiQuadInstance& instance = *(frame.mapped + (instanceOffset_ + instanceCount_));
+
+  instance = {.pos = pos,
+              .size = size,
+              .uvRect = {uvMin.x, uvMin.y, uvMax.x, uvMax.y},
+              .color = color,
+              .radius = 0.0f,
+              .borderWidth = -1.0f,
+              .type = UiQuadInstance::Type::Glyph};
 
   ++instanceCount_;
 }

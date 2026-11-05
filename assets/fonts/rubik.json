@@ -1,0 +1,6 @@
+{
+  "name": "rubik",
+  "styles": [
+    {"file": "Rubik-Regular.ttf", "weight": "regular", "italic": false}
+  ]
+}

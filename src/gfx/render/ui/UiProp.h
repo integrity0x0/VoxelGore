@@ -3,8 +3,8 @@
 #include <optional>
 #include <string_view>
 
-#include "UiTypes.h"
 #include "UiElement.h"
+#include "UiTypes.h"
 
 namespace gfx {
 enum class UiProp : uint8_t {
@@ -14,6 +14,7 @@ enum class UiProp : uint8_t {
   Anchor,
   Pivot,
   Padding,
+
   // visual
   Color,
   BgColor,
@@ -30,7 +31,16 @@ enum class UiProp : uint8_t {
   FillColor,
   FillRadius,
 
-  // events 
+  // text
+  Font,
+  FontSize,
+  FontWeight,
+  Italic,
+  Text,
+  TextShadow,   // text-shadow
+  ShadowColor,  // shadow-color
+
+  // events
   OnClick,
   OnRelease,
   OnCancel,
@@ -39,16 +49,55 @@ enum class UiProp : uint8_t {
   OnHover,
   OnUnhover,
   OnSet,
+
   Count
 };
+
 inline constexpr size_t kPropCount = static_cast<size_t>(UiProp::Count);
 
 inline constexpr std::array<std::string_view, kPropCount> kPropNames{
-    "pos",         "size",         "anchor",       "pivot",     "padding",    "color",
-    "bg-color",    "border-color", "radius",       "bg-radius", "border",     "scale",
-    "src",         "bg-image",     "border-image", "fill-from", "fill-image", "fill-color",
-    "fill-radius", "on-click",     "on-release",   "on-cancel", "on-enable",  "on-disable",
-    "on-hover",    "on-unhover",   "on-set"};
+    // layout
+    "pos",
+    "size",
+    "anchor",
+    "pivot",
+    "padding",
+
+    // visual
+    "color",
+    "bg-color",
+    "border-color",
+    "radius",
+    "bg-radius",
+    "border",  // BorderWidth
+    "scale",
+    "src",
+    "bg-image",
+    "border-image",
+    "fill-from",
+    "fill-image",
+    "fill-color",
+    "fill-radius",
+
+    // text
+    "font",
+    "font-size",
+    "font-weight",
+    "italic",
+    "text",
+    "text-shadow",
+    "shadow-color",
+
+    // events
+    "on-click",
+    "on-release",
+    "on-cancel",
+    "on-enable",
+    "on-disable",
+    "on-hover",
+    "on-unhover",
+    "on-set",
+};
 
 constexpr bool AllPropsNamed() {
   for (auto n : kPropNames)
@@ -58,6 +107,8 @@ constexpr bool AllPropsNamed() {
 static_assert(AllPropsNamed());
 static_assert(kPropNames[static_cast<size_t>(UiProp::Pos)] == "pos");
 static_assert(kPropNames[static_cast<size_t>(UiProp::BorderImage)] == "border-image");
+static_assert(kPropNames[static_cast<size_t>(UiProp::TextShadow)] == "text-shadow");
+static_assert(kPropNames[static_cast<size_t>(UiProp::ShadowColor)] == "shadow-color");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnClick)] == "on-click");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnSet)] == "on-set");
 
@@ -90,13 +141,25 @@ constexpr bool IsPropSupported(UiProp p, UiElementType t) {
   switch (p) {
     case UiProp::Src:
       return t == UiElementType::Image;
+
     case UiProp::FillFrom:
     case UiProp::FillImage:
     case UiProp::FillColor:
     case UiProp::FillRadius:
       return t == UiElementType::Bar;
+
+    case UiProp::Font:
+    case UiProp::FontSize:
+    case UiProp::FontWeight:
+    case UiProp::Italic:
+    case UiProp::Text:
+    case UiProp::TextShadow:
+    case UiProp::ShadowColor:
+      return t == UiElementType::Text;
+
     case UiProp::OnSet:
-      return t == UiElementType::Checkbox || t == UiElementType::Slider;  // + Joystick
+      return t == UiElementType::Checkbox || t == UiElementType::Slider;  // + Joystick later
+
     default:
       return true;
   }

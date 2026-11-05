@@ -3,6 +3,7 @@
 #include <tinyxml2.h>
 #include <unordered_map>
 
+#include "../../common/font/FontManager.h"
 #include "../../../util/hashers.h"
 #include "UiButton.h"
 #include "UiContainer.h"
@@ -46,11 +47,13 @@ class UiPageParser {
   struct Context {
     script::LuaState& luaState;
     MaterialManager& materialManager;
+    FontManager& fontManager;
     std::string assetRoot;
 
     Context(script::LuaState& luaState, MaterialManager& materialManager,
+            FontManager& fontManager,
             const std::string& assetRoot)
-        : luaState(luaState), materialManager(materialManager), assetRoot(assetRoot) {}
+        : luaState(luaState), materialManager(materialManager), fontManager(fontManager), assetRoot(assetRoot) {}
   };
 
   struct ParsingState {

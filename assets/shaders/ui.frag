@@ -6,12 +6,13 @@ precision highp int;
 layout(binding = 0) uniform sampler2D uImage;
 
 layout(location = 0) in VertexData {
-  mediump vec2 uv;
+  vec2 uv;
   mediump vec4 color;
   vec2 local;
   flat vec2 halfSize;
   flat float radius;
   flat float borderWidth;
+  flat uint type;
 } iVert;
 
 layout(location = 0) out vec4 oFragColor;
@@ -22,13 +23,39 @@ float RoundRectSDF(vec2 p, vec2 halfSize, float radius) {
 }
 
 void main() {
-  float d = RoundRectSDF(iVert.local, iVert.halfSize, iVert.radius);
-  float coverage = clamp(0.5 - d, 0.0, 1.0);
-  if (iVert.borderWidth > 0.0) {
-    coverage *= clamp(0.5 + d + iVert.borderWidth, 0.0, 1.0);
+  vec4 textureColor = textureLod(uImage, iVert.uv, 0.0);
+
+  float coverage;
+  vec4 color;
+
+  if (iVert.type == 0u) {
+    float d = RoundRectSDF(
+      iVert.local,
+      iVert.halfSize,
+      iVert.radius
+    );
+
+    coverage = clamp(0.5 - d, 0.0, 1.0);
+
+    if (iVert.borderWidth > 0.0) {
+      coverage *= clamp(
+        0.5 + d + iVert.borderWidth,
+        0.0,
+        1.0
+      );
+    }
+
+    color = textureColor * iVert.color;
+  } else {
+    coverage = textureColor.a;
+
+    color = iVert.color;
   }
+
   if (coverage <= 0.0) discard;
 
-  vec4 color = textureLod(uImage, iVert.uv, 0.0) * iVert.color;
-  oFragColor = vec4(color.rgb, color.a * coverage);
+  oFragColor = vec4(
+    color.rgb,
+    color.a * coverage
+  );
 }

@@ -21,6 +21,9 @@
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include=".gitignore" />
+    <None Include="assets\fonts\notojp.json" />
+    <None Include="assets\fonts\NotoSansSymbols2.json" />
+    <None Include="assets\fonts\rubik.json" />
     <None Include="assets\shaders\blockPreview.frag" />
     <None Include="assets\shaders\blockPreview.vert" />
     <None Include="assets\shaders\crosshair.frag" />
@@ -244,7 +247,9 @@
     <ClInclude Include="src\gfx\common\font\FontFamily.h" />
     <ClInclude Include="src\gfx\common\font\FontManager.h" />
     <ClInclude Include="src\gfx\common\font\FontParser.h" />
+    <ClInclude Include="src\gfx\common\font\FontStyle.h" />
     <ClInclude Include="src\gfx\common\font\FreeTypeLibrary.h" />
+    <ClInclude Include="src\gfx\common\font\Glyph.h" />
     <ClInclude Include="src\gfx\common\font\GlyphAtlas.h" />
     <ClInclude Include="src\gfx\common\mesh\IndexedMesh.h" />
     <ClInclude Include="src\gfx\common\mesh\Mesh.h" />
@@ -343,6 +348,7 @@
     <ClInclude Include="src\util\files.h" />
     <ClInclude Include="src\util\hashers.h" />
     <ClInclude Include="src\util\pathUtils.h" />
+    <ClInclude Include="src\util\StringUtils.h" />
     <ClInclude Include="src\vkcore\commands\CommandBuffer.h" />
     <ClInclude Include="src\vkcore\commands\CommandPool.h" />
     <ClInclude Include="src\vkcore\common\SystemError.h" />
