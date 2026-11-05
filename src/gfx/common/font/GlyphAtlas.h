@@ -6,10 +6,15 @@
 #include "../texture/ImageRegionAllocator.h"
 
 namespace gfx {
+struct GlyphSlot {
+  MaterialId materialId = kInvalidMaterialId;
+  UvRegion region;
+};
+
 class GlyphAtlas {
  public:
   static constexpr glm::uvec2 kAtlasResolution = {4096, 4096};
-  static constexpr uint32_t kAtlasLayers = 2;
+  static constexpr int32_t kGlyphPadding = 1;
 
   GlyphAtlas(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator, vkcore::TransferContext& transferCtxt);
 

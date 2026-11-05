@@ -8,7 +8,7 @@ class UiSlider : public UiBar {
   [[nodiscard]] float GetMin() const { return min_; }
   void SetMin(float min) { min_ = min; }
 
-  [[nodiscard]] const std::optional<float> GetStride() const { return stride_; }
+  [[nodiscard]] const std::optional<float>& GetStride() const { return stride_; }
   void SetStride(const std::optional<float>& stride) { stride_ = stride; }
 
  private:

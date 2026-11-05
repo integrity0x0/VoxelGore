@@ -16,8 +16,14 @@ class FontFamily {
 
   void AddFont(gfx::Font&& font);
 
+  [[nodiscard]] const gfx::Font* GetFont(FontStyle style) {
+    auto it = std::find(fonts_.begin(), fonts_.end(), style);
+
+    return it != fonts_.end() ? it->get() : nullptr;
+  }
+
  private:
   std::string name_;
-  std::vector<gfx::Font> fonts_;
+  std::vector<std::unique_ptr<gfx::Font>> fonts_;
 };
 }  // namespace gfx

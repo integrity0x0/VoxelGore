@@ -3,8 +3,9 @@
 #include <optional>
 #include <stdexcept>
 #include <vector>
+#include <glm/glm.hpp>
 
-#include "../../../../include/glm/glm.hpp"
+#include "../../UvRegion.h"
 
 namespace gfx {
 
@@ -17,6 +18,12 @@ struct ImageRegion {
 
   ImageRegion(const glm::ivec2& pos, const glm::ivec2& size, uint32_t arrayLayer)
       : pos(pos), size(size), arrayLayer(arrayLayer) {}
+
+  [[nodiscard]] UvRegion ToUv(glm::ivec2 textureSize) const {
+    return {.min = glm::vec2(pos) / glm::vec2(textureSize),
+            .max = glm::vec2(pos + size) / glm::vec2(textureSize),
+            .arrayLayer = arrayLayer};
+  }
 };
 
 class ImageRegionAllocator {

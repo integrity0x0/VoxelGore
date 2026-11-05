@@ -7,17 +7,12 @@
 #include <vector>
 
 #include "FreeTypeLibrary.h"
+#include "Glyph.h"
 
 namespace gfx {
 
-struct GlyphInfo {
-  int32_t width, height;
-  int32_t bearingX, bearingY;
-  float advance;
-};
-
 struct GlyphData {
-  GlyphInfo info;
+  GlyphMetrics metrics;
   std::vector<std::byte> pixels;
 };
 

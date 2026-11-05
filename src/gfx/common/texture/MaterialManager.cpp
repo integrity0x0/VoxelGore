@@ -70,6 +70,11 @@ const Material* MaterialManager::TryGet(MaterialId id) const {
   return id < materials_.size() ? materials_[id].get() : nullptr;
 }
 
+MaterialId MaterialManager::Add(const vkcore::SampledTexture& texture) {
+  MaterialId id = static_cast<MaterialId>(materials_.size());
+
+}
+
 vkcore::DescriptorSet MaterialManager::AllocateAndWriteDescriptorSet(
     const vkcore::SampledTexture& texture) {
   auto descriptorSet = descriptorPool_.Allocate(descriptorSetLayout_);
