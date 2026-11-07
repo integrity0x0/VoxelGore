@@ -1,6 +1,15 @@
 {
   "name": "rubik",
   "styles": [
-    {"file": "Rubik-Regular.ttf", "weight": "regular", "italic": false}
+    {
+      "file": "Rubik-Regular.ttf",
+      "weight": "regular",
+      "italic": false
+    },
+    {
+      "file": "Rubik-Italic.ttf",
+      "weight": "regular",
+      "italic": true
+    }
   ]
 }

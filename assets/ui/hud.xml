@@ -135,9 +135,13 @@
       text="☆*: .｡. o(≧▽≦)o .｡.:*☆" font="notojp"
       font-size="32" color="#FF00FFFF"/>
 
+	<text anchor="left, center" pos="0, 50"
+      text="КОЧ БРАТАН" font="rubik" italic="true"
+      font-size="64" color="#00FFFFFF" text-shadow="true" shadow-offset="3" shadow-color="#0000FF"/>
+
 	<text anchor="center, center" pos="120, 50"
       text="(〃￣︶￣)人(￣︶￣〃)" font="notojp"
-      font-size="32" color="#FF00FFFF"/>
+      font-size="32" color="#FF00FFFF" text-shadow="true" shadow-offset="2" shadow-color="#FF301934"/>
 
 	<text anchor="left, bottom" pos="12, -10"
       text="v0.11-alpha" font="notojp"

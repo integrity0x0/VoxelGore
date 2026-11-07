@@ -122,12 +122,18 @@ enum class UiFillFrom {
   Left, Right, Top, Bottom, CenterX, CenterY, Count
 };
 
+struct UiTextShadow {
+  glm::vec2 offset;
+  glm::vec4 color;
+};
+
 struct UiResolvedVisual {
   glm::vec4 color{1.0f};
   glm::vec4 bgColor{0.0f};
   glm::vec4 borderColor{1.0f};
   glm::vec4 fillColor{1.0f};
-  glm::vec4 shadowColor{0.0f};
+  glm::vec4 shadowColor{0.0f, 0.0f, 0.0f,
+                        1.0f};
 
   float radius = 0.0f;
   float bgRadius = 0.0f;
@@ -147,6 +153,8 @@ struct UiResolvedVisual {
   FontFamily* font = nullptr;
   FontWeight fontWeight = FontWeight(400);
   bool italic = false;
+  bool textShadow = false;
+  glm::vec2 shadowOffset{1.0f, 1.0f};
 };
 
 struct UiVisualProps {
@@ -155,7 +163,8 @@ struct UiVisualProps {
   std::optional<glm::vec4> borderColor;
   std::optional<glm::vec4> fillColor;
   std::optional<glm::vec4> shadowColor;
-
+  std::optional<glm::vec2> shadowOffset;
+  std::optional<bool> italic;
   std::optional<float> radius;
   std::optional<float> bgRadius;
   std::optional<float> borderWidth;
@@ -173,7 +182,7 @@ struct UiVisualProps {
   std::optional<std::u32string> text;
   FontFamily* font = nullptr;
   std::optional<FontWeight> fontWeight;
-  std::optional<bool> italic;
+  std::optional<bool> textShadow;
 
   void MergeFrom(const UiVisualProps& o) {
     if (o.color) color = o.color;
@@ -181,6 +190,7 @@ struct UiVisualProps {
     if (o.borderColor) borderColor = o.borderColor;
     if (o.fillColor) fillColor = o.fillColor;
     if (o.shadowColor) shadowColor = o.shadowColor;
+    if (o.shadowOffset) shadowOffset = o.shadowOffset;
 
     if (o.radius) radius = o.radius;
     if (o.bgRadius) bgRadius = o.bgRadius;
@@ -200,6 +210,7 @@ struct UiVisualProps {
     if (o.font) font = o.font;
     if (o.fontWeight) fontWeight = o.fontWeight;
     if (o.italic) italic = o.italic;
+    if (o.textShadow) textShadow = o.textShadow;
   }
 
   void ApplyTo(UiResolvedVisual& r) const {
@@ -208,6 +219,7 @@ struct UiVisualProps {
     if (borderColor) r.borderColor = *borderColor;
     if (fillColor) r.fillColor = *fillColor;
     if (shadowColor) r.shadowColor = *shadowColor;
+    if (shadowOffset) r.shadowOffset = *shadowOffset; 
 
     if (radius) r.radius = *radius;
     if (bgRadius) r.bgRadius = *bgRadius;
@@ -227,6 +239,7 @@ struct UiVisualProps {
     if (font) r.font = font;
     if (fontWeight) r.fontWeight = *fontWeight;
     if (italic) r.italic = *italic;
+    if (textShadow) r.textShadow = *textShadow;
   }
 };
  

@@ -38,6 +38,11 @@ class UiText final : public UiElement {
     MarkVisualDirty();
   }
 
+  void SetShadowEnabled(bool enabled) {
+    baseVisual_.textShadow = enabled;
+    MarkVisualDirty();
+  }
+
   [[nodiscard]] glm::vec4 GetShadowColor() const {
     return baseVisual_.shadowColor.value_or(kVisualDefaults.shadowColor);
   }
@@ -47,6 +52,25 @@ class UiText final : public UiElement {
     MarkVisualDirty();
   }
 
+  [[nodiscard]] glm::vec2 GetShadowOffset() const {
+    return baseVisual_.shadowOffset.value_or(kVisualDefaults.shadowOffset);
+  }
+
+  void SetShadowOffset(const glm::vec2& offset) {
+    baseVisual_.shadowOffset = offset;
+    MarkVisualDirty();
+  }
+
+  [[nodiscard]] bool IsItalic() const { return baseVisual_.italic ? *baseVisual_.italic : false; }
+
+  void SetItalic(bool italic) {
+    baseVisual_.italic = italic;
+    MarkVisualDirty();
+  }
+
+  [[nodiscard]] bool IsShadowEnabled() const {
+    return baseVisual_.textShadow.value_or(kVisualDefaults.textShadow);
+  }
 
   void Render(UiRenderer& renderer) override;
 

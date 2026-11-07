@@ -170,7 +170,7 @@ class UiElement {
     return interactive_;
   }
 
-  void SetIntercative(bool interactive) {
+  void SetInteractive(bool interactive) {
     interactive_ = interactive;
   }
 

@@ -40,10 +40,10 @@ class AttrReader {
 
   bool Has(const char* name) const { return xml_.Attribute(name) != nullptr; }
 
-  void Reject(const char* name, UiSeverity sev = UiSeverity::Error) {
+  void Reject(std::string_view name, UiSeverity sev = UiSeverity::Error) {
     seen_.emplace(name);
     std::string msg =
-        std::string("Attribute \"") + name + "\" is not supported in <" + xml_.Name() + ">";
+        std::string("Attribute \"") + name.data() + "\" is not supported in <" + xml_.Name() + ">";
     result_.diagnostics.emplace_back(sev, std::move(msg), static_cast<size_t>(xml_.GetLineNum()));
   }
 
@@ -304,9 +304,28 @@ std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
   return result;
 }
 
+std::optional<float> ParsePxFloat(std::string_view text) {
+  auto length = ParseLength(text);
+  if (!length || length->unit != UiUnit::Px) return std::nullopt;
+  return length->value;
+}
+
+std::optional<glm::vec2> ParseOffset(std::string_view text) {
+  auto parts = SplitTwo(text);
+  if (!parts || parts->first.empty()) return std::nullopt;
+  auto x = ParsePxFloat(parts->first);
+  if (!x) return std::nullopt;
+  if (parts->second.empty()) return glm::vec2(*x, *x);
+  auto y = ParsePxFloat(parts->second);
+  if (!y) return std::nullopt;
+  return glm::vec2(*x, *y);
+}
+
+
 // ---------------------------------------------------------------------------
 // Styles and states
 // ---------------------------------------------------------------------------
+
 
 std::optional<std::vector<std::string>> ParseStyleNames(std::string_view text) {
   std::istringstream ss(text.data());
@@ -417,7 +436,8 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         break;
       case UiProp::BorderImage:
         if (auto path = a.Get(name, ParseImageRegion))
-          if (auto reg = ResolveImage(st.ctxt, *path)) out.visualProps.borderImage = std::move(*reg);
+          if (auto reg = ResolveImage(st.ctxt, *path))
+            out.visualProps.borderImage = std::move(*reg);
         break;
       case UiProp::FillFrom:
         if (auto v = a.Get(name, ParseFillFrom)) out.visualProps.fillFrom = *v;
@@ -435,18 +455,27 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
       case UiProp::Text:
         if (auto v = a.Get(name, ParseString)) out.visualProps.text = util::Utf8ToUtf32(*v);
         break;
+      case UiProp::Italic:
+        if (auto v = a.Get(name, ParseBool)) out.visualProps.italic = *v;
+        break;
       case UiProp::Font:
         if (auto v = a.Get(name, ParseString))
           out.visualProps.font = st.ctxt.fontManager.RequireFamily(*v);
         break;
       case UiProp::FontSize:
-        if (auto v = a.Get(name, ParseFloat))
-          out.visualProps.fontSize = *v;
+        if (auto v = a.Get(name, ParseFloat)) out.visualProps.fontSize = *v;
         break;
 
       case UiProp::TextShadow:
-        if (auto v = a.Get(name, ParseBool)) break; // TODO: text-shadow
+        if (auto v = a.Get(name, ParseBool)) out.visualProps.textShadow = *v;
         break;
+      case UiProp::ShadowColor:
+        if (auto v = a.Get(name, ParseColor)) out.visualProps.shadowColor = *v;
+        break;
+      case UiProp::ShadowOffset:
+        if (auto v = a.Get(name, ParseOffset)) out.visualProps.shadowOffset = *v;
+        break;
+
       default:
         break;
     }
@@ -581,7 +610,7 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::
   }
 
   el.SetVisible(a.GetOr("visible", ParseBool, true));
-  el.SetIntercative(a.GetOr("interactive", ParseBool, true));
+  el.SetInteractive(a.GetOr("interactive", ParseBool, true));
 
   el.SetVisibleOn(a.GetOr("visible-on", ParseVisibleOn, UiStateFlags::None));
 

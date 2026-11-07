@@ -37,8 +37,9 @@ enum class UiProp : uint8_t {
   FontWeight,
   Italic,
   Text,
-  TextShadow,   // text-shadow
-  ShadowColor,  // shadow-color
+  TextShadow,
+  ShadowColor,
+  ShadowOffset,
 
   // events
   OnClick,
@@ -69,7 +70,7 @@ inline constexpr std::array<std::string_view, kPropCount> kPropNames{
     "border-color",
     "radius",
     "bg-radius",
-    "border",  // BorderWidth
+    "border",
     "scale",
     "src",
     "bg-image",
@@ -87,7 +88,7 @@ inline constexpr std::array<std::string_view, kPropCount> kPropNames{
     "text",
     "text-shadow",
     "shadow-color",
-
+    "shadow-offset",
     // events
     "on-click",
     "on-release",
@@ -109,6 +110,7 @@ static_assert(kPropNames[static_cast<size_t>(UiProp::Pos)] == "pos");
 static_assert(kPropNames[static_cast<size_t>(UiProp::BorderImage)] == "border-image");
 static_assert(kPropNames[static_cast<size_t>(UiProp::TextShadow)] == "text-shadow");
 static_assert(kPropNames[static_cast<size_t>(UiProp::ShadowColor)] == "shadow-color");
+static_assert(kPropNames[static_cast<size_t>(UiProp::ShadowOffset)] == "shadow-offset");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnClick)] == "on-click");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnSet)] == "on-set");
 
@@ -155,6 +157,7 @@ constexpr bool IsPropSupported(UiProp p, UiElementType t) {
     case UiProp::Text:
     case UiProp::TextShadow:
     case UiProp::ShadowColor:
+    case UiProp::ShadowOffset:
       return t == UiElementType::Text;
 
     case UiProp::OnSet:

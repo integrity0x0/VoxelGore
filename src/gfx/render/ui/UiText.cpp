@@ -6,7 +6,7 @@ namespace {
 struct GlyphQuad {
   glm::vec2 pos;
   glm::vec2 size;
-  GlyphSlot slot;  // ← было UiTextureRegion
+  GlyphSlot slot;
 };
 
 struct TextLayout {
@@ -61,7 +61,6 @@ TextLayout LayoutText(const std::u32string& text, Font& font, float pixelSize) {
 
 void UiText::UpdateVisual() const {
   UiElement::UpdateVisual();
-  // text_ уже source of truth, в resolvedVisual_.text класть не обязательно
 }
 
 void UiText::Render(UiRenderer& renderer) {
@@ -69,7 +68,7 @@ void UiText::Render(UiRenderer& renderer) {
 
   RenderBg(renderer);
   RenderText(renderer);
-  // RenderBorder(renderer); // если нужен бордер у текстового элемента
+
 }
 
 void UiText::RenderText(UiRenderer& renderer) {
@@ -90,13 +89,7 @@ void UiText::RenderText(UiRenderer& renderer) {
   const UiRect& content = resolvedLayout_.rect;
   const glm::vec2 pivot = GetPivotPoint();
 
-  const float offsetX = 0.0f;
-  const float offsetY = 0.0f;
-
-  const glm::vec2 textOrigin = content.pos + glm::vec2(offsetX, offsetY);
-
-  const bool hasShadow = v.shadowColor.a > 0.001f;
-  const glm::vec2 shadowOffset = {1.0f, 1.0f};
+  const glm::vec2 textOrigin = content.pos;
 
   auto drawQuads = [&](const glm::vec4& color, const glm::vec2& extraOffset) {
     for (const GlyphQuad& q : layout.quads) {
@@ -108,8 +101,8 @@ void UiText::RenderText(UiRenderer& renderer) {
     }
   };
 
-  if (hasShadow) {
-    drawQuads(v.shadowColor, shadowOffset * v.scale);
+  if (v.textShadow) {
+    drawQuads(v.shadowColor, v.shadowOffset * v.scale);
   }
 
   drawQuads(v.color, {0.0f, 0.0f});
