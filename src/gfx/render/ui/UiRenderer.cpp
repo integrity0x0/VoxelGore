@@ -101,8 +101,9 @@ void UiRenderer::SubmitGlyph(glm::vec2 pos, glm::vec2 size, const std::optional<
 }
 
 void UiRenderer::Render() {
+  if (!instanceCount_) return;
   auto& frame = frames_[currentFrame_];
-
+  
   device_.get().GetDispatchTable().vkCmdDraw(cmd_, 6, instanceCount_, 0, instanceOffset_);
 
   instanceOffset_ += instanceCount_;

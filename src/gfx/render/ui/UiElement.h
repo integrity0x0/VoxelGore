@@ -13,11 +13,9 @@
 #include "../../UvRegion.h"
 #include "../../common/texture/MaterialManager.h"
 #include "UiRenderer.h"
+#include "UiElementType.h"
 
 namespace gfx {
-
-enum class UiElementType : uint8_t { Undefined, Container, Text, Image, Button, Bar, Checkbox, Slider, Stick };
-
 class UiElement {
  public:
   using Callbacks = std::array<UiCallback, static_cast<size_t>(UiEventType::Count)>;
@@ -239,7 +237,7 @@ class UiElement {
     MarkVisualDirty();
   }
 
-  void ApplyStyle(const UiStyle& s);
+  virtual void ApplyStyle(const UiStyle& s);
 
   [[nodiscard]] virtual std::span<const std::unique_ptr<UiElement>> GetChildren() const {
     return {};

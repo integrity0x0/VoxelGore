@@ -1,4 +1,4 @@
-<page id="hud" input-mode="passthrough" script="ui/game.lua">
+<page id="hud" input-mode="passthrough">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 
@@ -26,12 +26,6 @@
 
 		<style name="slotIcon" size="48" anchor="center"/>
 
-		<style name="slotCount"
-			anchor="right, bottom" pivot="right, bottom"
-			pos="-4, -3"
-			color="#FFFFFF" font="rubik" font-size="14"
-			text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
-			text="64"/>
 		<style name="statRow" size="206, 19"/>
 
 		<style name="statBar" pos="24, 0" size="182, 19" radius="4" padding="1"
@@ -54,6 +48,7 @@
 			anchor="left, center" pos="36, 0"
 			color="#FFFFFF" font="rubik" font-size="14"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
+		<style name="slotGrid" extends="panel" radius="9" columns="8" cell="48" gap="4" inset="4, 5"/>
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -155,5 +150,14 @@
 			</button>
 		</container>
 	</container>
+	<text text="v0.11-alpha" anchor="left, bottom" font="rubik" italic="true" color="#AAAAAA"/>
 
+	<grid id="inventory" style="slotGrid" anchor="center">
+		<repeat count="32">
+			<button style="slot">
+				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
+				<text style="slotCount" interactive="false"/>
+			</button>
+		</repeat>
+	</grid>
 </page>

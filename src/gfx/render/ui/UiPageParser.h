@@ -13,6 +13,7 @@
 #include "UiText.h"
 #include "UiImage.h"
 #include "UiBar.h"
+#include "UiGrid.h"
 
 namespace gfx {
 enum class UiSeverity { Error, Warning };
@@ -60,8 +61,10 @@ class UiPageParser {
     Context ctxt;
     UiPageParseResult result;
     std::unordered_map<std::string, UiStyle> styles;
-
+    size_t repeatDepth = 0;
     ParsingState(Context ctxt) : ctxt(ctxt) {}
+
+    [[nodiscard]] bool IsInsideRepeat() const { return repeatDepth != 0; }
   };
 
   UiPageParser() = delete;
@@ -101,6 +104,18 @@ class UiPageParser {
   [[nodiscard]] static std::unique_ptr<UiElement> ParseText(UiPageParser::ParsingState& st,
                                                             const tinyxml2::XMLElement* element,
                                                             const UiElement* parent);
+
+  [[nodiscard]] static std::unique_ptr<UiElement> ParseGrid(UiPageParser::ParsingState& st,
+                                                            const tinyxml2::XMLElement* element,
+                                                            const UiElement* parent);
+
+  static void ParseChildren(ParsingState& st, const tinyxml2::XMLElement* xml,
+                            const UiElement* parent,
+                            std::vector<std::unique_ptr<UiElement>>& elements);
+
+  static void ParseChildrenInto(ParsingState& st, const tinyxml2::XMLElement* xml,
+                                UiContainer& container);
+
  private:
   using ElementParserFn = std::unique_ptr<UiElement> (*)(ParsingState& st, const tinyxml2::XMLElement*,
                                                          const UiElement*);

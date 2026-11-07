@@ -386,6 +386,7 @@
     <ClInclude Include="src\gfx\common\font\FontStyle.h" />
     <ClInclude Include="src\util\StringUtils.h" />
     <ClInclude Include="src\gfx\render\ui\UiGrid.h" />
+    <ClInclude Include="src\gfx\render\ui\UiElementType.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

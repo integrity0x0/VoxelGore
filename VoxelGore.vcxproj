@@ -320,6 +320,7 @@
     <ClInclude Include="src\gfx\render\ui\UiContainer.h" />
     <ClInclude Include="src\gfx\render\ui\UiElement.h" />
     <ClInclude Include="src\gfx\render\ui\UiElementBinding.h" />
+    <ClInclude Include="src\gfx\render\ui\UiElementType.h" />
     <ClInclude Include="src\gfx\render\ui\UiEvents.h" />
     <ClInclude Include="src\gfx\render\ui\UiGrid.h" />
     <ClInclude Include="src\gfx\render\ui\UiImage.h" />

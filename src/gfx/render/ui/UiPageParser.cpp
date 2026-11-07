@@ -51,6 +51,10 @@ class AttrReader {
     result_.diagnostics.emplace_back(sev, std::move(msg), line);
   }
 
+  void Report(UiSeverity sev, std::string msg) {
+    Report(sev, std::move(msg), xml_.GetLineNum());
+  }
+
   void ReportUnknown(UiSeverity sev = UiSeverity::Error) const {
     for (auto* a = xml_.FirstAttribute(); a; a = a->Next()) {
       if (seen_.count(std::string(a->Name())) != 0) continue;
@@ -370,6 +374,26 @@ std::optional<glm::vec2> ParseOffset(std::string_view text) {
   return glm::vec2(*x, *y);
 }
 
+std::optional<size_t> ParseUInt(std::string_view text) {
+  text = Trim(text);
+  size_t value = 0;
+  auto [ptr, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
+  if (ec != std::errc{} || ptr != text.data() + text.size()) return std::nullopt;
+  return value;
+}
+
+std::optional<size_t> ParseColumns(std::string_view text) {
+  auto v = ParseUInt(text);
+  if (!v || *v == 0) return std::nullopt;
+  return v;
+}
+
+constexpr size_t kMaxRepeat = 1024;
+std::optional<size_t> ParseRepeatCount(std::string_view text) {
+  auto v = ParseUInt(text);
+  if (!v || *v == 0 || *v > kMaxRepeat) return std::nullopt;
+  return v;
+}
 
 // ---------------------------------------------------------------------------
 // Styles and states
@@ -417,7 +441,8 @@ std::optional<UiFillFrom> ParseFillFrom(std::string_view text) {
 }
 
 void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
-                std::optional<UiElementType> type, UiStyle& out) {
+                std::optional<UiElementType> type, std::optional<UiElementType> parentType,
+                UiStyle& out) {
   const UiSeverity sev = (scope == AttrScope::Element) ? UiSeverity::Error : UiSeverity::Warning;
 
   for (size_t i = 0; i < kPropCount; ++i) {
@@ -433,7 +458,11 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
       a.Reject(name, sev);
       continue;
     }
-
+    if (parentType && OwnsChildProp(*parentType, p)) {
+      a.Report(UiSeverity::Error,
+               std::string(name) + " is controlled by the parent's layout and cannot be set here");
+      continue;
+    }
     if (IsEventProp(p)) continue;
 
     switch (p) {
@@ -525,6 +554,19 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         if (auto v = a.Get(name, ParseOffset)) out.visualProps.shadowOffset = *v;
         break;
 
+      case UiProp::Columns:
+        if (auto v = a.Get(name, ParseColumns)) out.gridProps.columns = *v;
+        break;
+      case UiProp::Cell:
+        if (auto v = a.Get(name, ParseOffset)) out.gridProps.cell = *v;
+        break;
+      case UiProp::Gap:
+        if (auto v = a.Get(name, ParseOffset)) out.gridProps.gap = *v;
+        break;
+      case UiProp::Inset:
+        if (auto v = a.Get(name, ParseOffset)) out.gridProps.inset = *v;
+        break;
+
       default:
         break;
     }
@@ -532,7 +574,8 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
 }
 
 void ParseStateBlock(UiPageParser::ParsingState& st, const tinyxml2::XMLElement& xml,
-                     std::optional<UiElementType> type, UiStyle& out) {
+                     std::optional<UiElementType> type, std::optional<UiElementType> parentType,
+                     UiStyle& out) {
   AttrReader a(xml, st.result);
 
   auto state = a.Get("name", ParseUiStateName);
@@ -542,7 +585,7 @@ void ParseStateBlock(UiPageParser::ParsingState& st, const tinyxml2::XMLElement&
   }
 
   UiStyle tmp;
-  ParseAttrs(st, a, AttrScope::State, type, tmp);
+  ParseAttrs(st, a, AttrScope::State, type, parentType, tmp);
   a.ReportUnknown(UiSeverity::Warning);
 
   out.stateOverrides[static_cast<size_t>(*state)].MergeFrom(tmp.visualProps);
@@ -569,10 +612,10 @@ void ParseStyleDef(UiPageParser::ParsingState& st, const tinyxml2::XMLElement& x
       style = it->second;
   }
 
-  ParseAttrs(st, a, AttrScope::Style, std::nullopt, style);
+  ParseAttrs(st, a, AttrScope::Style, std::nullopt, std::nullopt, style);
   for (const auto* c = xml.FirstChildElement(); c; c = c->NextSiblingElement()) {
     if (std::string_view(c->Name()) == "state")
-      ParseStateBlock(st, *c, std::nullopt, style);
+      ParseStateBlock(st, *c, std::nullopt, std::nullopt, style);
     else
       st.result.Warning(std::string("Unexpected <") + c->Name() + "> inside <style>",
                         c->GetLineNum());
@@ -616,8 +659,8 @@ std::optional<UiStateFlags> ParseVisibleOn(std::string_view text) {
   return flags;
 }
 
-void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::XMLElement& xml,
-                 AttrReader& a) {
+void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const UiElement* parent,
+                 const tinyxml2::XMLElement& xml, AttrReader& a) {
   const UiElementType type = el.GetNodeType();
 
   UiStyle style;
@@ -634,11 +677,12 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::
     }
   }
 
-  ParseAttrs(st, a, AttrScope::Element, type, style);
+  auto parentType = parent ? std::optional<UiElementType>(parent->GetNodeType()) : std::nullopt;
+
+  ParseAttrs(st, a, AttrScope::Element, type, parentType, style);
 
   for (auto* c = xml.FirstChildElement(); c; c = c->NextSiblingElement()) {
-    if (std::string_view(c->Name()) == "state")
-      ParseStateBlock(st, *c, type, style);
+    if (std::string_view(c->Name()) == "state") ParseStateBlock(st, *c, type, parentType, style);
   }
 
   if (!style.layoutProps.pivot && style.layoutProps.anchor)
@@ -680,7 +724,6 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::
 
   el.SetVisibleOn(a.GetOr("visible-on", ParseVisibleOn, UiStateFlags::None));
 
-
 }
 
 }  // namespace
@@ -691,7 +734,8 @@ const std::unordered_map<std::string, UiPageParser::ElementParserFn> UiPageParse
     {"text", &UiPageParser::ParseText},
     {"image", &UiPageParser::ParseImage},
     {"bar", &UiPageParser::ParseBar},
-};
+    {"checkbox", &UiPageParser::ParseCheckbox},
+    {"grid", &UiPageParser::ParseGrid}};
 
 [[nodiscard]] std::unique_ptr<UiElement> UiPageParser::ParseImage(ParsingState& st,
                                                                   const tinyxml2::XMLElement* element,
@@ -700,7 +744,7 @@ const std::unordered_map<std::string, UiPageParser::ElementParserFn> UiPageParse
   const std::string id = a.GetOr("id", ParseString, std::string{});
   auto el = std::make_unique<UiImage>(id, parent);
 
-  ParseCommon(st, *el, *element, a);
+  ParseCommon(st, *el, parent, *element, a);
 
   a.ReportUnknown();
   return el;
@@ -730,7 +774,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseContainer(ParsingState& st,
   const std::string id = a.GetOr("id", ParseString, std::string{});
   auto el = std::make_unique<UiContainer>(id, parent);
 
-  ParseCommon(st, *el, *element, a);
+  ParseCommon(st, *el, parent, *element, a);
 
   for (const auto* child = element->FirstChildElement(); child;
        child = child->NextSiblingElement()) {
@@ -750,7 +794,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseButton(ParsingState& st,
   const std::string id = a.GetOr("id", ParseString, std::string{});
   auto el = std::make_unique<UiButton>(id, parent);
 
-  ParseCommon(st, *el, *element, a); 
+  ParseCommon(st, *el, parent, *element, a); 
 
   for (const auto* child = element->FirstChildElement(); child;
        child = child->NextSiblingElement()) {
@@ -770,7 +814,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseCheckbox(UiPageParser::ParsingStat
   const std::string id = a.GetOr("id", ParseString, std::string{});
   auto el = std::make_unique<UiCheckbox>(id, parent);
 
-  ParseCommon(st, *el, *element, a);
+  ParseCommon(st, *el, parent, *element, a);
 
   for (const auto* child = element->FirstChildElement(); child;
        child = child->NextSiblingElement()) {
@@ -790,7 +834,7 @@ std::unique_ptr<UiElement> UiPageParser::ParseCheckbox(UiPageParser::ParsingStat
   const std::string id = a.GetOr("id", ParseString, std::string{});
   auto el = std::make_unique<UiBar>(id, parent);
 
-  ParseCommon(st, *el, *element, a);
+  ParseCommon(st, *el, parent, *element, a);
 
   for (const auto* child = element->FirstChildElement(); child;
        child = child->NextSiblingElement()) {
@@ -812,10 +856,25 @@ std::unique_ptr<UiElement> UiPageParser::ParseText(UiPageParser::ParsingState& s
 
   auto text = std::make_unique<UiText>(id, parent);
 
-  ParseCommon(st, *text, *element, a);
+  ParseCommon(st, *text, parent, *element, a);
 
   a.ReportUnknown();
   return text;
+}
+
+std::unique_ptr<UiElement> UiPageParser::ParseGrid(UiPageParser::ParsingState& st,
+                                                   const tinyxml2::XMLElement* element,
+                                                   const UiElement* parent) {
+  AttrReader a(*element, st.result);
+  const std::string id = a.GetOr("id", ParseString, std::string{});
+  auto el = std::make_unique<UiGrid>(id, parent);
+
+  ParseCommon(st, *el, parent, *element, a);
+
+  ParseChildrenInto(st, element, *el);
+
+  a.ReportUnknown();
+  return el;
 }
 
 std::optional<std::string> UiPageParser::ParsePageAttributes(const tinyxml2::XMLElement* element,
@@ -838,6 +897,57 @@ void UiPageParser::ParseStyles(const tinyxml2::XMLElement& xml, ParsingState& st
   if (std::string_view(xml.Name()) == "styles") {
     ParseStylesBlock(st, xml);
   }
+}
+
+void UiPageParser::ParseChildren(ParsingState& st, const tinyxml2::XMLElement* xml,
+                                 const UiElement* parent,
+                                 std::vector<std::unique_ptr<UiElement>>& elements) {
+  const bool inRepeat = std::string_view(xml->Name()) == "repeat";
+
+  for (const auto* child = xml->FirstChildElement(); child; child = child->NextSiblingElement()) {
+    const std::string_view name = child->Name();
+
+    if (name == "state") {
+      if (!parent || inRepeat)
+        st.result.Error("<state> must be a direct child of an element", child->GetLineNum());
+      continue;
+    }
+
+    if (name == "styles") {
+      if (parent)
+        st.result.Error("<styles> is allowed only at page level", child->GetLineNum());
+      else
+        ParseStyles(*child, st);
+      continue;
+    }
+
+    if (name == "repeat") {
+      AttrReader a(*child, st.result);
+      if (!a.Has("count"))
+        a.Report(UiSeverity::Error, "<repeat> requires \"count\"", child->GetLineNum());
+      const size_t count = a.GetOr("count", ParseRepeatCount, size_t{0});
+      a.ReportUnknown();
+
+      ++st.repeatDepth;
+      for (size_t i = 0; i < count; ++i) {
+        const size_t diagBefore = st.result.diagnostics.size();
+        ParseChildren(st, child, parent, elements);
+        if (st.result.diagnostics.size() != diagBefore) break;
+      }
+      --st.repeatDepth;
+      continue;
+    }
+
+    if (auto parsed = ParseElement(st, child, parent)) elements.emplace_back(std::move(parsed));
+
+  }
+}
+
+void UiPageParser::ParseChildrenInto(ParsingState& st, const tinyxml2::XMLElement* xml,
+                                     UiContainer& container) {
+  std::vector<std::unique_ptr<UiElement>> children;
+  ParseChildren(st, xml, &container, children);
+  for (auto& child : children) container.AddChild(std::move(child));
 }
 
 UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& ctxt) {
@@ -871,13 +981,7 @@ UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& c
   auto scriptPath = ParsePageAttributes(root, props, st);
    
   std::vector<std::unique_ptr<UiElement>> elements;
-  for (const auto* child = root->FirstChildElement(); child; child = child->NextSiblingElement()) {
-    if (auto element = ParseElement(st, child, nullptr)) {
-      elements.emplace_back(std::move(element));
-    } else {
-      ParseStyles(*child, st);
-    }
-  }
+  ParseChildren(st, root, nullptr, elements);
 
   st.result.page = std::make_unique<UiPage>(props, std::move(elements));
 

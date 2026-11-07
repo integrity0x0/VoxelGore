@@ -1,9 +1,10 @@
 #pragma once
+
 #include <array>
 #include <optional>
 #include <string_view>
 
-#include "UiElement.h"
+#include "UiElementType.h"
 #include "UiTypes.h"
 
 namespace gfx {
@@ -40,6 +41,13 @@ enum class UiProp : uint8_t {
   TextShadow,
   ShadowColor,
   ShadowOffset,
+
+  // grid
+
+  Columns,
+  Cell,
+  Gap,
+  Inset,
 
   // events
   OnClick,
@@ -89,6 +97,14 @@ inline constexpr std::array<std::string_view, kPropCount> kPropNames{
     "text-shadow",
     "shadow-color",
     "shadow-offset",
+
+    // grid
+
+    "columns",
+    "cell",
+    "gap",
+    "inset",
+
     // events
     "on-click",
     "on-release",
@@ -163,11 +179,28 @@ constexpr bool IsPropSupported(UiProp p, UiElementType t) {
     case UiProp::OnSet:
       return t == UiElementType::Checkbox || t == UiElementType::Slider;  // + Joystick later
 
+    case UiProp::Columns:
+    case UiProp::Cell:
+    case UiProp::Gap:
+    case UiProp::Inset:
+      return t == UiElementType::Grid;
+
     default:
       return true;
   }
 }
 
-constexpr bool SupportsAutoSize(UiElementType t) { return t == UiElementType::Text; }
+constexpr bool SupportsAutoSize(UiElementType t) {
+  return t == UiElementType::Text || t == UiElementType::Grid;
+}
+
+constexpr bool OwnsChildProp(UiElementType parent, UiProp p) {
+  switch (parent) {
+    case UiElementType::Grid:
+      return p == UiProp::Pos || p == UiProp::Size || p == UiProp::Anchor;
+    default:
+      return false;
+  }
+}
 
 }  // namespace gfx

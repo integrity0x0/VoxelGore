@@ -157,6 +157,21 @@ struct UiResolvedVisual {
   glm::vec2 shadowOffset{1.0f, 1.0f};
 };
 
+struct UiGridProps {
+  std::optional<glm::vec2> gap;
+  std::optional<glm::vec2> inset;
+  std::optional<glm::vec2> cell;
+  std::optional<size_t> columns;
+
+  void MergeFrom(const UiGridProps& o) {
+    if (o.gap) gap = o.gap;
+    if (o.inset) inset = o.inset;
+    if (o.columns) columns = o.columns;
+    if (o.cell) cell = o.cell;
+  }
+
+};
+
 struct UiVisualProps {
   std::optional<glm::vec4> color;
   std::optional<glm::vec4> bgColor;
@@ -262,11 +277,13 @@ using UiStateOverrides = std::array<UiVisualProps, static_cast<size_t>(UiState::
 struct UiStyle {
   UiVisualProps visualProps;
   UiLayoutProps layoutProps;
+  UiGridProps gridProps;
   UiStateOverrides stateOverrides;
 
   void MergeFrom(const UiStyle& o) {
     visualProps.MergeFrom(o.visualProps);
     layoutProps.MergeFrom(o.layoutProps);
+    gridProps.MergeFrom(o.gridProps);
     for (size_t i = 0; i < stateOverrides.size(); ++i)
       stateOverrides[i].MergeFrom(o.stateOverrides[i]);
   }
