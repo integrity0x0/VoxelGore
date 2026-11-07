@@ -23,7 +23,7 @@ struct UiPoint {
   UiAlignY y = UiAlignY::Top;
 };
 
-enum class UiUnit : uint8_t { Px, Percent };
+enum class UiUnit : uint8_t { Px, Percent, Auto };
 
 struct UiLength {
   float value = 0.0f;
@@ -58,7 +58,7 @@ struct UiInsets {
   float left = 0.0f, top = 0.0f, right = 0.0f, bottom = 0.0f;
 };
 
-struct UiLayout {
+struct UiResolvedLayout {
   UiRect rect;
   UiInsets padding;
 };

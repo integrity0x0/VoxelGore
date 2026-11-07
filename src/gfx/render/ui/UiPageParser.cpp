@@ -110,6 +110,38 @@ std::optional<std::string> ParseString(std::string_view text) {
   return std::string(text);
 }
 
+std::optional<std::u32string> ParseTextProp(std::string_view text) {
+  if (text.empty()) return std::nullopt;
+
+  std::u32string str = util::Utf8ToUtf32(text);
+  
+  std::u32string out;
+  out.reserve(str.size());
+
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (str[i] == '\\' && i + 1 < str.size()) {
+      switch (str[i + 1]) {
+        case 'n': {
+          out += '\n';
+          ++i;
+          break;
+        }
+        case '\\': {
+          out += '\\';
+          ++i;
+          break;
+        }
+        default:
+          break;
+      }
+    } else {
+      out += str[i];
+    }
+  }
+
+  return out;
+}
+
 std::optional<UiLength> ParseLength(std::string_view text) {
   text = Trim(text);
   if (text.empty()) return std::nullopt;
@@ -147,6 +179,23 @@ std::optional<UiLength2> ParseLength2(std::string_view text) {
   if (!x) return std::nullopt;
   if (parts->second.empty()) return UiLength2{*x, *x};
   auto y = ParseLength(parts->second);
+  if (!y) return std::nullopt;
+  return UiLength2{*x, *y};
+}
+
+std::optional<UiLength> ParseSizeLength(std::string_view text) {
+  text = Trim(text);
+  if (text == "auto") return UiLength{0.0f, UiUnit::Auto};
+  return ParseLength(text);
+}
+
+std::optional<UiLength2> ParseSize(std::string_view text) {
+  auto parts = SplitTwo(text);
+  if (!parts || parts->first.empty()) return std::nullopt;
+  auto x = ParseSizeLength(parts->first);
+  if (!x) return std::nullopt;
+  if (parts->second.empty()) return UiLength2{*x, *x};
+  auto y = ParseSizeLength(parts->second);
   if (!y) return std::nullopt;
   return UiLength2{*x, *y};
 }
@@ -392,7 +441,7 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         if (auto v = a.Get(name, ParseLength2)) out.layoutProps.pos = *v;
         break;
       case UiProp::Size:
-        if (auto v = a.Get(name, ParseLength2)) out.layoutProps.size = *v;
+        if (auto v = a.Get(name, ParseSize)) out.layoutProps.size = *v;
         break;
       case UiProp::Anchor:
         if (auto v = a.Get(name, ParsePoint)) out.layoutProps.anchor = *v;
@@ -453,7 +502,7 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         if (auto v = a.Get(name, ParseFloat)) out.visualProps.fillRadius = *v;
         break;
       case UiProp::Text:
-        if (auto v = a.Get(name, ParseString)) out.visualProps.text = util::Utf8ToUtf32(*v);
+        if (auto v = a.Get(name, ParseTextProp)) out.visualProps.text = *v;
         break;
       case UiProp::Italic:
         if (auto v = a.Get(name, ParseBool)) out.visualProps.italic = *v;
@@ -585,7 +634,6 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::
     }
   }
 
-
   ParseAttrs(st, a, AttrScope::Element, type, style);
 
   for (auto* c = xml.FirstChildElement(); c; c = c->NextSiblingElement()) {
@@ -595,6 +643,24 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const tinyxml2::
 
   if (!style.layoutProps.pivot && style.layoutProps.anchor)
     style.layoutProps.pivot = style.layoutProps.anchor;
+
+  auto& size = style.layoutProps.size;
+  const bool hasAuto = size && (size->x.unit == UiUnit::Auto || size->y.unit == UiUnit::Auto);
+
+  if (SupportsAutoSize(type)) {
+    if (!size) size = UiLength2{{0.0f, UiUnit::Auto}, {0.0f, UiUnit::Auto}};
+  } else if (hasAuto) {
+    if (a.Has("size")) {
+      a.Report(UiSeverity::Error,
+               std::string("\"auto\" size is not supported in <") + xml.Name() + ">",
+               xml.GetLineNum());
+    } else {
+      a.Report(UiSeverity::Warning,
+               std::string("\"auto\" size from style is ignored in <") + xml.Name() + ">",
+               xml.GetLineNum());
+    }
+    size.reset();
+  }
 
   el.ApplyStyle(style);
 

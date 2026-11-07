@@ -180,6 +180,7 @@
     <ClCompile Include="src\gfx\common\font\FontManager.cpp" />
     <ClCompile Include="src\gfx\common\font\GlyphAtlas.cpp" />
     <ClCompile Include="src\gfx\common\font\FontParser.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -384,6 +385,7 @@
     <ClInclude Include="src\gfx\common\font\Glyph.h" />
     <ClInclude Include="src\gfx\common\font\FontStyle.h" />
     <ClInclude Include="src\util\StringUtils.h" />
+    <ClInclude Include="src\gfx\render\ui\UiGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

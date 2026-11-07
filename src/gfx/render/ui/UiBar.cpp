@@ -6,6 +6,10 @@ void UiBar::Render(UiRenderer& renderer) {
   RenderContent(renderer);
   RenderBorder(renderer);
   RenderFill(renderer);
+
+  for (auto& child : children_) {
+    child->Render(renderer);
+  }
 }
 
 void UiBar::RenderFill(UiRenderer& renderer) {

@@ -167,4 +167,7 @@ constexpr bool IsPropSupported(UiProp p, UiElementType t) {
       return true;
   }
 }
+
+constexpr bool SupportsAutoSize(UiElementType t) { return t == UiElementType::Text; }
+
 }  // namespace gfx

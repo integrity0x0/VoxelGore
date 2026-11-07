@@ -252,7 +252,7 @@ class UiElement {
   }
 
   // Layout
-  [[nodiscard]] const UiLayout& GetResolvedLayout() const { return resolvedLayout_; }
+  [[nodiscard]] const UiResolvedLayout& GetResolvedLayout() const { return resolvedLayout_; }
 
   void UpdateLayout(const UiRect& parentRect);
 
@@ -273,12 +273,22 @@ class UiElement {
   }
   
   virtual void UpdateVisual() const;
-  glm::vec2 GetPivotPoint() const; 
+
+  [[nodiscard]] glm::vec2 GetPivotPoint() const; 
   virtual void RenderBg(UiRenderer& renderer);
   virtual void RenderContent(UiRenderer& renderer);
   virtual void RenderBorder(UiRenderer& renderer);
 
-  static UiRect ScaleAround(glm::vec2 pos, glm::vec2 size, glm::vec2 origin, float scale);
+  [[nodiscard]] static UiRect ScaleAround(glm::vec2 pos, glm::vec2 size, glm::vec2 origin,
+                                          float scale);
+
+  [[nodiscard]] static float ResolveLength(const UiLength& length, float parentSize) {
+    return length.unit == UiUnit::Percent ? length.value * parentSize / 100.0f : length.value;
+  }
+
+  [[nodiscard]] virtual glm::vec2 ResolveSize(const UiRect& parent) const {
+    return {ResolveLength(size_.x, parent.size.x), ResolveLength(size_.y, parent.size.y)};
+  }
  protected:
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
       0.0f, 0.5f, 1.0f};
@@ -312,7 +322,7 @@ class UiElement {
 
   mutable bool layoutDirty_ = false;
   mutable bool childDirty_ = false;
-  mutable UiLayout resolvedLayout_;
+  mutable UiResolvedLayout resolvedLayout_;
 
   mutable bool visualDirty_ = true;
   mutable UiResolvedVisual resolvedVisual_ = {};

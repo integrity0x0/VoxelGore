@@ -136,6 +136,7 @@
     <ClCompile Include="src\gfx\render\ui\UiContainer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiGrid.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLibrary.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLuaTypes.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="src\gfx\render\ui\UiElement.h" />
     <ClInclude Include="src\gfx\render\ui\UiElementBinding.h" />
     <ClInclude Include="src\gfx\render\ui\UiEvents.h" />
+    <ClInclude Include="src\gfx\render\ui\UiGrid.h" />
     <ClInclude Include="src\gfx\render\ui\UiImage.h" />
     <ClInclude Include="src\gfx\render\ui\UiInputRouter.h" />
     <ClInclude Include="src\gfx\render\ui\UiLibrary.h" />

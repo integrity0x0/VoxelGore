@@ -118,6 +118,12 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
       hpBar_ = reinterpret_cast<UiBar*>(el);
     }
   }
+
+  if (auto* el = ui_->FindElement("hpBarText")) {
+    if (el->GetNodeType() == UiElementType::Text) {
+      hpBarText_ = reinterpret_cast<UiText*>(el);
+    }
+  }
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {

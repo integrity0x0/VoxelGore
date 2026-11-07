@@ -45,10 +45,18 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
     if (auto* hp =
             session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
       bar->SetValue(hp->current);
+
       bar->SetMax(hp->max);
     }
   }
-
+  if (auto* text = render_->GetHpText()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      const std::string s = std::to_string(static_cast<int>(std::lround(hp->current))) + "/" +
+                            std::to_string(static_cast<int>(std::lround(hp->max)));
+      text->SetText(s);
+    }
+  }
   glfwSetInputMode(window_->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
@@ -241,7 +249,14 @@ bool Game::Frame(const core::InputState& inputState) {
       bar->SetValue(hp->current);
     }
   }
-
+  if (auto* text = render_->GetHpText()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      const std::string s = std::to_string(static_cast<int>(std::lround(hp->current))) + "/" +
+                            std::to_string(static_cast<int>(std::lround(hp->max)));
+      text->SetText(s);
+    }
+  }
   render_->UpdateDirty(cmd, frame);
   render_->GetUi().UpdateLayout();
   std::ignore = render_->GetUi().RouteInput(window_->GetInput().GetState());

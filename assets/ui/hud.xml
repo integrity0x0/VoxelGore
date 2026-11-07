@@ -22,18 +22,38 @@
 		<style name="gridLine" anchor="center" color="#6291A917"/>
 		<style name="mapDot" size="5" radius="2.5" color="#87A9B82D"/>
 
-		<style name="statRow" size="200, 19"/>
 		<style name="statIcon" size="19"/>
-		<style name="statBar" pos="24, 3" size="176, 13" radius="3" padding="1"
-			bg-color="#05070B" color="#05070B" border="1" border-color="#35404F"
-			fill-radius="2" fill-from="left"/>
 
 		<style name="slotIcon" size="48" anchor="center"/>
 
 		<style name="slotCount"
 			anchor="right, bottom" pivot="right, bottom"
-			pos="-4, -3" size="24, 16"
-			color="#FFFFFF" font="notojp" text="64"/>
+			pos="-4, -3"
+			color="#FFFFFF" font="rubik" font-size="14"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
+			text="64"/>
+		<style name="statRow" size="206, 19"/>
+
+		<style name="statBar" pos="24, 0" size="182, 19" radius="4" padding="1"
+			bg-color="#05070B" color="#05070B" border="1" border-color="#35404F"
+			fill-radius="3" fill-from="left"/>
+
+		<style name="slotCount"
+			anchor="right, bottom" pivot="right, bottom"
+			pos="-3, 0"
+			color="#FFFFFF" font="rubik" font-size="14"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
+			text="64"/>
+
+		<style name="barText"
+			anchor="center"
+			color="#FFFFFF" font="rubik" font-size="14"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"
+			text="0/100"/>
+		<style name="chipText"
+			anchor="left, center" pos="36, 0"
+			color="#FFFFFF" font="rubik" font-size="14"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -54,9 +74,11 @@
 	<container id="currency" anchor="right, top" pos="-14, 13" size="229, 40" visible="false">
 		<container id="money" style="chip">
 			<container style="coinGold"/>
+			<text id="moneyText" style="chipText" interactive="false" text="1024"/>
 		</container>
 		<container id="gems" style="chip" pos="93, 0">
 			<container style="coinGem"/>
+			<text id="gemsText" style="chipText" interactive="false" text="1024"/>
 		</container>
 		<button id="shop" style="btn" pos="207.5, 20" size="43, 40" radius="9">
 			<image style="icon" src="images/shop.png" interactive="false"/>
@@ -80,70 +102,58 @@
 		<container id="stats" size="420, 44" visible="false">
 			<container id="hp" style="statRow" visible="false">
 				<image style="statIcon" src="images/heart.png" interactive="false"/>
-				<bar id="hpBar" style="statBar" fill-color="#FF1738"/>
+				<bar id="hpBar" style="statBar" fill-color="#FF1738">
+					<text id="hpBarText" style="barText" interactive="false" text="sss"/>
+				</bar>
 			</container>
 			<container id="armor" style="statRow" pos="220, 0" visible="false">
 				<image style="statIcon" src="images/armor.png" interactive="false"/>
-				<bar id="armorBar" style="statBar" fill-color="#168BFF"/>
+				<bar id="armorBar" style="statBar" fill-color="#168BFF">
+					<text id="armorBarText" style="barText" interactive="false"/>
+				</bar>
 			</container>
 			<container id="thirst" style="statRow" pos="0, 24" visible="false">
 				<image style="statIcon" src="images/thirst.png" interactive="false"/>
-				<bar id="thirstBar" style="statBar" fill-color="#00D9FF"/>
+				<bar id="thirstBar" style="statBar" fill-color="#00D9FF">
+					<text id="thirstBarText" style="barText" interactive="false"/>
+				</bar>
 			</container>
 		</container>
 
 		<container id="hotbar" style="panel" anchor="center, top" pos="0, 51" size="420, 58" radius="9">
 			<button id="slot0" style="slotSelected" pos="29, 29">
 				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot1" style="slot" pos="81, 29">
 				<image style="slotIcon" src="@blocks.2.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot2" style="slot" pos="133, 29">
 				<image style="slotIcon" src="@blocks.3.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot3" style="slot" pos="185, 29">
 				<image style="slotIcon" src="@blocks.4.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot4" style="slot" pos="237, 29">
 				<image style="slotIcon" src="@blocks.5.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot5" style="slot" pos="289, 29">
 				<image style="slotIcon" src="@blocks.6.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot6" style="slot" pos="341, 29">
 				<image style="slotIcon" src="@blocks.7.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 			<button id="slot7" style="slot" pos="392, 28" size="46">
 				<image style="slotIcon" src="@blocks.8.preview" interactive="false"/>
-				<text style="slotCount"/>
+				<text style="slotCount" interactive="false"/>
 			</button>
 		</container>
 	</container>
 
-	<text anchor="left, center" text="hello, niggers" font="notojp"/>
-
-
-	<text anchor="center, center" pos="12, -10"
-      text="☆*: .｡. o(≧▽≦)o .｡.:*☆" font="notojp"
-      font-size="32" color="#FF00FFFF"/>
-
-	<text anchor="left, center" pos="0, 50"
-      text="КОЧ БРАТАН" font="rubik" italic="true"
-      font-size="64" color="#00FFFFFF" text-shadow="true" shadow-offset="3" shadow-color="#0000FF"/>
-
-	<text anchor="center, center" pos="120, 50"
-      text="(〃￣︶￣)人(￣︶￣〃)" font="notojp"
-      font-size="32" color="#FF00FFFF" text-shadow="true" shadow-offset="2" shadow-color="#FF301934"/>
-
-	<text anchor="left, bottom" pos="12, -10"
-      text="v0.11-alpha" font="notojp"
-      size="11" color="#82909FA0"/>
 </page>

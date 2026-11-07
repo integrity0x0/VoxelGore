@@ -102,12 +102,9 @@ void UiElement::UpdateLayout(const UiRect& parentRect) {
 
 void UiElement::Relayout(const UiRect& rect) {
   layoutDirty_ = false;
-  auto& layoutSize = resolvedLayout_.rect.size;
-  layoutSize.x =
-      size_.x.unit == UiUnit::Percent ? size_.x.value * rect.size.x / 100.0f : size_.x.value;
 
-  layoutSize.y =
-      size_.y.unit == UiUnit::Percent ? size_.y.value * rect.size.y / 100.0f : size_.y.value;
+  resolvedLayout_.rect.size = ResolveSize(rect);
+  const glm::vec2& layoutSize = resolvedLayout_.rect.size;
 
   const float posX =
       pos_.x.unit == UiUnit::Percent ? pos_.x.value * rect.size.x / 100.0f : pos_.x.value;
