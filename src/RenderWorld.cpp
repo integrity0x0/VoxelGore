@@ -134,8 +134,43 @@ void RenderWorld::UpdateParticles(float dt, uint32_t frameIndex) {
   particleEngine_->Update(dt, frameIndex);
 }
 
+void RenderWorld::SetSlotBlock(UiElement& cell, uint32_t blockId) {
+  const auto children = cell.GetChildren();
+  if (children.empty() || children[0]->GetNodeType() != UiElementType::Image) return;
+  auto* icon = static_cast<UiImage*>(children[0].get());
+
+  if (blockId == 0) {
+    icon->SetVisible(false);
+    return;
+  }
+
+  const std::string key = "blocks." + std::to_string(blockId) + ".preview";
+  const MaterialId material = materialManager_->Require(key);
+  if (material == kInvalidMaterialId) return;
+
+  icon->SetSrc(
+      UiTextureRegion{material, {.min = glm::vec2(0.0f), .max = glm::vec2(1.0f), .arrayLayer = 0}});
+  icon->SetVisible(true);
+}
+
+void RenderWorld::FillInventory() {
+  auto* element = ui_->FindElement("inventory");
+  if (!element || element->GetNodeType() != UiElementType::Grid) return;
+  auto* grid = static_cast<UiGrid*>(element);
+
+  const gm::BlockManager& blocks = session_->GetBlocks();
+  const int columns = static_cast<int>(grid->GetColumns());
+
+  for (uint32_t id = 1; id < blocks.GetBlockCount(); ++id) {
+    const int index = static_cast<int>(id) - 1;
+    UiElement* cell = grid->GetCell({index % columns, index / columns});
+    if (!cell) break;
+    SetSlotBlock(*cell, id);
+  }
+}
+
 void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
-                                 float screenH, const gm::Enviroment& enviroment) {
+                                 float screenH, const gm::Environment& enviroment) {
   glm::mat4 view = camera.GetView();
   glm::mat4 proj = glm::perspective(glm::radians(45.0f), screenW / screenH, 0.1f, 500.0f);
   proj[1][1] *= -1;

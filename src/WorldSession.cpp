@@ -15,15 +15,7 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
       std::make_unique<EntityFactory>(world_->entities(), world_->components(), *entityDefs_);
 
   blockManager_ = std::make_unique<BlockManager>();
-  blockManager_->Load(assetsPrefix + "blocks/air.json");
-  blockManager_->Load(assetsPrefix + "blocks/stone.json");
-  blockManager_->Load(assetsPrefix + "blocks/red_lamp.json");
-  blockManager_->Load(assetsPrefix + "blocks/glass_lime.json");
-  blockManager_->Load(assetsPrefix + "blocks/glass_purple.json");
-  blockManager_->Load(assetsPrefix + "blocks/sea_lantern.json");
-  blockManager_->Load(assetsPrefix + "blocks/glowstone.json");
-  blockManager_->Load(assetsPrefix + "blocks/ice.json");
-  blockManager_->Load(assetsPrefix + "blocks/tnt.json");
+  blockManager_->LoadDirectory(assetsPrefix + "blocks");
 
   lighting_ = std::make_unique<Lighting>(world_->GetChunks(), *blockManager_);
   lighting_->LightUp();
@@ -32,7 +24,7 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
   physicsSystem_ = std::make_unique<PhysicsSystem>(*collisionResolver_);
   healthSystem_ = std::make_unique<HealthSystem>();
 
-  enviroment_ = std::make_unique<Enviroment>();
+  enviroment_ = std::make_unique<Environment>();
 
   entityDefs_->Register(assetsPrefix + "entities/barrel.json");
   entityDefs_->Register(assetsPrefix + "entities/integrity.json");

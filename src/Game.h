@@ -16,6 +16,8 @@
 #include "game/LibControl.h"
 #include "gfx/render/block/BlockPreviewRenderer.h"
 #include "script/LuaState.h"
+#include "game/Hotbar.h"
+#include "game/LibInventory.h"
 
 #ifdef __ANDROID__
 struct android_app;
@@ -58,6 +60,8 @@ class Game {
   script::LuaState luaState_;
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<gm::WorldSession> session_;
+  gm::Hotbar hotbar_;
+  std::unique_ptr<gm::LibInventory> libInv_;
   std::unique_ptr<gfx::RenderWorld> render_;
   std::unique_ptr<gm::PlayerController> player_;
 

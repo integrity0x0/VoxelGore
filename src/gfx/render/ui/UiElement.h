@@ -256,6 +256,10 @@ class UiElement {
 
   virtual void Relayout(const UiRect& rect);
 
+  [[nodiscard]] virtual bool IsCheckable() const { return false; }
+  [[nodiscard]] virtual bool IsChecked() const { return false; }
+  virtual void SetChecked(bool) {}
+
  protected:
   void MarkLayoutDirty() {
     layoutDirty_ = true;

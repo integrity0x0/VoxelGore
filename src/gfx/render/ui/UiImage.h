@@ -10,14 +10,12 @@ class UiImage final : public UiElement {
   [[nodiscard]] UiElementType GetNodeType() const override { return UiElementType::Image; }
 
   const std::optional<UiTextureRegion>& GetSrc() const {
-    return src_;
+    return baseVisual_.src;
   }
 
   void SetSrc(const std::optional<UiTextureRegion>& src) {
-    src_ = src;
+    baseVisual_.src = src;
+    MarkVisualDirty();
   }
-
- private:
-  std::optional<UiTextureRegion> src_;
 };
 }  // namespace gfx

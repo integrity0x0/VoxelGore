@@ -1,5 +1,6 @@
 #include "files.h"
 
+#include <filesystem>
 #include <fstream>
 
 #if defined(__ANDROID__)
@@ -62,4 +63,21 @@ std::vector<std::byte> ReadFileBytes(std::string_view path) {
 
 std::string ReadFile(std::string_view path) { return ReadFileImpl<std::string>(path); }
 
+std::vector<std::string> ListFiles(std::string_view dir) {
+  std::vector<std::string> names;
+#if defined(__ANDROID__)
+  std::string path(dir);
+  if (!path.empty() && path.back() == '/') path.pop_back();
+  AAssetDir* d = AAssetManager_openDir(::g_AAssetManager, path.c_str());
+  if (!d) return names;
+  while (const char* name = AAssetDir_getNextFileName(d)) names.emplace_back(name);
+  AAssetDir_close(d);
+#else
+  std::error_code ec;
+  for (const auto& entry : std::filesystem::directory_iterator(std::string(dir), ec)) {
+    if (entry.is_regular_file()) names.emplace_back(entry.path().filename().string());
+  }
+#endif
+  return names;
+}
 }  // namespace util

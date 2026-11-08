@@ -11,7 +11,7 @@
 #include "../../../game/lighting/Lighting.h"
 #include "../model/ModelRenderer.h"
 #include "../billboard/BillboardRenderer.h"
-#include "../../../game/Enviroment.h"
+#include "../../../game/Environment.h"
 #include "EntityRenderData.h"
 #include "../particle/ParticleEngine.h"
 
@@ -24,7 +24,7 @@ class EntityRenderSystem {
   void Render(gm::ComponentRegistry& registry, ModelRenderer& modelRenderer,
               ParticleEngine& particleEngine,
               BillboardRenderBucket& billboardRenderBucket, const gm::World& world,
-              const gm::Lighting& lighting, const gm::Enviroment& enviroment, 
+              const gm::Lighting& lighting, const gm::Environment& enviroment, 
               uint32_t currentFrame);
 
  private:

@@ -25,10 +25,18 @@ class UiContainer : public UiElement {
     return *children_.back();
   }
 
+  [[nodiscard]] UiSelectionMode GetSelectionMode() const { return selectionMode_; }
+
+  void SetSelectionMode(UiSelectionMode selectionMode) {
+    selectionMode_ = selectionMode;
+  }
+
   virtual void Render(UiRenderer& renderer) override;
 
   virtual void Relayout(const UiRect& rect) override;
+
  protected:
   std::vector<std::unique_ptr<UiElement>> children_;
+  UiSelectionMode selectionMode_ = UiSelectionMode::Multiple;
 };
 }  // namespace gfx

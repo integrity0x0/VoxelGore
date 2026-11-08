@@ -89,7 +89,7 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
   }
 
   if (!j.contains("textures")) {
-    throw std::runtime_error("BlockParser: block " + std::to_string(id) + " has no 'textures'");
+    throw std::runtime_error("BlockParser: block " + jsonPath + " has no 'textures'");
   }
 
   size_t slashPos = jsonPath.find_last_of('/');

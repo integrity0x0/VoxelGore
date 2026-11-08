@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 namespace gm {
-class Enviroment {
+class Environment {
  public:
   void Update(float dt);
 

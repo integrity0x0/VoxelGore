@@ -6,7 +6,7 @@ ParticleEngine::ParticleEngine(Atlas& generalAtlas, BlockRenderData& blockRender
                                const gm::BlockManager& blockManager,
                                const gm::ChunkManager& chunkManager,
                                const gm::Lighting& lighting,
-                               const gm::Enviroment& enviroment,
+                               const gm::Environment& enviroment,
                                BillboardRenderBucket& generalBucket,
                                BillboardRenderBucket& blockBucket)
     : generalAtlas_(&generalAtlas),

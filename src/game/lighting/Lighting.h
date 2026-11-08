@@ -8,7 +8,7 @@
 #include "ChannelRegistry.h"
 #include "LightChannel.h"
 #include "LightChunkStorage.h"
-#include "../Enviroment.h"
+#include "../Environment.h"
 
 namespace gm {
 

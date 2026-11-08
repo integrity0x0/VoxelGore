@@ -37,10 +37,19 @@ class UiGrid : public UiContainer {
     ArrangeChildren();
   }
 
+  [[nodiscard]] size_t GetRows() const { return (children_.size() + columns_ - 1) / columns_; }
+
   UiElement& AddChild(std::unique_ptr<UiElement>&& element) {
     auto& child = UiContainer::AddChild(std::move(element));
     ArrangeChildren();
     return child;
+  }
+
+  [[nodiscard]] UiElement* GetCell(glm::ivec2 pos) const {
+    if (pos.x < 0 || pos.y < 0 || static_cast<size_t>(pos.x) >= columns_) return nullptr;
+
+    const size_t index = static_cast<size_t>(pos.y) * columns_ + static_cast<size_t>(pos.x);
+    return index < children_.size() ? children_[index].get() : nullptr;
   }
 
  private:

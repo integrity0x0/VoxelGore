@@ -1,17 +1,20 @@
 #include "Ui.h"
 
+#include <string_view>
+
 #include "../../../core/PathPrefixes.h"
 
 namespace gfx {
 namespace {
 static const std::string kBlankPath = core::kAssetsPrefix + "images/blank.png";
+static constexpr std::string_view kBlankName = "blank";
 }  // namespace
 
 UiRenderer Ui::CreateRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
                           const vkcore::RenderPass& renderPass,
                           const ShaderCompiler& shaderCompiler, MaterialManager& materialManager,
                           uint32_t framesCount) {
-  auto* material = materialManager.TryGet(materialManager.Load(kBlankPath));
+  auto* material = materialManager.TryGet(materialManager.Load(kBlankPath, kBlankName));
   if (!material) throw std::runtime_error("Unable to load blank image:" + kBlankPath);
   UiTextureRegion reg(material->id);
   return UiRenderer(device, bufferAllocator, materialManager, renderPass,

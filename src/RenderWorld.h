@@ -39,7 +39,7 @@ class RenderWorld {
   void UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex);
   void UpdateParticles(float dt, uint32_t frameIndex);
   void UpdateGameData(uint32_t frameIndex, const core::Camera& camera, float screenW,
-                      float screenH, const gm::Enviroment& enviroment);
+                      float screenH, const gm::Environment& enviroment);
 
   void Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex, const core::Camera& camera);
   void RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex);
@@ -55,6 +55,9 @@ class RenderWorld {
   const ShaderCompiler& GetShaderCompiler() const { return *shaderCompiler_; }
 
   void CollectEntities(uint32_t frameIndex);
+
+  void SetSlotBlock(UiElement& cell, uint32_t blockId);
+  void FillInventory(); 
 
   gfx::Ui& GetUi() { return *ui_; }
 

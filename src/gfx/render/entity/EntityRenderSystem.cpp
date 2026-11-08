@@ -9,7 +9,7 @@ void EntityRenderSystem::Render(gm::ComponentRegistry& registry, ModelRenderer& 
                                 ParticleEngine& particleEngine,
                                 BillboardRenderBucket& billboardRenderBucket,
                                 const gm::World& world, const gm::Lighting& lighting,
-                                const gm::Enviroment& enviroment,
+                                const gm::Environment& enviroment,
                                 uint32_t currentFrame) {
   static constexpr glm::vec3 kHurtColor = glm::vec3(1.0f, 0.15f, 0.15f);
 

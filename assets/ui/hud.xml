@@ -1,4 +1,4 @@
-<page id="hud" input-mode="passthrough">
+<page id="hud" input-mode="passthrough" script="ui/hud.xml.lua">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 
@@ -7,9 +7,9 @@
 			<state name="held" scale="0.75"/>
 		</style>
 		<style name="topBtn" extends="btn" size="47" radius="11"/>
-		<style name="slot" extends="btn" size="48" radius="8" color="#01020464"/>
-		<style name="slotSelected" extends="slot" color="#080D146D" border-color="#F0D04B">
-			<state name="hover" border-color="#FFE066"/>
+
+		<style name="slot" extends="btn" size="48" radius="8" color="#01020464">
+			<state name="checked" color="#080D146D" border-color="#F0D04B"/>
 		</style>
 
 		<style name="chip" extends="panel" size="85, 40" radius="9"/>
@@ -48,6 +48,7 @@
 			anchor="left, center" pos="36, 0"
 			color="#FFFFFF" font="rubik" font-size="14"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
+
 		<style name="slotGrid" extends="panel" radius="9" columns="8" cell="48" gap="4" inset="4, 5"/>
 	</styles>
 
@@ -115,48 +116,23 @@
 			</container>
 		</container>
 
-		<container id="hotbar" style="panel" anchor="center, top" pos="0, 51" size="420, 58" radius="9">
-			<button id="slot0" style="slotSelected" pos="29, 29">
-				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot1" style="slot" pos="81, 29">
-				<image style="slotIcon" src="@blocks.2.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot2" style="slot" pos="133, 29">
-				<image style="slotIcon" src="@blocks.3.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot3" style="slot" pos="185, 29">
-				<image style="slotIcon" src="@blocks.4.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot4" style="slot" pos="237, 29">
-				<image style="slotIcon" src="@blocks.5.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot5" style="slot" pos="289, 29">
-				<image style="slotIcon" src="@blocks.6.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot6" style="slot" pos="341, 29">
-				<image style="slotIcon" src="@blocks.7.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-			<button id="slot7" style="slot" pos="392, 28" size="46">
-				<image style="slotIcon" src="@blocks.8.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
-			</button>
-		</container>
+		<grid id="hotbar" style="slotGrid" anchor="center, top" pos="0, 51">
+			<repeat count="8">
+				<button style="slot" on-click="OnHotbarSlotClick">
+					<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
+					<text style="slotCount" visible="false" interactive="false"/>
+				</button>
+			</repeat>
+		</grid>
 	</container>
+
 	<text text="v0.11-alpha" anchor="left, bottom" font="rubik" italic="true" color="#AAAAAA"/>
 
 	<grid id="inventory" style="slotGrid" anchor="center">
 		<repeat count="32">
-			<button style="slot">
-				<image style="slotIcon" src="@blocks.1.preview" interactive="false"/>
-				<text style="slotCount" interactive="false"/>
+			<button style="slot" on-click="OnInventorySlotClick">
+				<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
+				<text style="slotCount" visible="false" interactive="false"/>
 			</button>
 		</repeat>
 	</grid>

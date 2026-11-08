@@ -71,7 +71,11 @@ void Game::Init() {
 
   session_ = std::make_unique<gm::WorldSession>(kWorldW, kWorldH, kWorldD, core::kAssetsPrefix);
 
+  libInv_ = std::make_unique<gm::LibInventory>(hotbar_, session_->GetBlocks(), luaState_);
+
   render_ = std::make_unique<gfx::RenderWorld>(*engine_, *session_, luaState_, core::kAssetsPrefix);
+
+  render_->FillInventory();
 
   gfx::ShaderCompiler& compiler = render_->GetShaderCompiler();
 

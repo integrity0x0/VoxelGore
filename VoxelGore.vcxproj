@@ -45,15 +45,17 @@
     <None Include="assets\shaders\model.vert" />
     <None Include="assets\shaders\ui.frag" />
     <None Include="assets\shaders\ui.vert" />
+    <None Include="assets\ui\hud.xml.lua" />
     <None Include="src\gfx\render\block\faceVertices.inl" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\game\entity\HealthSystem.cpp" />
-    <ClCompile Include="src\game\Enviroment.cpp" />
+    <ClCompile Include="src\game\Environment.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\game\LibInventory.cpp" />
     <ClCompile Include="src\game\lighting\BlockLightCache.cpp" />
     <ClCompile Include="src\game\lighting\ChannelParser.cpp" />
     <ClCompile Include="src\game\lighting\ChannelRegistry.cpp" />
@@ -197,8 +199,10 @@
     <ClInclude Include="assets\shaders\UniformGameData.glsl" />
     <ClInclude Include="src\game\entity\BleedComponent.h" />
     <ClInclude Include="src\game\entity\PlayerComponent.h" />
-    <ClInclude Include="src\game\Enviroment.h" />
+    <ClInclude Include="src\game\Environment.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\game\Hotbar.h" />
+    <ClInclude Include="src\game\LibInventory.h" />
     <ClInclude Include="src\game\lighting\BlockLightCache.h" />
     <ClInclude Include="src\game\lighting\ChannelDefinition.h" />
     <ClInclude Include="src\game\lighting\ChannelParser.h" />

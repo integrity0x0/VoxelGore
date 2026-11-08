@@ -1,8 +1,0 @@
-{
-  "id": "lava",
-  "renderGroup": "lava",
-  "textures": "lava_anim.json",
-  "emission": [ 10, 10, 10 ],
-  "renderLayer": "cutout",
-  "debris": {}
-}

@@ -18,6 +18,8 @@ class BlockManager {
     blocks_.push_back(BlockParser::Parse(id, path));
   }
 
+  void LoadDirectory(std::string_view dir);
+
   [[nodiscard]] const Block* GetBlock(uint32_t id) const {
     if (id >= blocks_.size()) {
       return nullptr;

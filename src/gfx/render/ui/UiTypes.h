@@ -289,5 +289,6 @@ struct UiStyle {
   }
 };
 
+enum class UiSelectionMode : uint8_t { Multiple, Single };
 
 }  // namespace gfx

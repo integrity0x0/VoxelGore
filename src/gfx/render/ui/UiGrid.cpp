@@ -22,23 +22,18 @@ glm::vec2 UiGrid::ResolveSize(const UiRect& parent) const {
 void UiGrid::ArrangeChildren() {
   if (children_.empty() || columns_ == 0) return;
 
-  const size_t rows = (children_.size() + columns_ - 1) / columns_;
   const glm::vec2 step = cell_ + gap_;
 
-  size_t index = 0;
-  for (size_t y = 0; y < rows; ++y) {
-    for (size_t x = 0; x < columns_; ++x) {
-      const UiLength2 pos{
-          .x = {.value = inset_.x + x * step.x},
-          .y = {.value = inset_.y + y * step.y},
-      };
+  for (size_t i = 0; i < children_.size(); ++i) {
+    UiElement& child = *children_[i];
 
-      const auto& child = children_[index];
-      child->SetPos(pos);
-      child->SetSize({.x = {.value = cell_.x}, .y = {.value = cell_.y}});
+    const glm::vec2 cellIndex(static_cast<float>(i % columns_), static_cast<float>(i / columns_));
+    const glm::vec2 pos = inset_ + cellIndex * step + cell_ * 0.5f;
 
-      if (++index >= children_.size()) return;
-    }
+    child.SetAnchor({UiAlignX::Left, UiAlignY::Top});
+    child.SetPivot({UiAlignX::Center, UiAlignY::Center});
+    child.SetSize({.x = {.value = cell_.x}, .y = {.value = cell_.y}});
+    child.SetPos({.x = {.value = pos.x}, .y = {.value = pos.y}});
   }
 }
 

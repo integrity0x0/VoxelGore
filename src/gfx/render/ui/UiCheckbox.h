@@ -9,16 +9,15 @@ class UiCheckbox final : public UiContainer {
 
   [[nodiscard]] UiElementType GetNodeType() const override { return UiElementType::Checkbox; }
 
-  [[nodiscard]] bool IsChecked() const { return checked_; }
+  [[nodiscard]] bool IsCheckable() const override { return true; }
+  [[nodiscard]] bool IsChecked() const override { return IsState(UiStateFlags::Checked); }
 
-  void SetChecked(bool checked) {
-    checked_ = checked;
+  void SetChecked(bool checked) override {
+    if (IsChecked() == checked) return;
+    SetStateFlag(UiStateFlags::Checked, checked);
+    //if (checked) parent_->OnChildChecked(this);
   }
 
-  void Toggle() {
-    checked_ = !checked_;
-  }
- private:
-  bool checked_ = false;
+  void Toggle() { SetChecked(!IsChecked()); }
 };
 }  // namespace gfx
