@@ -3,7 +3,7 @@
 #include "UiContainer.h"
 
 namespace gfx {
-class UiCheckbox final : public UiContainer {
+class UiCheckbox : public UiContainer {
  public:
   UiCheckbox(std::string_view id, const UiElement* parent) : UiContainer(id, parent) {}
 
