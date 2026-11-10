@@ -43,11 +43,14 @@ enum class UiProp : uint8_t {
   ShadowOffset,
 
   // grid
-
   Columns,
   Cell,
   Gap,
   Inset,
+
+  // selection
+  SelectionMin,
+  SelectionMax,
 
   // events
   OnClick,
@@ -99,11 +102,14 @@ inline constexpr std::array<std::string_view, kPropCount> kPropNames{
     "shadow-offset",
 
     // grid
-
     "columns",
     "cell",
     "gap",
     "inset",
+
+    // selection
+    "selection-min",
+    "selection-max",
 
     // events
     "on-click",
@@ -127,6 +133,8 @@ static_assert(kPropNames[static_cast<size_t>(UiProp::BorderImage)] == "border-im
 static_assert(kPropNames[static_cast<size_t>(UiProp::TextShadow)] == "text-shadow");
 static_assert(kPropNames[static_cast<size_t>(UiProp::ShadowColor)] == "shadow-color");
 static_assert(kPropNames[static_cast<size_t>(UiProp::ShadowOffset)] == "shadow-offset");
+static_assert(kPropNames[static_cast<size_t>(UiProp::SelectionMin)] == "selection-min");
+static_assert(kPropNames[static_cast<size_t>(UiProp::SelectionMax)] == "selection-max");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnClick)] == "on-click");
 static_assert(kPropNames[static_cast<size_t>(UiProp::OnSet)] == "on-set");
 
@@ -177,13 +185,17 @@ constexpr bool IsPropSupported(UiProp p, UiElementType t) {
       return t == UiElementType::Text;
 
     case UiProp::OnSet:
-      return t == UiElementType::Checkbox || t == UiElementType::Slider;  // + Joystick later
+      return t == UiElementType::Checkbox || t == UiElementType::Slider;  // TODO: stick
 
     case UiProp::Columns:
     case UiProp::Cell:
     case UiProp::Gap:
     case UiProp::Inset:
       return t == UiElementType::Grid;
+
+    case UiProp::SelectionMin:
+    case UiProp::SelectionMax:
+      return t == UiElementType::Container || t == UiElementType::Grid;
 
     default:
       return true;

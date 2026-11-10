@@ -15,9 +15,16 @@ class UiCheckbox : public UiContainer {
   void SetChecked(bool checked) override {
     if (IsChecked() == checked) return;
     SetStateFlag(UiStateFlags::Checked, checked);
-    //if (checked) parent_->OnChildChecked(this);
+    if (checked) const_cast<UiElement*>(parent_)->OnChildCheckedChanged(*this);
   }
 
   void Toggle() { SetChecked(!IsChecked()); }
+
+  void OnReleased() override {
+    if (auto* group = dynamic_cast<UiContainer*>(const_cast<UiElement*>(parent_)))
+      group->GetSelection().OnItemClicked(this);
+    else
+      Toggle();
+  }
 };
 }  // namespace gfx

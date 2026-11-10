@@ -566,6 +566,12 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
       case UiProp::Inset:
         if (auto v = a.Get(name, ParseOffset)) out.gridProps.inset = *v;
         break;
+      case UiProp::SelectionMin:
+        if (auto v = a.Get(name, ParseUInt)) out.selectionProps.min = *v;
+        break;
+      case UiProp::SelectionMax:
+        if (auto v = a.Get(name, ParseUInt)) out.selectionProps.max = *v;
+        break;
 
       default:
         break;

@@ -15,4 +15,5 @@ void UiContainer::Relayout(const UiRect& rect) {
     child->Relayout(GetResolvedLayout().rect);
   }
 }
+
 }  // namespace gfx

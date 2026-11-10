@@ -183,6 +183,7 @@
     <ClCompile Include="src\gfx\common\font\FontParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiGrid.cpp" />
     <ClCompile Include="src\game\LibInventory.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiSelection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -391,8 +392,12 @@
     <ClInclude Include="src\gfx\render\ui\UiElementType.h" />
     <ClInclude Include="src\game\Hotbar.h" />
     <ClInclude Include="src\game\LibInventory.h" />
+    <ClInclude Include="src\gfx\render\ui\UiSelection.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="assets\ui\inventory.xml" />
   </ItemGroup>
 </Project>

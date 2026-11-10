@@ -271,6 +271,15 @@ struct UiLayoutProps {
   }
 };
 
+struct UiSelectionProps {
+  std::optional<size_t> min;
+  std::optional<size_t> max;
+
+  void MergeFrom(const UiSelectionProps& o) {
+    if (o.min) min = o.min;
+    if (o.max) max = o.max;
+  }
+};
 
 using UiStateOverrides = std::array<UiVisualProps, static_cast<size_t>(UiState::Count)>;
 
@@ -278,6 +287,7 @@ struct UiStyle {
   UiVisualProps visualProps;
   UiLayoutProps layoutProps;
   UiGridProps gridProps;
+  UiSelectionProps selectionProps;
   UiStateOverrides stateOverrides;
 
   void MergeFrom(const UiStyle& o) {
@@ -288,7 +298,5 @@ struct UiStyle {
       stateOverrides[i].MergeFrom(o.stateOverrides[i]);
   }
 };
-
-enum class UiSelectionMode : uint8_t { Multiple, Single };
 
 }  // namespace gfx

@@ -147,6 +147,7 @@
     <ClCompile Include="src\gfx\render\ui\UiPageParser.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiRenderPipeline.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiSelection.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiSlider.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiStick.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiText.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="src\gfx\render\ui\UiProp.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderer.h" />
     <ClInclude Include="src\gfx\render\ui\UiRenderPipeline.h" />
+    <ClInclude Include="src\gfx\render\ui\UiSelection.h" />
     <ClInclude Include="src\gfx\render\ui\UiSlider.h" />
     <ClInclude Include="src\gfx\render\ui\UiStick.h" />
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
@@ -405,6 +407,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="assets\ui\inventory.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

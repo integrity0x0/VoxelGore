@@ -15,7 +15,7 @@ local function SetSlot(slot, blockId)
 end
 
 function OnInventorySlotClick(node)
- --if pickedSlot then pickedSlot:SetChecked(false) end
+  --if pickedSlot then pickedSlot:SetChecked(false) end
   local children = node:GetChildren()
   local icon, count = children[1], children[2]
   --node:SetChecked(true)
