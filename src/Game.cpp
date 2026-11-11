@@ -150,9 +150,9 @@ void Game::UpdateInput() {
 #ifndef __ANDROID__
   player_->HandleInput(*window_, controlState_, cursorLocked_);
   if (true) {
-    auto cameraSwipe = render_->GetUi().RouteInput(window_->GetInput().GetState());
-    player_->GetCamera().Rotate(window_->GetInput().GetState().GetCursorDeltaX(),
-                             window_->GetInput().GetState().GetCursorDeltaY());
+   // auto cameraSwipe = render_->GetUi().RouteInput(window_->GetInput().GetState());
+   // player_->GetCamera().Rotate(window_->GetInput().GetState().GetCursorDeltaX(),
+                     //        window_->GetInput().GetState().GetCursorDeltaY());
   }
 
 #endif

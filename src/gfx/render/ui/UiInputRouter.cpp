@@ -104,6 +104,7 @@ void UiInputRouter::ReleaseOwner(TouchOwner& owner, bool released, UiEventQueue&
     UiElement& element = *owner.element;
     element.RemoveStateFlags(UiStateFlags::Held);
     queue.emplace(released ? UiEventType::Released : UiEventType::Cancelled, element);
+    element.OnReleased();
   }
   owner = {};
 }

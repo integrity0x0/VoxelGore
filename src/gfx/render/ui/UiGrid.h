@@ -57,9 +57,9 @@ class UiGrid : public UiContainer {
 
   [[nodiscard]] glm::vec2 ResolveSize(const UiRect& parent) const override;
 
-  glm::vec2 cell_;
-  glm::vec2 gap_;
-  glm::vec2 inset_;
+  glm::vec2 cell_ = glm::ivec2(0);
+  glm::vec2 gap_ = glm::ivec2(0);
+  glm::vec2 inset_ = glm::ivec2(0);
   size_t columns_ = 0;
 };
 }  // namespace gfx

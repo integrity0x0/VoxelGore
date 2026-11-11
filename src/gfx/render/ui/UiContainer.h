@@ -30,6 +30,7 @@ class UiContainer : public UiElement {
   }
 
   [[nodiscard]] const UiSelection& GetSelection() const { return selection_; }
+  [[nodiscard]] UiSelection& GetSelection() { return selection_; }
 
   void SetSelection(UiSelection selection) {
     selection_ = std::move(selection);
@@ -53,6 +54,7 @@ class UiContainer : public UiElement {
 
   void OnChildCheckedChanged(UiElement& child) override { selection_.OnItemClicked(&child); }
 
+  void ApplyStyle(const UiStyle& s) override;
  protected:
   std::vector<std::unique_ptr<UiElement>> children_;
   UiSelection selection_;

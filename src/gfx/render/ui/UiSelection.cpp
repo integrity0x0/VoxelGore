@@ -46,6 +46,6 @@ void UiSelection::FillToMin(std::span<const std::unique_ptr<UiElement>> candidat
     if (selected_.size() >= limits_.min) break;
     if (c->IsCheckable() && !IsSelected(c.get())) Select(c.get());
   }
-}
+} 
 
 }  // namespace gfx

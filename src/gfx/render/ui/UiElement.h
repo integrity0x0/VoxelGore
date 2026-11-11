@@ -141,6 +141,7 @@ class UiElement {
     baseVisual_ = std::move(props);
     MarkVisualDirty();
   }
+
   void MergeBaseVisual(const UiVisualProps& props) {
     baseVisual_.MergeFrom(props);
     MarkVisualDirty();
@@ -258,9 +259,12 @@ class UiElement {
 
   [[nodiscard]] virtual bool IsCheckable() const { return false; }
   [[nodiscard]] virtual bool IsChecked() const { return false; }
+
   virtual void OnChildCheckedChanged(UiElement& child) {}
 
   virtual void SetChecked(bool) {}
+
+  virtual void OnReleased() {}
 
  protected:
   void MarkLayoutDirty() {
@@ -294,8 +298,7 @@ class UiElement {
     return {ResolveLength(size_.x, parent.size.x), ResolveLength(size_.y, parent.size.y)};
   }
 
-  virtual void OnReleased();
-
+  
  protected:
   static constexpr std::array<float, static_cast<size_t>(UiAlignX::Count)> kAlignmentFactors{
       0.0f, 0.5f, 1.0f};
