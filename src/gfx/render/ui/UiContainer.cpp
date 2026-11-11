@@ -16,4 +16,11 @@ void UiContainer::Relayout(const UiRect& rect) {
   }
 }
 
+void UiContainer::ApplyStyle(const UiStyle& s) {
+  UiElement::ApplyStyle(s);
+  if (s.selectionProps.min)
+    selection_.SetMin(*s.selectionProps.min);
+  if (s.selectionProps.max) selection_.SetMax(*s.selectionProps.max);
+}
+
 }  // namespace gfx

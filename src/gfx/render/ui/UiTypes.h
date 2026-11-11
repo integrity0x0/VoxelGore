@@ -294,6 +294,7 @@ struct UiStyle {
     visualProps.MergeFrom(o.visualProps);
     layoutProps.MergeFrom(o.layoutProps);
     gridProps.MergeFrom(o.gridProps);
+    selectionProps.MergeFrom(o.selectionProps);
     for (size_t i = 0; i < stateOverrides.size(); ++i)
       stateOverrides[i].MergeFrom(o.stateOverrides[i]);
   }

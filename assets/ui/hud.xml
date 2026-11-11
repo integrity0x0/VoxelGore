@@ -49,7 +49,7 @@
 			color="#FFFFFF" font="rubik" font-size="14"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
 
-		<style name="slotGrid" extends="panel" radius="9" columns="8" cell="48" gap="4" inset="4, 5"/>
+		<style name="slotGrid" extends="panel" radius="9" columns="8" cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -116,7 +116,7 @@
 			</container>
 		</container>
 
-		<grid id="hotbar" style="slotGrid" anchor="center, top" pos="0, 51" selection-min="1" selection-max="1">
+		<grid id="hotbar" style="slotGrid" anchor="center, top" pos="0, 51">
 			<repeat count="8">
 				<checkbox style="slot" on-click="OnHotbarSlotClick">
 					<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
@@ -128,7 +128,7 @@
 
 	<text text="v0.11-alpha" anchor="left, bottom" font="rubik" italic="true" color="#AAAAAA"/>
 
-	<grid id="inventory" style="slotGrid" anchor="center">
+	<grid id="inventory" style="slotGrid" anchor="center" selection-min="0">
 		<repeat count="32">
 			<checkbox style="slot" on-click="OnInventorySlotClick">
 				<image style="slotIcon" src="@blank" visible="false" interactive="false"/>

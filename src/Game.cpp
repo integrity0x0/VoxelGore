@@ -242,7 +242,7 @@ bool Game::Frame(const core::InputState& inputState) {
   }
 
   if (controlState_.interact) {
-    player_->TryPlace(*session_, controlState_.hotbarSlot);
+    player_->TryPlace(*session_, hotbar_.GetSelectedBlock());
   }
 
   session_->Update(dt_);
