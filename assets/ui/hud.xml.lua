@@ -23,7 +23,7 @@ local function SetSlot(slot, blockId)
 
   icon:SetVisible(blockId ~= 0)
   if blockId ~= 0 then
-    --icon:SetSrc("@blocks." .. blockId .. ".preview")
+    icon:SetSrc(ui.TextureRegion("@blocks." .. blockId .. ".preview"))
   end
   count:SetVisible(false)
 end

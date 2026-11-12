@@ -2,6 +2,9 @@
 
 #include "UiCheckbox.h"
 #include "UiElement.h"
+#include "UiImage.h"
+#include "UiImageResolver.h"
+#include "UiTextureRegionBinding.h"
 
 namespace gfx {
 namespace {
@@ -441,6 +444,57 @@ int GetPadding(lua_State* L) {
 // Appearance setters
 // -----------------------------------------------------------------------------
 
+int SetSrc(lua_State* L) {
+  auto* image = CheckDerivedElement<UiImage>(L, 1);
+  image->SetSrc(UiTextureRegionBinding::Check(L, 2));
+  return 0;
+}
+
+int GetSrc(lua_State* L) {
+  auto* image = CheckDerivedElement<UiImage>(L, 1);
+  const auto& src = image->GetSrc();
+  if (!src) {
+    lua_pushnil(L);
+  } else {
+    UiTextureRegionBinding::Push(L, *src);
+  }
+  return 1;
+}
+
+int SetBgImage(lua_State* L) {
+  auto* element = CheckElement(L, 1);
+  element->SetBgImage(UiTextureRegionBinding::Check(L, 2));
+  return 0;
+}
+
+int GetBgImage(lua_State* L) {
+  auto* element = CheckElement(L, 1);
+  const auto& image = element->GetBgImage();
+  if (!image) {
+    lua_pushnil(L);
+  } else {
+    UiTextureRegionBinding::Push(L, *image);
+  }
+  return 1;
+}
+
+int SetBorderImage(lua_State* L) {
+  auto* element = CheckElement(L, 1);
+  element->SetBorderImage(UiTextureRegionBinding::Check(L, 2));
+  return 0;
+}
+
+int GetBorderImage(lua_State* L) {
+  auto* element = CheckElement(L, 1);
+  const auto& image = element->GetBorderImage();
+  if (!image) {
+    lua_pushnil(L);
+  } else {
+    UiTextureRegionBinding::Push(L, *image);
+  }
+  return 1;
+}
+
 int SetColor(lua_State* L) {
   CheckElement(L)->SetColor(CheckColor(L, 2));
   return 0;
@@ -638,6 +692,12 @@ void UiElementBinding::Register(const script::LuaState& state) {
     SetFunction(L, -1, "SetPivot", SetPivot);
 
     // Appearance
+    SetFunction(L, -1, "SetSrc", SetSrc);
+    SetFunction(L, -1, "GetSrc", GetSrc);
+    SetFunction(L, -1, "SetBgImage", SetBgImage);
+    SetFunction(L, -1, "GetBgImage", GetBgImage);
+    SetFunction(L, -1, "SetBorderImage", SetBorderImage);
+    SetFunction(L, -1, "GetBorderImage", GetBorderImage);
     SetFunction(L, -1, "GetColor", GetColor);
     SetFunction(L, -1, "SetColor", SetColor);
     SetFunction(L, -1, "GetBgColor", GetBgColor);

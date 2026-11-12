@@ -139,6 +139,7 @@
     <ClCompile Include="src\gfx\render\ui\UiElement.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiElementBinding.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiGrid.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiImageResolver.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiInputRouter.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLibrary.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiLuaTypes.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\gfx\render\ui\UiSlider.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiStick.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiText.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiTextureRegionBinding.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiTriggerDispatcher.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PlayerController.cpp" />
@@ -329,6 +331,7 @@
     <ClInclude Include="src\gfx\render\ui\UiEvents.h" />
     <ClInclude Include="src\gfx\render\ui\UiGrid.h" />
     <ClInclude Include="src\gfx\render\ui\UiImage.h" />
+    <ClInclude Include="src\gfx\render\ui\UiImageResolver.h" />
     <ClInclude Include="src\gfx\render\ui\UiInputRouter.h" />
     <ClInclude Include="src\gfx\render\ui\UiLibrary.h" />
     <ClInclude Include="src\gfx\render\ui\UiLuaTypes.h" />
@@ -342,6 +345,7 @@
     <ClInclude Include="src\gfx\render\ui\UiSlider.h" />
     <ClInclude Include="src\gfx\render\ui\UiStick.h" />
     <ClInclude Include="src\gfx\render\ui\UiText.h" />
+    <ClInclude Include="src\gfx\render\ui\UiTextureRegionBinding.h" />
     <ClInclude Include="src\gfx\render\ui\UiTriggerDispatcher.h" />
     <ClInclude Include="src\gfx\render\ui\UiTypes.h" />
     <ClInclude Include="src\gfx\render\ui\UiQuadInstance.h" />

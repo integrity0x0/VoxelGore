@@ -9,6 +9,7 @@
 #include "../../../util/files.h"
 #include "../../../util/pathUtils.h"
 #include "UiProp.h"
+#include "UiImageResolver.h"
 
 namespace gfx {
 
@@ -294,69 +295,6 @@ std::optional<UiPadding> ParsePadding(std::string_view text) {
   return std::nullopt;
 }
 
-struct UiImagePath {
-  std::string path;
-  std::optional<glm::vec4> rect;
-};
-
-std::optional<UiImagePath> ParseImageRegion(std::string_view text) {
-  text = Trim(text);
-  const size_t hash = text.find('#');
-  if (hash == std::string_view::npos) {
-    if (text.empty()) return std::nullopt;
-    return UiImagePath{std::string(text), std::nullopt};
-  }
-  const std::string_view path = Trim(text.substr(0, hash));
-  const std::string_view rectText = Trim(text.substr(hash + 1));
-  if (path.empty() || rectText.empty()) return std::nullopt;
-
-  std::istringstream stream{std::string(rectText)};
-  float x, y, width, height;
-  char comma;
-  if (!(stream >> x >> comma) || comma != ',') return std::nullopt;
-  if (!(stream >> y >> comma) || comma != ',') return std::nullopt;
-  if (!(stream >> width >> comma) || comma != ',') return std::nullopt;
-  if (!(stream >> height)) return std::nullopt;
-  std::string extra;
-  if (stream >> extra) return std::nullopt;
-  if (width <= 0.0f || height <= 0.0f) return std::nullopt;
-  return UiImagePath{std::string(path), glm::vec4{x, y, width, height}};
-}
-
-std::optional<UiTextureRegion> ResolveImage(const UiPageParser::Context& ctxt,
-                                            const UiImagePath& path) {
-  if (path.path.empty()) return std::nullopt;
-
-  std::string key;
-  if (path.path.front() == '@') {
-    key = path.path.substr(1);
-    if (key.empty()) return std::nullopt;
-  } else {
-    key = util::NormalizePath(ctxt.assetRoot + path.path);
-  }
-
-  const Material* material = ctxt.materialManager.TryGet(ctxt.materialManager.Require(key));
-  if (!material) return std::nullopt;
-
-  UiTextureRegion result{
-      material->id,
-      {.min = glm::vec2(0.0f), .max = glm::vec2(1.0f), .arrayLayer = 0},
-  };
-  if (!path.rect) return result;
-
-  const glm::vec2 textureSize(material->texture->GetWidth(), material->texture->GetHeight());
-  if (textureSize.x <= 0.0f || textureSize.y <= 0.0f) return std::nullopt;
-
-  const glm::vec4& rect = *path.rect;
-  const float x = rect.x, y = rect.y, width = rect.z, height = rect.w;
-  if (x < 0.0f || y < 0.0f || x + width > textureSize.x || y + height > textureSize.y)
-    return std::nullopt;
-
-  result.region.min = {x / textureSize.x, y / textureSize.y};
-  result.region.max = {(x + width) / textureSize.x, (y + height) / textureSize.y};
-  return result;
-}
-
 std::optional<float> ParsePxFloat(std::string_view text) {
   auto length = ParseLength(text);
   if (!length || length->unit != UiUnit::Px) return std::nullopt;
@@ -506,15 +444,17 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         break;
       case UiProp::Src:
         if (auto path = a.Get(name, ParseImageRegion))
-          if (auto reg = ResolveImage(st.ctxt, *path)) out.visualProps.src = std::move(*reg);
+          if (auto reg = ResolveImage(st.ctxt.materialManager, st.ctxt.assetRoot, *path))
+            out.visualProps.src = std::move(*reg);
         break;
       case UiProp::BgImage:
         if (auto path = a.Get(name, ParseImageRegion))
-          if (auto reg = ResolveImage(st.ctxt, *path)) out.visualProps.bgImage = std::move(*reg);
+          if (auto reg = ResolveImage(st.ctxt.materialManager, st.ctxt.assetRoot, *path))
+            out.visualProps.bgImage = std::move(*reg);
         break;
       case UiProp::BorderImage:
         if (auto path = a.Get(name, ParseImageRegion))
-          if (auto reg = ResolveImage(st.ctxt, *path))
+          if (auto reg = ResolveImage(st.ctxt.materialManager, st.ctxt.assetRoot, *path))
             out.visualProps.borderImage = std::move(*reg);
         break;
       case UiProp::FillFrom:
@@ -522,7 +462,8 @@ void ParseAttrs(UiPageParser::ParsingState& st, AttrReader& a, AttrScope scope,
         break;
       case UiProp::FillImage:
         if (auto path = a.Get(name, ParseImageRegion))
-          if (auto reg = ResolveImage(st.ctxt, *path)) out.visualProps.fillImage = std::move(*reg);
+          if (auto reg = ResolveImage(st.ctxt.materialManager, st.ctxt.assetRoot, *path))
+            out.visualProps.fillImage = std::move(*reg);
         break;
       case UiProp::FillColor:
         if (auto v = a.Get(name, ParseColor)) out.visualProps.fillColor = *v;

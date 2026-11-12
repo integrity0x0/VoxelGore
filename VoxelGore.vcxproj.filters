@@ -184,6 +184,8 @@
     <ClCompile Include="src\gfx\render\ui\UiGrid.cpp" />
     <ClCompile Include="src\game\LibInventory.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiSelection.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiTextureRegionBinding.cpp" />
+    <ClCompile Include="src\gfx\render\ui\UiImageResolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -393,6 +395,8 @@
     <ClInclude Include="src\game\Hotbar.h" />
     <ClInclude Include="src\game\LibInventory.h" />
     <ClInclude Include="src\gfx\render\ui\UiSelection.h" />
+    <ClInclude Include="src\gfx\render\ui\UiImageResolver.h" />
+    <ClInclude Include="src\gfx\render\ui\UiTextureRegionBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />

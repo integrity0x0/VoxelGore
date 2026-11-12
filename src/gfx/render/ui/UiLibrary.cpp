@@ -4,14 +4,18 @@
 #include <lauxlib.h>
 #include <lua.h>
 
+#include "UiTextureRegionBinding.h"
+
 namespace gfx {
 
 UiLibrary::UiLibrary(Context ctxt) : ctxt_(ctxt) {
   const auto& state = ctxt_.state.get();
+  Ui& ui = ctxt_.ui.get();
 
   UiLuaTypes::Register(state);
   UiElementBinding::Register(state);
   UiPageBinding::Register(state);
+  UiTextureRegionBinding::Register(state, ui.GetMaterialManager(), ui.GetAssetRoot());
 
   SetFunction("push", &UiLibrary::LuaPush);
   SetFunction("pop", &UiLibrary::LuaPop);

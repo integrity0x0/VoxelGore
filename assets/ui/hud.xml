@@ -4,7 +4,7 @@
 
 		<style name="btn" extends="panel" pivot="center">
 			<state name="hover" border-color="#8BB4C850"/>
-			<state name="held" scale="0.75"/>
+			<state name="held" scale="0.925"/>
 		</style>
 		<style name="topBtn" extends="btn" size="47" radius="11"/>
 

@@ -33,6 +33,10 @@ class Ui {
 
   [[nodiscard]] UiCameraSwipe RouteInput(const core::InputState& inputState);
 
+  [[nodiscard]] MaterialManager& GetMaterialManager() { return parserCtxt_.materialManager; }
+
+  [[nodiscard]] const std::string& GetAssetRoot() { return parserCtxt_.assetRoot; }
+
  private:
   struct StackView {
     size_t firstRender;
@@ -48,6 +52,7 @@ class Ui {
                                           MaterialManager& materialManager, uint32_t framesCount);
   
   [[nodiscard]] StackView BuildStackView() const;
+
  private:
   UiPageParser::Context parserCtxt_;
   UiRenderer renderer_;

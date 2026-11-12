@@ -31,14 +31,6 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
   engine_ = std::make_unique<Engine>(window_->GetWindow());
   cursorLocked_ = true;
 
-  GLFWmonitor* monitor = glfwGetWindowMonitor(window_->GetWindow());
-  if (!monitor) monitor = glfwGetPrimaryMonitor();
-
-  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-  const int refreshRate = mode ? mode->refreshRate : 60;
-
-  frameTime_ = 1.0f / static_cast<float>(refreshRate);
-
   Init();
 
   if (auto* bar = render_->GetHpBar()) {
