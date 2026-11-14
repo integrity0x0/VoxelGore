@@ -75,6 +75,7 @@ void UiInputRouter::BeginTouch(TouchOwner& owner, const core::Pointer& p,
     if (!captured) owner.role = Role::Camera;
     return;
   }
+
   if (hit->IsState(UiStateFlags::Held)) {
     owner.role = Role::Blocked;
     return;

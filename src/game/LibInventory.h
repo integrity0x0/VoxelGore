@@ -19,6 +19,7 @@ class LibInventory {
   struct Context {
     Hotbar* hotbar;
     const BlockManager* blocks;
+    uint32_t picked = 0;
   };
 
   LibInventory(Hotbar& hotbar, const BlockManager& blocks, const script::LuaState& luaState);
@@ -26,12 +27,14 @@ class LibInventory {
   LibInventory(const LibInventory&) = delete;
   LibInventory& operator=(const LibInventory&) = delete;
 
+  void ClearPicked() { ctxt_.picked = 0; }
+
  private:
   static const FnEntry kInventoryFunctions[];
 
   void registerClosures(const FnEntry* entries, size_t count);
 
-  Context ctx_;
+  Context ctxt_;
   lua_State* L_;
 };
 

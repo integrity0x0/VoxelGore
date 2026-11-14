@@ -31,6 +31,8 @@
     <None Include="assets\fonts\NotoSansSymbols2.json" />
     <None Include="assets\fonts\notojp.json" />
     <None Include="assets\ui\hud.xml.lua" />
+    <None Include="assets\ui\inventory.xml.lua" />
+    <None Include="assets\ui\msgbox.xml.lua" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -403,5 +405,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets\ui\inventory.xml" />
+    <Xml Include="assets\ui\msgbox.xml" />
   </ItemGroup>
 </Project>

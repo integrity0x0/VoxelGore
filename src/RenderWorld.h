@@ -61,6 +61,7 @@ class RenderWorld {
 
   gfx::Ui& GetUi() { return *ui_; }
 
+  UiGrid* GetHotbar() { return hotbar_; }
   UiBar* GetHpBar() { return hpBar_; }
   UiText* GetHpText() { return hpBarText_; }
  private:
@@ -91,6 +92,7 @@ class RenderWorld {
   std::unique_ptr<UiLibrary> uiLib_;
   UiBar* hpBar_ = nullptr;
   UiText* hpBarText_ = nullptr;
+  UiGrid* hotbar_ = nullptr;
 };
 
 }  // namespace gfx

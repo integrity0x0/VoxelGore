@@ -140,11 +140,24 @@ void Game::SetViewportAndScissor(VkCommandBuffer cmd) {
 
 void Game::UpdateInput() {
 #ifndef __ANDROID__
-  player_->HandleInput(*window_, controlState_, cursorLocked_);
-  if (true) {
-   // auto cameraSwipe = render_->GetUi().RouteInput(window_->GetInput().GetState());
-   // player_->GetCamera().Rotate(window_->GetInput().GetState().GetCursorDeltaX(),
-                     //        window_->GetInput().GetState().GetCursorDeltaY());
+  auto& ui = render_->GetUi();
+  const auto& state = window_->GetInput().GetState();
+
+  player_->HandleInput(*window_, controlState_); 
+
+  if (state.Pressed(GLFW_KEY_ESCAPE)) {
+    if (ui.IsInputCaptured())
+      ui.Pop();
+    else
+      ui.Push(core::kAssetsPrefix + "ui/inventory.xml");
+  }
+
+  std::ignore = ui.RouteInput(state);
+
+  window_->SetCursorDisabled(!ui.IsInputCaptured());
+
+  if (window_->IsCursorDisabled()) {
+    player_->GetCamera().Rotate(state.GetCursorDeltaX(), state.GetCursorDeltaY());
   }
 
 #endif
@@ -255,9 +268,17 @@ bool Game::Frame(const core::InputState& inputState) {
   }
   render_->UpdateDirty(cmd, frame);
   render_->GetUi().UpdateLayout();
-  std::ignore = render_->GetUi().RouteInput(window_->GetInput().GetState());
   player_->UpdateCamera(dt_);
   player_->UpdateDamage(dt_);
+  
+  if (const auto* hb = render_->GetHotbar()) {
+    for (size_t i = 0; i < hb->GetChildren().size(); ++i) {
+      if (window_->GetInput().GetState().Pressed(static_cast<uint32_t>(i + GLFW_KEY_1))) {
+        hotbar_.Select(i + 1);
+        render_->GetHotbar()->GetChildren()[i]->SetChecked(true);
+      }
+    }
+  }
   const float screenW = static_cast<float>(engine_->extent().width);
   const float screenH = static_cast<float>(engine_->extent().height);
   

@@ -13,20 +13,20 @@ class UiCheckbox : public UiContainer {
   [[nodiscard]] bool IsChecked() const override { return IsState(UiStateFlags::Checked); }
 
   void SetChecked(bool checked) override {
-    if (IsChecked() == checked) return;
-    SetStateFlag(UiStateFlags::Checked, checked);
-    if (checked) const_cast<UiElement*>(parent_)->OnChildCheckedChanged(*this);
-  }
-
-  void Toggle() { 
-      SetChecked(!IsChecked()); 
-  }
-
-  void OnReleased() override {
     if (auto* group = dynamic_cast<UiContainer*>(const_cast<UiElement*>(parent_)))
       group->GetSelection().OnItemClicked(this);
     else
-      Toggle();
+      SetCheckedRaw(checked);  
   }
+
+  void Toggle() { 
+    SetChecked(!IsChecked()); 
+  }
+
+  void OnReleased() override {
+    Toggle();
+  }
+
+  void SetCheckedRaw(bool checked) { SetStateFlag(UiStateFlags::Checked, checked); }
 };
 }  // namespace gfx

@@ -7,7 +7,7 @@ namespace gfx {
 void UiSelection::Select(UiElement* item) {
   if (limits_.max == 0) return;
   if (!item->IsCheckable() || IsSelected(item)) return;
-  item->SetChecked(true);
+  item->SetCheckedRaw(true);
   selected_.push_back(item);
   TrimToMax();
 }
@@ -16,19 +16,19 @@ void UiSelection::Deselect(UiElement* item) {
   if (selected_.size() <= limits_.min) return;
   auto it = std::find(selected_.begin(), selected_.end(), item);
   if (it == selected_.end()) return;
-  item->SetChecked(false);
+  item->SetCheckedRaw(false);
   selected_.erase(it);
 }
 
 void UiSelection::Clear() {
-  while (selected_.size() > limits_.min) {
-    selected_.front()->SetChecked(false);
+  while (selected_.size() > limits_.min) { 
+    selected_.front()->SetCheckedRaw(false);
     selected_.erase(selected_.begin());
   }
 }
 
 void UiSelection::OnItemClicked(UiElement* item) {
-  if (item->IsChecked())
+  if (item->IsChecked()) 
     Deselect(item);
   else
     Select(item);
@@ -36,7 +36,7 @@ void UiSelection::OnItemClicked(UiElement* item) {
 
 void UiSelection::TrimToMax() {
   while (selected_.size() > limits_.max) {
-    selected_.front()->SetChecked(false);
+    selected_.front()->SetCheckedRaw(false);
     selected_.erase(selected_.begin());
   }
 }

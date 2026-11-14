@@ -1,0 +1,39 @@
+<page id="msgbox" input-mode="capture" script="ui/msgbox.xml.lua">
+	<styles>
+		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
+
+		<style name="btn" extends="panel" pivot="center">
+			<state name="hover" border-color="#8BB4C850"/>
+			<state name="held" scale="0.925"/>
+		</style>
+
+		<style name="msgPanel" extends="panel" radius="12"/>
+
+		<style name="okBtn" extends="btn" size="160, 42" radius="10"/>
+
+		<style name="titleText"
+			anchor="center, top" pos="0, 22"
+			color="#FFFFFF" font="rubik" font-size="18"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
+
+		<style name="msgText"
+			anchor="center"
+			color="#E8F0F8" font="rubik" font-size="15"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000A0"/>
+	</styles>
+
+	<container id="overlay" size="100%" color="#00000088"/>
+
+	<container id="box" style="msgPanel" anchor="center" size="360, 200">
+		<text id="title" style="titleText" text="Сообщение" interactive="false"/>
+		<text id="message" style="msgText" pos="0, -8" size="320, 80"
+			text="Текст сообщения" interactive="false"/>
+
+		<button id="btnOk" style="okBtn" anchor="center, bottom" pos="0, 18"
+			on-release="OnOkRelease">
+			<text anchor="center" font="rubik" font-size="16" color="#FFFFFF"
+				text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
+				text="ОК" interactive="false"/>
+		</button>
+	</container>
+</page>

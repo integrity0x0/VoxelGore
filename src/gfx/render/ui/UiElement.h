@@ -264,6 +264,8 @@ class UiElement {
 
   virtual void SetChecked(bool) {}
 
+  virtual void SetCheckedRaw(bool) {}
+
   virtual void OnReleased() {}
 
  protected:

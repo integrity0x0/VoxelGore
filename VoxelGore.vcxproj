@@ -46,6 +46,8 @@
     <None Include="assets\shaders\ui.frag" />
     <None Include="assets\shaders\ui.vert" />
     <None Include="assets\ui\hud.xml.lua" />
+    <None Include="assets\ui\inventory.xml.lua" />
+    <None Include="assets\ui\msgbox.xml.lua" />
     <None Include="src\gfx\render\block\faceVertices.inl" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
@@ -414,6 +416,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets\ui\inventory.xml" />
+    <Xml Include="assets\ui\msgbox.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

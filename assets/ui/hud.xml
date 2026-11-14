@@ -49,7 +49,7 @@
 			color="#FFFFFF" font="rubik" font-size="14"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
 
-		<style name="slotGrid" extends="panel" radius="9" columns="8" cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
+		<style name="slotGrid" extends="panel" radius="9" columns="9" cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
 	</styles>
 
 	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
@@ -123,19 +123,11 @@
 					<text style="slotCount" visible="false" interactive="false"/>
 				</checkbox>
 			</repeat>
+			<button style="slot" on-release="OnInventoryOpen">
+				<text anchor="center" font="rubik" font-size="20" text="…" interactive="false"/>
+			</button>
 		</grid>
 	</container>
 
 	<text text="v0.11-alpha" anchor="left, bottom" font="rubik" italic="true" color="#AAAAAA"/>
-
-	<grid id="inventory" style="slotGrid" anchor="center" selection-min="0">
-		<repeat count="32">
-			<checkbox style="slot" on-click="OnInventorySlotClick">
-				<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
-				<text style="slotCount" visible="false" interactive="false"/>
-			</checkbox>
-		</repeat>
-	</grid>
-	
-	<text font="rubik" font-size="128" text="КОЧ БРАТАН" color="#FF00FF" text-shadow="true" anchor="center, top" italic="true" shadow-offset="4" shadow-color="#AA00AA"/>
 </page>

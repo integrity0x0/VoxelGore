@@ -41,22 +41,23 @@ const HitboxComponent& PlayerController::GetHitbox() const {
 }
 
 #ifndef __ANDROID__
-void PlayerController::HandleInput(core::Window& window, ControlState& control,
-                                   bool& cursorLocked) {
+void PlayerController::HandleInput(core::Window& window, ControlState& control) {
   auto& input = window.GetInput();
   const auto& state = input.GetState();
 
   control.move.z = 0;
   control.move.x = 0;
-  if (state.Down(GLFW_KEY_W)) control.move.z = 1;
-  if (state.Down(GLFW_KEY_S)) control.move.z = -1;
-  if (state.Down(GLFW_KEY_A)) control.move.x = -1;
-  if (state.Down(GLFW_KEY_D)) control.move.x = 1;
 
-  control.jump = state.Down(GLFW_KEY_SPACE);
-  control.breakBlock = state.MousePressed(GLFW_MOUSE_BUTTON_LEFT);
-  control.interact = state.MousePressed(GLFW_MOUSE_BUTTON_RIGHT);
+  if (window.IsCursorDisabled()) {
+    if (state.Down(GLFW_KEY_W)) control.move.z = 1;
+    if (state.Down(GLFW_KEY_S)) control.move.z = -1;
+    if (state.Down(GLFW_KEY_A)) control.move.x = -1;
+    if (state.Down(GLFW_KEY_D)) control.move.x = 1;
 
+    control.jump = state.Down(GLFW_KEY_SPACE);
+    control.breakBlock = state.MousePressed(GLFW_MOUSE_BUTTON_LEFT);
+    control.interact = state.MousePressed(GLFW_MOUSE_BUTTON_RIGHT);
+  }
   for (int i = 0; i < 8; ++i) {
     if (state.Pressed(GLFW_KEY_1 + i)) {
       control.hotbarSlot = i + 1;
@@ -67,7 +68,7 @@ void PlayerController::HandleInput(core::Window& window, ControlState& control,
     window.SetCursorDisabled(!window.IsCursorDisabled());
   }
 
-  if (cursorLocked) {
+  if (window.IsCursorDisabled()) {
     camera_.Rotate(state.GetCursorDeltaX(), state.GetCursorDeltaY());
   }
 }

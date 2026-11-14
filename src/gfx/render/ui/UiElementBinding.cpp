@@ -656,6 +656,11 @@ int Toggle(lua_State* L) {
   return 0;
 }
 
+int ClearSelection(lua_State* L) {
+  CheckDerivedElement<UiContainer>(L)->ClearSelection();
+  return 0;
+}
+
 }  // namespace
 
 // -----------------------------------------------------------------------------
@@ -730,6 +735,7 @@ void UiElementBinding::Register(const script::LuaState& state) {
     SetFunction(L, -1, "IsChecked", IsChecked);
     SetFunction(L, -1, "SetChecked", SetChecked);
     SetFunction(L, -1, "Toggle", Toggle);
+    SetFunction(L, -1, "ClearSelection", ClearSelection);
   }
 
   lua_pop(L, 1);

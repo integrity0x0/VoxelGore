@@ -32,26 +32,27 @@ Ui::Ui(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
 void Ui::Push(std::string_view path) {
   const auto& it = cached_.find(path);
 
-  const UiPage* page = nullptr;
+  UiPage* page = nullptr;
   if (it != cached_.end()) {
-    pages_.emplace_back(it->second.get());
-    return;
+    page = it->second.get();
   } else {
     UiPageParseResult result = UiPageParser::Parse(path, parserCtxt_);
-
-    for (const auto& it : result.diagnostics) {
-      // TODO: implement logger
+    for (const auto& d : result.diagnostics) { 
+      /* TODO: logger */
+#ifndef __ANDROID_
+      std::cout << d.msg << '\n';
+#endif
     }
-
-    if (result.page) {
-      result.page->Relayout(screen_);
-      page = result.page.get();
-      pages_.emplace_back(result.page.get());
-      cached_[std::string(path)] = std::move(result.page);
-    }
+    if (!result.page) return;
+    page = result.page.get();
+    cached_[std::string(path)] = std::move(result.page);
   }
+
+  pages_.emplace_back(page);
   stackView_ = BuildStackView();
+  triggerDispatcher_.DispatchPageEvent(*page, UiPageEvent::Open);
 }
+
 
 Ui::StackView Ui::BuildStackView() const {
   StackView view = {};
@@ -60,11 +61,9 @@ Ui::StackView Ui::BuildStackView() const {
 
     if (!view.inputCaptured && props.input == UiInputMode::Capture) {
       view.inputCaptured = true;
-      view.firstInput = i;
     }
     if (props.type == UiPageType::Screen) {
       view.firstRender = i;
-      if (!view.inputCaptured) view.firstInput = i;  // UiPageType::Screen blocks input
       break;
     }
   }
@@ -72,8 +71,11 @@ Ui::StackView Ui::BuildStackView() const {
 }
 
 void Ui::Pop() {
-  if (!pages_.empty()) pages_.pop_back();
+  if (pages_.empty()) return;
+  UiPage* page = pages_.back();
+  pages_.pop_back();
   stackView_ = BuildStackView();
+  triggerDispatcher_.DispatchPageEvent(*page, UiPageEvent::Close);
 }
 
 UiElement* Ui::FindElement(std::string_view id) {
@@ -105,16 +107,27 @@ void Ui::Resize(VkExtent2D extent) {
 
 void Ui::Render(VkCommandBuffer cmd, uint32_t currentFrame) {
   if (pages_.empty()) return;
-  if (UiPage* page = pages_.front()) {
-    renderer_.BeginFrame(cmd, currentFrame);
-    renderer_.PushConstants(cmd, {ndcScale_});
-    page->Render(renderer_);
+
+  renderer_.BeginFrame(cmd, currentFrame);
+  renderer_.PushConstants(cmd, {ndcScale_});
+
+  for (size_t i = stackView_.firstRender; i < pages_.size(); ++i) {
+    pages_[i]->Render(renderer_);
   }
 }
 
+bool Ui::IsPushed(std::string_view path) const {
+  const auto it = cached_.find(parserCtxt_.assetRoot + path.data());
+  if (it == cached_.end()) return false;
+  const UiPage* page = it->second.get();
+  return std::find(pages_.begin(), pages_.end(), page) != pages_.end();
+}
+
 UiCameraSwipe Ui::RouteInput(const core::InputState& inputState) {
+  std::span<UiPage* const> inputPages = std::span(pages_).subspan(stackView_.firstRender);
+
   UiCameraSwipe swipe =
-      inputRouter_.RouteInput(inputState, pages_, stackView_.inputCaptured, events_);
+      inputRouter_.RouteInput(inputState, inputPages, stackView_.inputCaptured, events_);
   triggerDispatcher_.Dispatch(events_);
   return swipe;
 }

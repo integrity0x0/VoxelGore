@@ -1,20 +1,9 @@
-local picked = 0
-local pickedSlot = nil
-
 local function IndexOf(node)
-  print("[IndexOf] start, node=", tostring(node))
   local parent = node:GetParent()
-  print("[IndexOf] parent=", tostring(parent))
   local children = parent:GetChildren()
-  print("[IndexOf] children count=", #children)
   for i, child in ipairs(children) do
-    print("[IndexOf] iter i=", i, "child=", tostring(child), "equals=", child == node)
-    if child == node then
-      print("[IndexOf] found at i=", i)
-      return i
-    end
+    if child == node then return i end
   end
-  print("[IndexOf] not found, returning nil")
 end
 
 local function SetSlot(slot, blockId)
@@ -28,25 +17,26 @@ local function SetSlot(slot, blockId)
   count:SetVisible(false)
 end
 
-function OnInventorySlotClick(node)
-  local id = IndexOf(node)
-  if id > inventory.BlockCount() then return end
-
-  if picked == id then
-    picked, pickedSlot = 0, nil
-  else
-    picked, pickedSlot = id, node
-  end
-end
-
 function OnHotbarSlotClick(node)
   local i = IndexOf(node)
+  local picked = inventory.GetPicked()
+
   if picked ~= 0 then
     inventory.SetHotbarBlock(i, picked)
     SetSlot(node, picked)
-    pickedSlot:SetChecked(false)
-    print("[after uncheck] checked =", pickedSlot:IsChecked())
-    picked, pickedSlot = 0, nil
+    inventory.ClearPicked()
+
+    local invGrid = ui.FindById("inventory")
+    if invGrid then invGrid:ClearSelection() end
   end
+
   inventory.Select(i)
+end
+
+function OnInventoryOpen(node)
+  if ui.IsPushed("ui/inventory.xml") then
+    ui.Pop()
+  else
+    ui.Push("ui/inventory.xml")
+  end
 end

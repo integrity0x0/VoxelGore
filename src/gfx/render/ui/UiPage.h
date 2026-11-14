@@ -25,10 +25,17 @@ enum class UiPageType {
   Count
 };
 
+enum class UiPageEvent { 
+  Open,
+  Close,
+  Count 
+};
+
 struct UiPageProps {
   std::string id;
   UiInputMode input = UiInputMode::Passthrough;
   UiPageType type = UiPageType::Overlay;
+  std::array<std::string, static_cast<size_t>(UiPageEvent::Count)> callbackNames;
 };
 
 class UiPage {
@@ -39,7 +46,10 @@ class UiPage {
   [[nodiscard]] const std::string& GetId() const { return props_.id; }
   [[nodiscard]] UiPageType GetType() const { return props_.type; }
   [[nodiscard]] UiInputMode GetInputMode() const { return props_.input; }
-
+  [[nodiscard]] UiCallback& GetCallback(UiPageEvent type) {
+    assert(type < UiPageEvent::Count);
+    return callbacks_[static_cast<size_t>(type)];
+  }
   void SetType(UiPageType type) {
     props_.type = type;
   }
@@ -67,6 +77,7 @@ class UiPage {
   std::vector<std::unique_ptr<UiElement>> roots_;
   ElementsById byId_;
   std::optional<script::LuaScript> script_;
+  std::array<UiCallback, static_cast<size_t>(UiPageEvent::Count)> callbacks_;
 };
 
 }  // namespace gfx

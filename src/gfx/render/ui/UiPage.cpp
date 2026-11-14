@@ -30,6 +30,9 @@ void UiPage::IndexById(UiElement& element, ElementsById& out) {
 
 UiPage::UiPage(UiPageProps props, std::vector<std::unique_ptr<UiElement>>&& roots)
     : props_(std::move(props)), roots_(std::move(roots)) {
+  for (size_t i = 0; i < callbacks_.size(); ++i)
+    callbacks_[i].functionName = props_.callbackNames[i];
+
   for (const auto& root : roots_) IndexById(*root, byId_);
 }
 
@@ -54,6 +57,15 @@ void UiPage::Render(UiRenderer& renderer) {
 std::vector<std::string> UiPage::AttachScript(script::LuaScript&& script) {
   std::vector<std::string> problems;
   for (const auto& root : roots_) BindElement(*root, script, problems);
+
+  for (UiCallback& callback : callbacks_) {
+    if (callback.functionName.empty()) continue;
+    callback.ref = script.FindFunction(callback.functionName);
+    if (!callback.ref)
+      problems.push_back("page '" + props_.id + "': function '" + callback.functionName +
+                         "' not found");
+  }
+
   script_.emplace(std::move(script));
   return problems;
 }

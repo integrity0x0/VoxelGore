@@ -124,6 +124,14 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
       hpBarText_ = reinterpret_cast<UiText*>(el);
     }
   }
+
+  if (auto* el = ui_->FindElement("hotbar")) {
+    if (el->GetNodeType() == UiElementType::Grid) {
+      hotbar_ = reinterpret_cast<UiGrid*>(el);
+    }
+  }
+
+  ui_->Push(core::kAssetsPrefix + "ui/msgbox.xml");
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {

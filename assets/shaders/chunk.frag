@@ -38,6 +38,7 @@ void main() {
     discard;
   }
 #endif
+#undef SHADOWS_ENABLED
 
 #ifdef SHADOWS_ENABLED
   if (iVert.shadowEnabled != 0) {

@@ -26,6 +26,8 @@ class UiLibrary {
   static int LuaPush(lua_State* L);
   static int LuaPop(lua_State* L);
   static int LuaClear(lua_State* L);
+  static int LuaFindById(lua_State* L);
+  static int LuaIsPushed(lua_State* L);
 
   [[nodiscard]] static UiLibrary& GetSelf(lua_State* L);
 

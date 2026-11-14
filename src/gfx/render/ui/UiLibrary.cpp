@@ -17,9 +17,20 @@ UiLibrary::UiLibrary(Context ctxt) : ctxt_(ctxt) {
   UiPageBinding::Register(state);
   UiTextureRegionBinding::Register(state, ui.GetMaterialManager(), ui.GetAssetRoot());
 
-  SetFunction("push", &UiLibrary::LuaPush);
-  SetFunction("pop", &UiLibrary::LuaPop);
-  SetFunction("clear", &UiLibrary::LuaClear);
+  SetFunction("Push", &UiLibrary::LuaPush);
+  SetFunction("Pop", &UiLibrary::LuaPop);
+  SetFunction("Clear", &UiLibrary::LuaClear);
+  SetFunction("FindById", &UiLibrary::LuaFindById);
+  SetFunction("IsPushed", &UiLibrary::LuaIsPushed);
+}
+
+int UiLibrary::LuaFindById(lua_State* L) {
+  UiLibrary& self = GetSelf(L);
+  size_t length = 0;
+  const char* id = luaL_checklstring(L, 1, &length);
+  UiElementBinding::Push(self.ctxt_.state.get(),
+                         self.ctxt_.ui.get().FindElement(std::string_view(id, length)));
+  return 1;
 }
 
 void UiLibrary::SetFunction(const char* name, lua_CFunction function) {
@@ -54,8 +65,8 @@ int UiLibrary::LuaPush(lua_State* L) {
 
   size_t length = 0;
   const char* path = luaL_checklstring(L, 1, &length);
-
-  self.ctxt_.ui.get().Push(std::string_view(path, length));
+  
+  self.ctxt_.ui.get().Push(self.ctxt_.ui.get().GetAssetRoot() + std::string(path, length));
   return 0;
 }
 
@@ -73,4 +84,11 @@ int UiLibrary::LuaClear(lua_State* L) {
   return 0;
 }
 
+int UiLibrary::LuaIsPushed(lua_State* L) {
+  UiLibrary& self = GetSelf(L);
+  size_t length = 0;
+  const char* path = luaL_checklstring(L, 1, &length);
+  lua_pushboolean(L, self.ctxt_.ui.get().IsPushed(std::string_view(path, length)));
+  return 1;
+}
 }  // namespace gfx

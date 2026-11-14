@@ -1,3 +1,34 @@
-<page id="inventory" input-mode="capture" script="ui/hud.xml.lua">
-  
+<page id="inventory" input-mode="capture" script="ui/inventory.xml.lua" on-open="OnOpen" on-close="OnClose">
+	<styles>
+		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
+
+		<style name="btn" extends="panel" pivot="center">
+			<state name="hover" border-color="#8BB4C850"/>
+			<state name="held" scale="0.925"/>
+		</style>
+		<style name="slotGrid" extends="panel" radius="9" columns="9"
+			   cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
+
+		<style name="slot" extends="btn" size="48" radius="8" color="#01020464">
+			<state name="checked" color="#080D146D" border-color="#F0D04B"/>
+		</style>
+
+		<style name="slotIcon" size="48" anchor="center"/>
+
+		<style name="slotCount"
+			anchor="right, bottom" pivot="right, bottom"
+			pos="-3, 0"
+			color="#FFFFFF" font="rubik" font-size="14"
+			text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
+			text="64"/>
+	</styles>
+
+	<grid id="inventory" style="slotGrid" anchor="center" selection-min="0">
+		<repeat count="32">
+			<checkbox style="slot" on-click="OnInventorySlotClick">
+				<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
+				<text style="slotCount" visible="false" interactive="false"/>
+			</checkbox>
+		</repeat>
+	</grid>
 </page>

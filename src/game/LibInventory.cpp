@@ -49,6 +49,21 @@ static int lua_blockCount(lua_State* L) {
   return 1;
 }
 
+static int lua_getPicked(lua_State* L) {
+  lua_pushinteger(L, static_cast<lua_Integer>(ctx(L)->picked));
+  return 1;
+}
+
+static int lua_setPicked(lua_State* L) {
+  ctx(L)->picked = static_cast<uint32_t>(luaL_checkinteger(L, 1));
+  return 0;
+}
+
+static int lua_clearPicked(lua_State* L) {
+  ctx(L)->picked = 0;
+  return 0;
+}
+
 }  // namespace
 
 const LibInventory::FnEntry LibInventory::kInventoryFunctions[] = {
@@ -57,11 +72,14 @@ const LibInventory::FnEntry LibInventory::kInventoryFunctions[] = {
     {"Select", lua_select},
     {"GetSelected", lua_getSelected},
     {"BlockCount", lua_blockCount},
+    {"GetPicked", lua_getPicked},
+    {"SetPicked", lua_setPicked},
+    {"ClearPicked", lua_clearPicked},
 };
 
 LibInventory::LibInventory(Hotbar& hotbar, const BlockManager& blocks,
                            const script::LuaState& luaState)
-    : ctx_{&hotbar, &blocks}, L_(luaState.Get()) {
+    : ctxt_{&hotbar, &blocks}, L_(luaState.Get()) {
   lua_newtable(L_);
   registerClosures(kInventoryFunctions, std::size(kInventoryFunctions));
   lua_setglobal(L_, "inventory");
@@ -69,7 +87,7 @@ LibInventory::LibInventory(Hotbar& hotbar, const BlockManager& blocks,
 
 void LibInventory::registerClosures(const FnEntry* entries, size_t count) {
   for (size_t i = 0; i < count; ++i) {
-    lua_pushlightuserdata(L_, &ctx_);
+    lua_pushlightuserdata(L_, &ctxt_);
     lua_pushcclosure(L_, entries[i].second, 1);
     lua_setfield(L_, -2, entries[i].first);
   }

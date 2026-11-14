@@ -25,7 +25,7 @@ class PlayerController {
   PlayerController(WorldSession& session, const glm::vec3& spawnPos);
 
 #ifndef __ANDROID__
-  void HandleInput(core::Window& window, ControlState& control, bool& cursorLocked);
+  void HandleInput(core::Window& window, ControlState& control);
 #endif
   void UpdateMovement(ControlState& control, float dt);
   void UpdateCamera(float dt);

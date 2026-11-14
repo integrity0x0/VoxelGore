@@ -49,6 +49,8 @@ class UiContainer : public UiElement {
     selection_.SetMax(max);
   }
 
+  void ClearSelection() { selection_.Clear(); }
+
   void Render(UiRenderer& renderer) override;
   void Relayout(const UiRect& rect) override;
 

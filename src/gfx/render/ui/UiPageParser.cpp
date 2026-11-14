@@ -672,7 +672,7 @@ void ParseCommon(UiPageParser::ParsingState& st, UiElement& el, const UiElement*
   el.SetVisibleOn(a.GetOr("visible-on", ParseVisibleOn, UiStateFlags::None));
 
 }
-
+ 
 }  // namespace
 
 const std::unordered_map<std::string, UiPageParser::ElementParserFn> UiPageParser::kElementParsers{
@@ -825,15 +825,18 @@ std::unique_ptr<UiElement> UiPageParser::ParseGrid(UiPageParser::ParsingState& s
 }
 
 std::optional<std::string> UiPageParser::ParsePageAttributes(const tinyxml2::XMLElement* element,
-                                                             UiPageProps& props,
-                                                             ParsingState& st) {
+                                                             UiPageProps& props, ParsingState& st) {
   AttrReader a(*element, st.result);
 
   props.id = a.GetOr("id", ParseString, std::string{});
   props.input = a.GetOr("input-mode", ParseInputMode, UiInputMode::Passthrough);
-
+  props.id = a.GetOr("id", ParseString, std::string{});
+  props.input = a.GetOr("input-mode", ParseInputMode, UiInputMode::Passthrough);
+  props.callbackNames[static_cast<size_t>(UiPageEvent::Open)] =
+      a.GetOr("on-open", ParseString, std::string{});
+  props.callbackNames[static_cast<size_t>(UiPageEvent::Close)] =
+      a.GetOr("on-close", ParseString, std::string{});
   auto scriptPath = a.Get("script", ParseString);
-
   if (scriptPath) scriptPath = core::kAssetsPrefix + scriptPath.value();
 
   a.ReportUnknown();
