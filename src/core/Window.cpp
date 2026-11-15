@@ -1,5 +1,4 @@
 #include "Window.h"
-#include <iostream>
 
 namespace core {
 
@@ -31,16 +30,9 @@ void Window::SetCursorDisabled(bool disabled) {
 
   glfwSetInputMode(window_.get(), GLFW_CURSOR,
                    disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-
-  // ← ДОБАВЬ ЭТО
-  int actual = glfwGetInputMode(window_.get(), GLFW_CURSOR);
-  std::cout << "requested=" << disabled << "  actual=" << actual
-            << "  (NORMAL=212993, DISABLED=212995)\n";
-
   if (glfwRawMouseMotionSupported()) {
     glfwSetInputMode(window_.get(), GLFW_RAW_MOUSE_MOTION, disabled ? GLFW_TRUE : GLFW_FALSE);
   }
-
   state.SetCursorDisabled(disabled);
 }
 

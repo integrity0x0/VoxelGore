@@ -29,7 +29,6 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
   if (!window_) throw std::runtime_error("Game: window is null");
 
   engine_ = std::make_unique<Engine>(window_->GetWindow());
-  cursorLocked_ = true;
 
   Init();
 
@@ -49,7 +48,6 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
       text->SetText(s);
     }
   }
-  glfwSetInputMode(window_->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 #endif
@@ -274,7 +272,7 @@ bool Game::Frame(const core::InputState& inputState) {
   if (const auto* hb = render_->GetHotbar()) {
     for (size_t i = 0; i < hb->GetChildren().size(); ++i) {
       if (window_->GetInput().GetState().Pressed(static_cast<uint32_t>(i + GLFW_KEY_1))) {
-        hotbar_.Select(i + 1);
+        hotbar_.Select(i);
         render_->GetHotbar()->GetChildren()[i]->SetChecked(true);
       }
     }

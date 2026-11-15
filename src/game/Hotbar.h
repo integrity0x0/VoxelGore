@@ -20,7 +20,7 @@ class Hotbar {
   [[nodiscard]] uint32_t GetSelectedBlock() const { return slots_[selected_]; }
 
  private:
-  std::array<uint32_t, kSize> slots_{1, 2, 3, 4, 5, 6, 7, 8};
+  std::array<uint32_t, kSize> slots_ = {};
   size_t selected_ = 0;
 };
 }  // namespace gm

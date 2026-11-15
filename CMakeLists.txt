@@ -158,6 +158,14 @@ set(SOURCE_FILES
         src/gfx/common/texture/MaterialManager.cpp
         src/gfx/common/texture/Skybox.cpp
 
+        src/gfx/common/font/FreeTypeLibrary.cpp
+        src/gfx/common/font/FontFace.cpp
+        src/gfx/common/font/Font.cpp
+        src/gfx/common/font/FontFamily.cpp
+        src/gfx/common/font/FontParser.cpp
+        src/gfx/common/font/GlyphAtlas.cpp
+        src/gfx/common/font/FontManager.cpp
+
         src/gfx/render/block/BlockSurfaceRegistry.cpp
         src/gfx/render/block/BlockAnimation.cpp
         src/gfx/render/block/BlockAnimationParser.cpp
@@ -196,18 +204,28 @@ set(SOURCE_FILES
         src/gfx/render/particle/PhysicalParticleEmitter.cpp
 
         # UI
-        src/gfx/render/ui/Node.cpp
-        src/gfx/render/ui/Container.cpp
-        src/gfx/render/ui/Page.cpp
-        src/gfx/render/ui/NodeParser.cpp
-        src/gfx/render/ui/Renderer.cpp
-        src/gfx/render/ui/NodeBinding.cpp
-        src/gfx/render/ui/LibGui.cpp
-        src/gfx/render/ui/DescriptorSetRegistry.cpp
-
+        src/gfx/render/ui/UiElement.cpp
+        src/gfx/render/ui/UiContainer.cpp
+        src/gfx/render/ui/UiImage.cpp
+        src/gfx/render/ui/UiCheckbox.cpp
+        src/gfx/render/ui/UiGrid.cpp
+        src/gfx/render/ui/UiButton.cpp
+        src/gfx/render/ui/UiText.cpp
+        src/gfx/render/ui/UiBar.cpp
+        src/gfx/render/ui/UiLuaTypes.cpp
+        src/gfx/render/ui/UiInputRouter.cpp
+        src/gfx/render/ui/UiTriggerDispatcher.cpp
+        src/gfx/render/ui/UiPage.cpp
+        src/gfx/render/ui/UiPageParser.cpp
+        src/gfx/render/ui/UiRenderer.cpp
+        src/gfx/render/ui/UiElementBinding.cpp
+        src/gfx/render/ui/UiLibrary.cpp
+        src/gfx/render/ui/UiImageResolver.cpp
+        src/gfx/render/ui/UiRenderPipeline.cpp
         # scripting
         src/script/LuaState.cpp
         src/script/LuaScript.cpp
+        src/script/LuaRef.cpp
 
         #util
         src/util/files.cpp

@@ -9,25 +9,27 @@
 
 		<style name="msgPanel" extends="panel" radius="12"/>
 
-		<style name="okBtn" extends="btn" size="160, 42" radius="10"/>
-
+		<style name="okBtn" extends="btn" size="160, 42" radius="10" color="#2E6F4A66" border-color="#4CAF7850">
+			<state name="hover" color="#2E6F4A90" border-color="#4CAF7880"/>
+		</style>
 		<style name="titleText"
 			anchor="center, top" pos="0, 22"
-			color="#FFFFFF" font="rubik" font-size="18"
+			color="#FFFFFF" font="rubik" font-size="20"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
 
 		<style name="msgText"
-			anchor="center"
-			color="#E8F0F8" font="rubik" font-size="15"
+			anchor="center, top" pos="0, 62"
+			color="#E8F0F8" font="rubik" font-size="18"
 			text-shadow="true" shadow-offset="1" shadow-color="#000000A0"/>
 	</styles>
 
 	<container id="overlay" size="100%" color="#00000088"/>
 
-	<container id="box" style="msgPanel" anchor="center" size="360, 200">
-		<text id="title" style="titleText" text="Сообщение" interactive="false"/>
-		<text id="message" style="msgText" pos="0, -8" size="320, 80"
-			text="Текст сообщения" interactive="false"/>
+	<container id="box" style="msgPanel" anchor="center" size="380, 280">
+		<text id="title" style="titleText" text="Что нового" interactive="false"/>
+
+		<text id="message" style="msgText" size="340, auto" interactive="false"
+			text="— Переделан интерфейс\n— Добавлено здоровье игрока\n— Исправлена тряска камеры\n— Добавлена инерция камеры\n— Мелкие правки в коде"/>
 
 		<button id="btnOk" style="okBtn" anchor="center, bottom" pos="0, 18"
 			on-release="OnOkRelease">

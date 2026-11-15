@@ -6,7 +6,7 @@
 			<state name="hover" border-color="#8BB4C850"/>
 			<state name="held" scale="0.925"/>
 		</style>
-		<style name="slotGrid" extends="panel" radius="9" columns="9"
+		<style name="slotGrid" extends="panel" radius="9" columns="8"
 			   cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
 
 		<style name="slot" extends="btn" size="48" radius="8" color="#01020464">
