@@ -126,7 +126,10 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
     }
   }
 
+#ifdef __ANDROID__
   ui_->Push(core::kAssetsPrefix + "ui/control_android.xml");
+#endif
+
   ui_->Push(core::kAssetsPrefix + "ui/msgbox.xml");
 }
 

@@ -14,7 +14,7 @@ class Environment {
   [[nodiscard]] glm::vec3 GetColor() const;
 
  private:
-  static constexpr float kDayLength = 60.0f;
+  static constexpr float kDayLength = 6.0f * 60.0f;
   float timeOfDay_ = 0.5f;  // 0..1
   float dayLength_ = kDayLength;
   glm::vec3 dayColor_ = glm::vec3(1.0f);

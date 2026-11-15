@@ -87,7 +87,6 @@ UiElement* Ui::FindElement(std::string_view id) {
 
 void Ui::Clear() {
   pages_ = {};
-  cached_.clear();
 }
 
 void Ui::UpdateLayout() {

@@ -1,0 +1,9 @@
+{
+  "id": "grass",
+  "textures": {
+    "sides": "materials/grass_side.png",
+    "top": "materials/grass_top.png",
+    "bottom": "materials/dirt.png"
+  },
+  "debris": {}
+}

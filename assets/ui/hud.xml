@@ -1,122 +1,93 @@
 <page id="hud" input-mode="passthrough" script="ui/hud.xml.lua">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
-
 		<style name="btn" extends="panel" pivot="center">
 			<state name="hover" border-color="#8BB4C850"/>
 			<state name="held" scale="0.925"/>
 		</style>
-		<style name="topBtn" extends="btn" size="47" radius="11"/>
-
-		<style name="slot" extends="btn" size="48" radius="8" color="#01020464">
+		<style name="topBtn" extends="btn" size="94" radius="22"/>
+		<style name="slot" extends="btn" size="96" radius="16" color="#01020464">
 			<state name="checked" color="#080D146D" border-color="#F0D04B"/>
 		</style>
-
-		<style name="chip" extends="panel" size="85, 40" radius="9"/>
-		<style name="coin" anchor="left, center" pos="11, 0" size="19" radius="9.5" border="1"/>
+		<style name="chip" extends="panel" size="170, 80" radius="18"/>
+		<style name="coin" anchor="left, center" pos="22, 0" size="38" radius="19" border="1"/>
 		<style name="coinGold" extends="coin" color="#BC9D3613" border-color="#BC9D3630"/>
 		<style name="coinGem" extends="coin" color="#3D8DB112" border-color="#4999B630"/>
-
-		<style name="icon" anchor="center" size="22"/>
-
+		<style name="icon" anchor="center" size="44"/>
 		<style name="gridLine" anchor="center" color="#6291A917"/>
-		<style name="mapDot" size="5" radius="2.5" color="#87A9B82D"/>
-
-		<style name="statIcon" size="19"/>
-
-		<style name="slotIcon" size="48" anchor="center"/>
-
-		<style name="statRow" size="206, 19"/>
-
-		<style name="statBar" pos="24, 0" size="182, 19" radius="4" padding="1"
+		<style name="mapDot" size="10" radius="5" color="#87A9B82D"/>
+		<style name="statIcon" size="38"/>
+		<style name="slotIcon" size="96" anchor="center"/>
+		<style name="statRow" size="412, 38"/>
+		<style name="statBar" pos="48, 0" size="364, 38" radius="8" padding="2"
 			bg-color="#05070B" color="#05070B" border="1" border-color="#35404F"
-			fill-radius="3" fill-from="left"/>
-
+			fill-radius="6" fill-from="left"/>
 		<style name="slotCount"
 			anchor="right, bottom" pivot="right, bottom"
-			pos="-3, 0"
-			color="#FFFFFF" font="rubik" font-size="14"
-			text-shadow="true" shadow-offset="1" shadow-color="#000000C0"
+			pos="-6, 0"
+			color="#FFFFFF" font="rubik" font-size="28"
+			text-shadow="true" shadow-offset="2" shadow-color="#000000C0"
 			text="64"/>
-
 		<style name="barText"
 			anchor="center"
-			color="#FFFFFF" font="rubik" font-size="14"
-			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"
+			color="#FFFFFF" font="rubik" font-size="28"
+			text-shadow="true" shadow-offset="2" shadow-color="#000000B0"
 			text="0/100"/>
 		<style name="chipText"
-			anchor="left, center" pos="36, 0"
-			color="#FFFFFF" font="rubik" font-size="14"
-			text-shadow="true" shadow-offset="1" shadow-color="#000000B0"/>
-
-		<style name="slotGrid" extends="panel" radius="9" columns="9" cell="48" gap="4" inset="4, 5" selection-min="1" selection-max="1" />
+			anchor="left, center" pos="72, 0"
+			color="#FFFFFF" font="rubik" font-size="28"
+			text-shadow="true" shadow-offset="2" shadow-color="#000000B0"/>
+		<style name="slotGrid" extends="panel" radius="18" columns="9" cell="96" gap="8" inset="8, 10" selection-min="1" selection-max="1" />
 	</styles>
-
-	<container id="topLeft" pos="14, 12" size="209, 47" visible="false">
-		<button id="btnSettings" style="topBtn" pos="23.5, 23.5">
+	<container id="topLeft" pos="28, 24" size="418, 94" visible="false">
+		<button id="btnSettings" style="topBtn" pos="47, 47">
 			<image style="icon" src="images/settings_gear.png" interactive="false"/>
 		</button>
-		<button id="btnChat" style="topBtn" pos="77.5, 23.5">
+		<button id="btnChat" style="topBtn" pos="155, 47">
 			<image style="icon" src="images/chat.png" interactive="false"/>
 		</button>
-		<button id="btnFriends" style="topBtn" pos="131.5, 23.5">
+		<button id="btnFriends" style="topBtn" pos="263, 47">
 			<image style="icon" src="images/friends.png" interactive="false"/>
 		</button>
-		<button id="btnRating" style="topBtn" pos="185.5, 23.5">
+		<button id="btnRating" style="topBtn" pos="371, 47">
 			<image style="icon" src="images/star.png" interactive="false"/>
 		</button>
 	</container>
-
-	<container id="currency" anchor="right, top" pos="-14, 13" size="229, 40" visible="false">
+	<container id="currency" anchor="right, top" pos="-28, 26" size="458, 80" visible="false">
 		<container id="money" style="chip">
 			<container style="coinGold"/>
 			<text id="moneyText" style="chipText" interactive="false" text="1024"/>
 		</container>
-		<container id="gems" style="chip" pos="93, 0">
+		<container id="gems" style="chip" pos="186, 0">
 			<container style="coinGem"/>
 			<text id="gemsText" style="chipText" interactive="false" text="1024"/>
 		</container>
-		<button id="shop" style="btn" pos="207.5, 20" size="43, 40" radius="9">
+		<button id="shop" style="btn" pos="415, 40" size="86, 80" radius="18">
 			<image style="icon" src="images/shop.png" interactive="false"/>
 		</button>
 	</container>
-
-	<container id="minimap" style="panel" anchor="right, top" pos="-18, 82" size="132" radius="66">
-		<container anchor="center" size="104" radius="52"
-			color="#6291A909" border="1" border-color="#6291A914"/>
-		<container id="mapGrid" anchor="center" size="104" radius="52" visible="false">
-			<container style="gridLine" size="104, 1"/>
-			<container style="gridLine" size="1, 104"/>
-			<container style="mapDot" pos="30%, 31%"/>
-			<container style="mapDot" pos="68%, 38%"/>
-			<container style="mapDot" pos="61%, 71%"/>
-		</container>
-		<container id="playerMarker" anchor="center" size="9" radius="4.5" color="#55D67C"/>
-	</container>
-
-	<container id="bottom" anchor="center, bottom" pos="0, -18" size="420, 109" visible="false">
-		<container id="stats" size="420, 44" visible="false">
+	<container id="bottom" anchor="center, bottom" pos="0, -36" size="840, 218" visible="false">
+		<container id="stats" size="840, 88" visible="false">
 			<container id="hp" style="statRow" visible="false">
 				<image style="statIcon" src="images/heart.png" interactive="false"/>
 				<bar id="hpBar" style="statBar" fill-color="#FF1738">
 					<text id="hpBarText" style="barText" interactive="false" text="sss"/>
 				</bar>
 			</container>
-			<container id="armor" style="statRow" pos="220, 0" visible="false">
+			<container id="armor" style="statRow" pos="440, 0" visible="false">
 				<image style="statIcon" src="images/armor.png" interactive="false"/>
 				<bar id="armorBar" style="statBar" fill-color="#168BFF">
 					<text id="armorBarText" style="barText" interactive="false"/>
 				</bar>
 			</container>
-			<container id="thirst" style="statRow" pos="0, 24" visible="false">
+			<container id="thirst" style="statRow" pos="0, 48" visible="false">
 				<image style="statIcon" src="images/thirst.png" interactive="false"/>
 				<bar id="thirstBar" style="statBar" fill-color="#00D9FF">
 					<text id="thirstBarText" style="barText" interactive="false"/>
 				</bar>
 			</container>
 		</container>
-
-		<grid id="hotbar" style="slotGrid" anchor="center, top" pos="0, 51">
+		<grid id="hotbar" style="slotGrid" anchor="center, top" pos="0, 102">
 			<repeat count="8">
 				<checkbox style="slot" on-click="OnHotbarSlotClick">
 					<image style="slotIcon" src="@blank" visible="false" interactive="false"/>
@@ -124,10 +95,9 @@
 				</checkbox>
 			</repeat>
 			<button style="slot" on-release="OnInventoryOpen">
-				<text anchor="center" font="rubik" font-size="20" text="…" interactive="false"/>
+				<text anchor="center" font="rubik" font-size="40" text="…" interactive="false"/>
 			</button>
 		</grid>
 	</container>
-
 	<text text="v0.11-alpha" anchor="left, bottom" font="rubik" italic="true" color="#AAAAAA"/>
 </page>

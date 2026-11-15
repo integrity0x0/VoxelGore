@@ -21,6 +21,8 @@
   <ItemGroup>
     <None Include=".clang-format" />
     <None Include=".gitignore" />
+    <None Include="assets\blocks\dirt.json" />
+    <None Include="assets\blocks\grass.json" />
     <None Include="assets\fonts\notojp.json" />
     <None Include="assets\fonts\NotoSansSymbols2.json" />
     <None Include="assets\fonts\rubik.json" />

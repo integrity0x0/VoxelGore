@@ -148,7 +148,7 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
 
   if (particles) {
     particles->SpawnBlockDebris(voxel->id, glm::vec3(hit->ipos) + glm::vec3(0.5f));
-    if (voxel->id == 10) particles->SpawnExplosion(hit->pos);
+    if (voxel->id == 13) particles->SpawnExplosion(hit->pos);
   }
 
   session.SetVoxel(hit->ipos, 0);

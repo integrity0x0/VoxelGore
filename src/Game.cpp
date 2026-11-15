@@ -69,9 +69,9 @@ Game::Game(std::unique_ptr<core::Window> window) : window_(std::move(window)) {
 
 #endif
 
-constexpr uint32_t kWorldW = 1;
+constexpr uint32_t kWorldW = 4;
 constexpr uint32_t kWorldH = 1;
-constexpr uint32_t kWorldD = 1;
+constexpr uint32_t kWorldD = 4;
 
 void Game::Init() {
   const vkcore::Device& device = engine_->getDevice();
@@ -112,9 +112,9 @@ void Game::Init() {
                               (kWorldH * static_cast<float>(gm::Chunk::kLength)) * 0.5f,
                               (kWorldD * static_cast<float>(gm::Chunk::kLength)) * 0.5f);
 
-  player_ = std::make_unique<gm::PlayerController>(*session_, worldCenter + glm::vec3(16, 70, 16));
+  player_ = std::make_unique<gm::PlayerController>(*session_, glm::vec3(16, 70, 16));
 
-  session_->entities().Create("barrel", worldCenter + glm::vec3(4.0f));
+  session_->entities().Create("barrel", glm::vec3(8.0f));
   session_->entities().Create("integrity", worldCenter + glm::vec3(10.0f));
 
   std::ignore = render_->GetTextures().Load(core::kAssetsPrefix + "images/blank.png", "blank");
@@ -165,6 +165,10 @@ void Game::UpdateInput() {
       ui.Pop();
     else
       ui.Push(core::kAssetsPrefix + "ui/inventory.xml");
+  }
+
+  if (state.Pressed(GLFW_KEY_P)) {
+    ui.Clear();
   }
 
   std::ignore = ui.RouteInput(state);

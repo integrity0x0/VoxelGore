@@ -50,10 +50,14 @@ void main() {
 
   float dist = distance(worldPos.xyz, uGameData.cameraPos);
 
-  float fogFactor = exp2(
-      -uGameData.fogDensity * uGameData.fogDensity * dist * dist * 1.442695);
+  const float fogStart = 3.0;
+  const float fogEnd   = 96.0;
 
-  oVert.fog = clamp(fogFactor, 0.0, 1.0);
+  float t = clamp((dist - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+  t = t * t * (3.0 - 2.0 * t);   // smoothstep
+  t *= 0.30;
+
+  oVert.fog = 1.0 - t;
   oVert.fogColor = uGameData.ambientColor;
 
 #ifdef SHADOWS_ENABLED

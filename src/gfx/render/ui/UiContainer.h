@@ -22,7 +22,7 @@ class UiContainer : public UiElement {
     return children_;
   }
 
-  UiElement& AddChild(std::unique_ptr<UiElement>&& child) {
+  virtual UiElement& AddChild(std::unique_ptr<UiElement>&& child) {
     assert(child);
     children_.emplace_back(std::move(child));
     selection_.OnChildAdded(*children_.back());

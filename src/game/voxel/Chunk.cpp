@@ -19,8 +19,7 @@ uint32_t hashChunkPos(const glm::ivec3& pos) {
 }
 }  // namespace
 
-Chunk::Chunk(const glm::ivec3& pos)
-    : voxels_(std::make_unique<Voxel[]>(kVolume)), pos_(pos) {
+Chunk::Chunk(const glm::ivec3& pos) : voxels_(std::make_unique<Voxel[]>(kVolume)), pos_(pos) {
   constexpr int platformHeight = 4;
   constexpr uint32_t oreSpawnChance = 100;
 
@@ -29,10 +28,12 @@ Chunk::Chunk(const glm::ivec3& pos)
   }
 
   for (int y = 0; y < platformHeight; ++y) {
+    const uint16_t blockId = (y == platformHeight - 1) ? 6 : 1; 
+
     for (int x = 0; x < kLength; ++x) {
       for (int z = 0; z < kLength; ++z) {
         size_t index = ArrayIndex({x, y, z});
-        voxels_[index] = Voxel{1};
+        voxels_[index] = Voxel{blockId};
         nonEmptyCount_++;
       }
     }
@@ -50,7 +51,7 @@ Chunk::Chunk(const glm::ivec3& pos)
 
     if (oreX >= 0 && oreX < kLength && oreY >= 0 && oreY < kLength && oreZ >= 0 && oreZ < kLength) {
       size_t oreIndex = ArrayIndex({oreX, oreY, oreZ});
-      voxels_[oreIndex] = Voxel{2};
+      voxels_[oreIndex] = Voxel{5};
     }
   }
 }

@@ -14,6 +14,7 @@
 #include "FreeTypeLibrary.h"
 #include "GlyphAtlas.h"
 #include "../../../util/hashers.h"
+#include "../../../core/PathPrefixes.h"
 
 namespace gfx {
 
@@ -21,7 +22,7 @@ class FontManager {
  public:
   FontManager(const vkcore::Device& device, vkcore::MemoryAllocator& memoryAllocator,
               vkcore::TransferContext& transferCtxt, MaterialManager& materialManager,
-              const FreeTypeLibrary& ftLib, std::filesystem::path fontsRoot = "assets/fonts");
+              const FreeTypeLibrary& ftLib, std::filesystem::path fontsRoot = core::kAssetsPrefix + "fonts");
 
   [[nodiscard]] Font* RequireFont(std::string_view familyName, FontStyle style = {FontWeight::Regular, false});
 

@@ -39,7 +39,7 @@ class UiGrid : public UiContainer {
 
   [[nodiscard]] size_t GetRows() const { return (children_.size() + columns_ - 1) / columns_; }
 
-  UiElement& AddChild(std::unique_ptr<UiElement>&& element) {
+  UiElement& AddChild(std::unique_ptr<UiElement>&& element) override {
     auto& child = UiContainer::AddChild(std::move(element));
     ArrangeChildren();
     return child;
