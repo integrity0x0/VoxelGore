@@ -35,7 +35,7 @@ void InputAndroid::Update(const AInputEvent* event) {
 }
 
 void InputAndroid::ProcessDown(const AInputEvent* event, int32_t index) {
-  auto& pointers = inputState_.pointers();
+  auto& pointers = inputState_.GetPointers();
   int32_t id = AMotionEvent_getPointerId(event, index);
   float x = AMotionEvent_getX(event, index);
   float y = AMotionEvent_getY(event, index);
@@ -52,7 +52,7 @@ void InputAndroid::ProcessDown(const AInputEvent* event, int32_t index) {
 void InputAndroid::ProcessMove(const AInputEvent* event) {
   size_t count = AMotionEvent_getPointerCount(event);
 
-  auto& pointers = inputState_.pointers();
+  auto& pointers = inputState_.GetPointers();
 
   for (size_t i = 0; i < count; ++i) {
     int32_t id = AMotionEvent_getPointerId(event, i);
@@ -76,7 +76,7 @@ void InputAndroid::ProcessMove(const AInputEvent* event) {
 
 void InputAndroid::ProcessUp(const AInputEvent* event, int32_t index) {
   int32_t id = AMotionEvent_getPointerId(event, index);
-  auto& pointers = inputState_.pointers();
+  auto& pointers = inputState_.GetPointers();
   auto it = pointers.find(id);
   if (it == pointers.end()) {
     return;
@@ -94,7 +94,7 @@ void InputAndroid::ProcessUp(const AInputEvent* event, int32_t index) {
 }
 
 void InputAndroid::ProcessCancel() {
-  auto& pointers = inputState_.pointers();
+  auto& pointers = inputState_.GetPointers();
   for (auto& [id, t] : pointers) {
     t.phase = Pointer::Phase::Cancelled;
   }

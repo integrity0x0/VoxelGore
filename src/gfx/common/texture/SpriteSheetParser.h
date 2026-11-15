@@ -15,17 +15,17 @@ class SpriteSheetParser {
  public:
   SpriteSheetParser() = delete;
 
-  [[nodiscard]] static std::vector<SpriteSheet> parseVariants(const nlohmann::json& j,
+  [[nodiscard]] static std::vector<SpriteSheet> ParseVariants(const nlohmann::json& j,
                                                               const std::string& jsonPath,
                                                               Atlas& atlas);
 
-  [[nodiscard]] static std::vector<SpriteSheet> parseVariants(std::string_view jsonPath,
+  [[nodiscard]] static std::vector<SpriteSheet> ParseVariants(std::string_view jsonPath,
                                                               Atlas& atlas);
 
-  [[nodiscard]] static std::optional<SpriteSheet> parse(const nlohmann::json& j,
+  [[nodiscard]] static std::optional<SpriteSheet> Parse(const nlohmann::json& j,
                                                         const std::string& jsonPath, Atlas& atlas);
 
-  [[nodiscard]] static std::optional<SpriteSheet> parse(std::string_view jsonPath, Atlas& atlas);
+  [[nodiscard]] static std::optional<SpriteSheet> Parse(std::string_view jsonPath, Atlas& atlas);
 
  private:
   struct CommonData {
@@ -35,7 +35,7 @@ class SpriteSheetParser {
     uint32_t rows = 1;
   };
 
-  [[nodiscard]] static std::optional<CommonData> loadCommon(const nlohmann::json& j,
+  [[nodiscard]] static std::optional<CommonData> LoadCommon(const nlohmann::json& j,
                                                             const std::string& jsonPath,
                                                             Atlas& atlas);
 };

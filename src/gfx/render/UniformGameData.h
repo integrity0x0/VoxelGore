@@ -22,6 +22,8 @@ struct UniformGameData {
 
   alignas(16) glm::vec3 lightDir;  // 304
   float _pad2;              // 316
+
+  alignas(16) glm::vec4 skyWeights;
 };
 
 }  // namespace gfx

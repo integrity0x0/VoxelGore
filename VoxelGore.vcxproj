@@ -45,6 +45,7 @@
     <None Include="assets\shaders\model.vert" />
     <None Include="assets\shaders\ui.frag" />
     <None Include="assets\shaders\ui.vert" />
+    <None Include="assets\ui\control_android.xml.lua" />
     <None Include="assets\ui\hud.xml.lua" />
     <None Include="assets\ui\inventory.xml.lua" />
     <None Include="assets\ui\msgbox.xml.lua" />
@@ -133,6 +134,7 @@
     <ClCompile Include="src\gfx\render\shadow\ShadowContext.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowMap.cpp" />
     <ClCompile Include="src\gfx\render\shadow\ShadowPass.cpp" />
+    <ClCompile Include="src\gfx\render\skybox\Sky.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxPipeline.cpp" />
     <ClCompile Include="src\gfx\render\skybox\SkyboxRenderer.cpp" />
     <ClCompile Include="src\gfx\render\ui\Ui.cpp" />
@@ -316,6 +318,7 @@
     <ClInclude Include="src\gfx\render\shadow\ShadowContext.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowMap.h" />
     <ClInclude Include="src\gfx\render\shadow\ShadowPass.h" />
+    <ClInclude Include="src\gfx\render\skybox\Sky.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxPipeline.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxRenderer.h" />
     <ClInclude Include="src\gfx\render\skybox\SkyboxVertex.h" />
@@ -415,6 +418,7 @@
     <Text Include="changelog.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="assets\ui\control_android.xml" />
     <Xml Include="assets\ui\inventory.xml" />
     <Xml Include="assets\ui\msgbox.xml" />
   </ItemGroup>

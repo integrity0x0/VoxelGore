@@ -19,7 +19,8 @@ vkcore::DescriptorSetLayout SkyboxPipeline::BuildDescriptorSetLayout(const vkcor
 vkcore::PipelineLayout SkyboxPipeline::BuildDescriptorPipelineLayout(
     const vkcore::Device& device, const vkcore::DescriptorSetLayout& gameDataLayout) {
   return vkcore::PipelineLayout(device, std::to_array<const vkcore::DescriptorSetLayout*>(
-                                            {&gameDataLayout, &descriptorSetLayout_}));
+                                            {&gameDataLayout, &descriptorSetLayout_,
+                                             &descriptorSetLayout_, &descriptorSetLayout_}));
 }
 
 vkcore::Pipeline SkyboxPipeline::BuildPipeline(const vkcore::Device& device,

@@ -9,7 +9,8 @@ namespace {
 constexpr float kTwoPi = 6.28318530718f;
 
 float Noise(float t, float seed) {
-  return 0.6f * sinf(t * 90.0f + seed) + 0.4f * sinf(t * 140.0f + seed * 1.7f);
+  const float f = 1.0f + seed * 0.01f;
+  return 0.6f * sinf(t * 38.0f * f + seed) + 0.4f * sinf(t * 61.0f * f + seed * 1.7f);
 }
 }  // namespace
 

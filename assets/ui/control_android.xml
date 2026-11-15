@@ -1,0 +1,36 @@
+<page id="controls" input-mode="passthrough" script="ui/control_android.xml.lua">
+	<styles>
+		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
+
+		<style name="btn" extends="panel" pivot="center">
+			<state name="hover" border-color="#8BB4C850"/>
+			<state name="held" scale="0.925"/>
+		</style>
+
+		<style name="ctrlBtn" extends="btn" size="56" radius="13"/>
+	</styles>
+
+	<!-- Движение + ломание/установка слева снизу -->
+	<container id="leftPad" anchor="left, bottom" pos="18, -18" size="176">
+		<button id="btnBreak" style="ctrlBtn" pos="28, 28"
+			on-click="onBreakPress" on-release="onBreakRelease"/>
+		<button id="btnForward" style="ctrlBtn" pos="88, 28"
+			on-click="onMoveForwardHeld" on-release="onMoveForwardRelease"/>
+		<button id="btnPlace" style="ctrlBtn" pos="148, 28"
+			on-click="onInteractPress" on-release="onInteractRelease"/>
+
+		<button id="btnLeft" style="ctrlBtn" pos="28, 88"
+			on-click="onMoveLeftHeld" on-release="onMoveLeftRelease"/>
+		<button id="btnRight" style="ctrlBtn" pos="148, 88"
+			on-click="onMoveRightHeld" on-release="onMoveRightRelease"/>
+
+		<button id="btnBack" style="ctrlBtn" pos="88, 148"
+			on-click="onMoveBackHeld" on-release="onMoveBackRelease"/>
+	</container>
+
+	<!-- Прыжок справа, выше и левее угла -->
+	<container id="actions" anchor="right, bottom" pos="-18, -18" size="120">
+		<button id="btnJump" style="ctrlBtn" pos="60, 60" size="72" radius="17"
+			on-click="onJumpPress" on-release="onJumpRelease"/>
+	</container>
+</page>

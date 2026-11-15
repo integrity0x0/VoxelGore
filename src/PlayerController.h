@@ -54,6 +54,7 @@ class PlayerController {
   bool wasGrounded_ = true;
   float fallStartY_ = 0.0f;
   float voidTimer_ = 0.f;
+  bool spawnLanded_ = false;
 };
 
 }  // namespace gm

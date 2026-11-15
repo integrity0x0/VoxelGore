@@ -1,0 +1,8 @@
+{
+  "duration": 2.0,
+  "spriteSheet": {
+    "texture": "luckyblock.png",
+    "frameSize": [ 64, 64 ],
+    "orientation": "vertical"
+  }
+}

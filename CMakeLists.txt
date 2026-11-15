@@ -28,6 +28,10 @@ set(SHADERC_LIBRARY
         "${CMAKE_SOURCE_DIR}/libs/android/libshaderc_combined.a"
 )
 
+set(FREETYPE_LIBRARY
+        "${CMAKE_SOURCE_DIR}/libs/android/libfreetype.a"
+)
+
 message(STATUS "LuaJIT include: ${LUAJIT_INCLUDE_DIR}")
 message(STATUS "LuaJIT library: ${LUAJIT_LIBRARY}")
 message(STATUS "Shaderc library: ${SHADERC_LIBRARY}")
@@ -127,8 +131,10 @@ set(SOURCE_FILES
         src/game/voxel/BlockDebrisParser.cpp
         src/game/voxel/BlockManager.cpp
         src/game/physics/CollisionResolver.cpp
+		src/game/entity/HealthSystem.cpp
+		src/game/LibInventory.cpp
 
-        src/game/Enviroment.cpp
+        src/game/Environment.cpp
         src/game/lighting/ChannelProcessor.cpp
         src/game/lighting/Lighting.cpp
         src/game/lighting/LightChunk.cpp
@@ -175,6 +181,7 @@ set(SOURCE_FILES
 
         src/gfx/render/skybox/SkyboxPipeline.cpp
         src/gfx/render/skybox/SkyboxRenderer.cpp
+		src/gfx/render/skybox/Sky.cpp
 
         src/gfx/render/shadow/ShadowContext.cpp
         src/gfx/render/shadow/ShadowMap.cpp
@@ -204,28 +211,28 @@ set(SOURCE_FILES
         src/gfx/render/particle/PhysicalParticleEmitter.cpp
 
         # UI
+		src/gfx/render/ui/Ui.cpp
         src/gfx/render/ui/UiElement.cpp
         src/gfx/render/ui/UiContainer.cpp
-        src/gfx/render/ui/UiImage.cpp
-        src/gfx/render/ui/UiCheckbox.cpp
         src/gfx/render/ui/UiGrid.cpp
-        src/gfx/render/ui/UiButton.cpp
         src/gfx/render/ui/UiText.cpp
         src/gfx/render/ui/UiBar.cpp
         src/gfx/render/ui/UiLuaTypes.cpp
         src/gfx/render/ui/UiInputRouter.cpp
         src/gfx/render/ui/UiTriggerDispatcher.cpp
         src/gfx/render/ui/UiPage.cpp
+		src/gfx/render/ui/UiPageBinding.cpp
         src/gfx/render/ui/UiPageParser.cpp
         src/gfx/render/ui/UiRenderer.cpp
         src/gfx/render/ui/UiElementBinding.cpp
+		src/gfx/render/ui/UiTextureRegionBinding.cpp
+		src/gfx/render/ui/UiSelection.cpp
         src/gfx/render/ui/UiLibrary.cpp
         src/gfx/render/ui/UiImageResolver.cpp
         src/gfx/render/ui/UiRenderPipeline.cpp
         # scripting
         src/script/LuaState.cpp
         src/script/LuaScript.cpp
-        src/script/LuaRef.cpp
 
         #util
         src/util/files.cpp
@@ -290,7 +297,8 @@ target_link_libraries(VoxelGore PRIVATE
         # Shaderc
         ${SHADERC_LIBRARY}
 
-
+	# Freetype
+	${FREETYPE_LIBRARY}
 )
 
 # ============================================================

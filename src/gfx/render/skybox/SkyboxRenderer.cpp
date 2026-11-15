@@ -43,9 +43,9 @@ SkyboxRenderer::SkyboxRenderer(const vkcore::Device& device, vkcore::BufferAlloc
 
 void SkyboxRenderer::BindPipeline(VkCommandBuffer cmd) const { pipeline_.Bind(cmd); }
 
-void SkyboxRenderer::Draw(VkCommandBuffer cmd, const Skybox& skybox) const {
+void SkyboxRenderer::Draw(VkCommandBuffer cmd, const Sky& sky) const {
   mesh_.Bind(cmd);
-  skybox.Bind(cmd, pipeline_.GetPipelineLayout().GetHandle());
+  sky.Bind(cmd, pipeline_.GetPipelineLayout().GetHandle());
   mesh_.Draw(cmd);
 }
 }  // namespace gfx

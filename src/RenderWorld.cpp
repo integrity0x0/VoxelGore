@@ -1,5 +1,7 @@
 #include "RenderWorld.h"
 
+#include <charconv>
+
 #include "Engine.h"
 #include "core/PathPrefixes.h"
 #include "WorldSession.h"
@@ -42,17 +44,10 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
       device, engine.GetBufferAllocator(), engine.GetTransferContext(), engine.GetRenderPass(),
       *gameDataBinding_, *shaderCompiler_);
 
-  std::array<std::string, 6> nightPaths = {
-      assetsPrefix + "skybox/night/right.png", assetsPrefix + "skybox/night/left.png",
-      assetsPrefix + "skybox/night/top.png",   assetsPrefix + "skybox/night/bottom.png",
-      assetsPrefix + "skybox/night/front.png", assetsPrefix + "skybox/night/back.png",
-  };
-
-  nightSkybox_ = std::make_unique<Skybox>(
-      Skybox::Load(device, engine.GetTransferContext(), memoryAllocator,
-                   skyboxRenderer_->descriptorPool(), skyboxRenderer_->GetDescriptorSetLayout(),
-                   nightPaths, 4u)
-          .value());
+  sky_ = std::make_unique<Sky>(Sky::Load(device, engine.GetTransferContext(), memoryAllocator,
+                                         skyboxRenderer_->descriptorPool(),
+                                      skyboxRenderer_->GetDescriptorSetLayout(), assetsPrefix)
+                                   .value());
 
   modelCache_ =
       std::make_unique<ModelCache>(device, engine.GetTransferContext(), engine.GetBufferAllocator(),
@@ -131,6 +126,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
     }
   }
 
+  ui_->Push(core::kAssetsPrefix + "ui/control_android.xml");
   ui_->Push(core::kAssetsPrefix + "ui/msgbox.xml");
 }
 
@@ -193,10 +189,12 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
   data.projView = proj * view;
   data.cameraPos = camera.GetPos();
   data.cameraDir = camera.GetForward();
-  data.ambientColor = enviroment.GetColor();  // glm::vec3(0.05f, 0.065f, 0.12f);
+  data.ambientColor = enviroment.GetColor();
+  data.skyWeights = glm::vec4(enviroment.GetSkyWeights(), 0.0f);
   data.fogDensity = 0.015f;
   data.lightProjView = shadowCtxt_->lightViewProj();
   data.lightDir = shadowCtxt_->lightDir();
+
   gameDataBinding_->Update(frameIndex, data);
 }
 
@@ -213,7 +211,7 @@ void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
   modelRenderer_->Render(cmd, frameIndex);
 
   skyboxRenderer_->BindPipeline(cmd);
-  skyboxRenderer_->Draw(cmd, *nightSkybox_);
+  skyboxRenderer_->Draw(cmd, *sky_);
 
   chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Translucent);
   billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Translucent, frameIndex);

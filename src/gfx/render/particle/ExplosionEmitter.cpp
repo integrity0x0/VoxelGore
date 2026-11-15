@@ -30,7 +30,7 @@ glm::vec3 randInCube(float half) {
 }  // namespace
 
 ExplosionEmitter::ExplosionEmitter(Atlas& atlas) {
-  variants_ = SpriteSheetParser::parseVariants(kExplosionAnimation, atlas);
+  variants_ = SpriteSheetParser::ParseVariants(kExplosionAnimation, atlas);
 }
 
 void ExplosionEmitter::Spawn(const glm::vec3& position, float power) {

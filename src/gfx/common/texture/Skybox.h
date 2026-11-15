@@ -18,7 +18,7 @@ class Skybox {
                                     const vkcore::DescriptorSetLayout& descriptorSetLayout,
                                     const std::array<std::string, 6>& paths,
                                     uint32_t mipLevels = 1);
-  void Bind(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout) const;
+  void Bind(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, size_t index) const;
  private:
   static constexpr uint32_t kCubemapBinding = 1u;
   const vkcore::Device* device_;

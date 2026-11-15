@@ -55,8 +55,8 @@ class ChunkMeshBuilder {
     }
 
     bool CanFit(uint32_t quadCount) const {
-      return vertexCount_ + quadCount * kVerticesPerQuad <= vertexCapacity_ &&
-             indexCount_ + quadCount * kIndicesPerQuad <= indexCapacity_;
+      return vertexOffset_ + vertexCount_ + quadCount * kVerticesPerQuad <= vertexCapacity_ &&
+             indexOffset_ + indexCount_ + quadCount * kIndicesPerQuad <= indexCapacity_;
     }
 
     bool empty() const { return vertexCount_ == 0; }

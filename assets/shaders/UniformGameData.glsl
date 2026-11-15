@@ -15,4 +15,5 @@ layout(binding = 0, set = 0) uniform UniformGameData {
     mat4 lightProjView;
     vec3 lightDir;
     float _pad2;
+    vec4 skyWeights;
 } uGameData;

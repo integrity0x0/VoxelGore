@@ -33,6 +33,7 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
 void WorldSession::Update(float dt) {
   healthSystem_->Update(world_->components(), *world_, dt);
   physicsSystem_->Update(world_->components(), dt);
+  enviroment_->Update(dt);
 }
 
 void WorldSession::SetVoxel(const glm::ivec3& worldPos, uint16_t voxelId) {

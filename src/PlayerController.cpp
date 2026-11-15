@@ -148,7 +148,7 @@ void PlayerController::TryBreak(WorldSession& session, gfx::ParticleEngine* part
 
   if (particles) {
     particles->SpawnBlockDebris(voxel->id, glm::vec3(hit->ipos) + glm::vec3(0.5f));
-    if (voxel->id == 8) particles->SpawnExplosion(hit->pos);
+    if (voxel->id == 10) particles->SpawnExplosion(hit->pos);
   }
 
   session.SetVoxel(hit->ipos, 0);
@@ -160,7 +160,7 @@ void PlayerController::TryPlace(WorldSession& session, uint32_t blockId) {
                                          kReachDistance);
   if (!hit) return;
 
-  const glm::ivec3 placePos = hit->ipos + glm::ivec3(hit->normal);
+  glm::ivec3 placePos = hit->ipos + glm::ivec3(hit->normal);
   if (!session.collision().CanPlaceBlock(placePos, session.components())) return;
 
   session.SetVoxel(placePos, static_cast<uint16_t>(blockId));
@@ -171,30 +171,35 @@ void PlayerController::UpdateDamage(float dt) {
   auto* hl = session_->components().Storage<HealthComponent>().Get(playerEntity_.id);
   if (!hl) return;
 
-  constexpr glm::vec3 kDown{0.0f, -1.0f, 0.0f};
+  constexpr glm::vec3 kDown = {0.0f, -1.0f, 0.0f};
 
   if (hb.pos.y < 0.0f) {
     constexpr float kVoidDps = 25.0f;
     hl->Damage(kVoidDps * dt);
   }
 
+  bool spawnDrop = !spawnLanded_;
+
   if (!hb.grounded) {
     if (wasGrounded_) {
       fallStartY_ = hb.pos.y;
     }
   } else if (!wasGrounded_) {
-    const float fallDistance = fallStartY_ - hb.pos.y;
-    if (fallDistance > kSafeFall) {
+    float fallDistance = fallStartY_ - hb.pos.y;
+    if (spawnDrop) {
+    } else if (fallDistance > kSafeFall) {
       const float damage = (fallDistance - kSafeFall) * kDamagePerBlock;
       hl->Damage(damage);
 
-      float traumaAmount = glm::clamp(damage / hl->max * 1.5f, 0.1f, 0.7f);
-      cameraShake_.Impulse(kDown, 2.0f + damage * 0.05f, traumaAmount);
+      float traumaAmount = glm::clamp(damage / hl->max * 1.5f, 0.1f, 0.5f);
+      float kick = std::min(2.0f + damage * 0.05f, 3.5f);
+      cameraShake_.Impulse(kDown, kick, traumaAmount);
     } else if (fallDistance > 1.5f) {
-      cameraShake_.Impulse(kDown, fallDistance * 0.4f, 0.0f);
+      cameraShake_.Impulse(kDown, std::min(fallDistance * 0.4f, 2.0f), 0.0f);
     }
   }
 
+  if (hb.grounded) spawnLanded_ = true;
   wasGrounded_ = hb.grounded;
 }
 

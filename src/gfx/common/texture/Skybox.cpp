@@ -39,8 +39,8 @@ std::optional<Skybox> Skybox::Load(const vkcore::Device& device, vkcore::Transfe
   return std::nullopt;
 }
 
-void Skybox::Bind(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout) const {
-  descriptorSet_.Bind(cmd, pipelineLayout, kCubemapBinding);
+void Skybox::Bind(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, size_t index) const {
+  descriptorSet_.Bind(cmd, pipelineLayout, static_cast<uint32_t>(index));
 }
 
 }  // namespace gfx

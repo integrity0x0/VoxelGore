@@ -84,7 +84,7 @@ void android_main(android_app* app) {
 
         if (g_game && g_game->IsRenderable()) {
             try {
-                if (!g_game->Frame(g_input.inputState().pointers())) {
+                if (!g_game->Frame(g_input.inputState())) {
                     g_game.reset();
                 }
             } catch (const std::exception& e) {

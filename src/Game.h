@@ -47,7 +47,7 @@ class Game {
   void SetViewportAndScissor(VkCommandBuffer cmd);
   void UpdateInput();
 #ifdef __ANDROID__
-  void UpdateInput(const std::unordered_map<int32_t, core::Pointer>& touches);
+  void UpdateInput(const core::InputState& inputState);
 #endif
   void UpdateUiSize();
   bool HandleResize();

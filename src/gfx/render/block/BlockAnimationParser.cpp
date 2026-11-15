@@ -49,7 +49,7 @@ namespace {
                                                   Atlas& atlas) {
   const float duration = ParseDuration(json);
 
-  auto sheetOpt = SpriteSheetParser::parse(json.at("spriteSheet"), jsonPath, atlas);
+  auto sheetOpt = SpriteSheetParser::Parse(json.at("spriteSheet"), jsonPath, atlas);
   if (!sheetOpt) {
     throw std::runtime_error("AnimationParser: failed to parse 'spriteSheet'");
   }

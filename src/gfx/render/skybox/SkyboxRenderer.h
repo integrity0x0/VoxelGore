@@ -2,6 +2,7 @@
 
 #include "SkyboxPipeline.h"
 #include "../../common/texture/Skybox.h"
+#include "Sky.h"
 #include "../../common/mesh/Mesh.h"
 
 namespace gfx {
@@ -11,7 +12,7 @@ class SkyboxRenderer {
                  vkcore::TransferContext& transferCtxt, const vkcore::RenderPass& renderPass,
                  const GameDataBinding& gameDataBinding, const ShaderCompiler& shaderCompiler);
 
-  void Draw(VkCommandBuffer cmd, const Skybox& skybox) const;
+  void Draw(VkCommandBuffer cmd, const Sky& sky) const;
   void BindPipeline(VkCommandBuffer cmd) const;
   [[nodiscard]] const vkcore::DescriptorPool& descriptorPool() const { return descriptorPool_; }
   [[nodiscard]] const vkcore::DescriptorSetLayout& GetDescriptorSetLayout() const { return pipeline_.GetDescriptorSetLayout(); }

@@ -1,5 +1,6 @@
 #include "UiPageParser.h"
 
+#include <charconv>
 #include <algorithm>
 #include <unordered_set>
 #include <sstream>
@@ -96,9 +97,21 @@ std::optional<Enum> ParseEnum(std::string_view text,
 
 std::optional<float> ParseFloat(std::string_view text) {
   text = Trim(text);
-  float value = 0.0f;
-  auto [ptr, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
-  if (ec != std::errc{} || ptr != text.data() + text.size()) return std::nullopt;
+  if (text.empty()) return std::nullopt;
+
+  const std::string buf(text);
+
+  if (buf.find_first_of("xX") != std::string::npos) return std::nullopt;
+
+  char* end = nullptr;
+  errno = 0;
+  const float value = std::strtof(buf.c_str(), &end);
+
+  if (end != buf.c_str() + buf.size())
+    return std::nullopt;
+  if (errno == ERANGE) return std::nullopt;
+  if (!std::isfinite(value)) return std::nullopt;
+
   return value;
 }
 

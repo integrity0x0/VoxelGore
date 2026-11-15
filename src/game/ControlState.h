@@ -55,7 +55,9 @@ struct ControlState {
     move.z = moveZ_.value();
   }
 
-  void setJump(bool v) { jump = v; }
+  void setJump(bool v) { 
+    jump = v; 
+  }
   void setSneak(bool v) { sneak = v; }
   void setSprint(bool v) { sprint = v; }
 

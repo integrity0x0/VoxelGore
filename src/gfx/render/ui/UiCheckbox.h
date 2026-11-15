@@ -27,6 +27,6 @@ class UiCheckbox : public UiContainer {
     Toggle();
   }
 
-  void SetCheckedRaw(bool checked) { SetStateFlag(UiStateFlags::Checked, checked); }
+  void SetCheckedRaw(bool checked) override { SetStateFlag(UiStateFlags::Checked, checked); }
 };
 }  // namespace gfx

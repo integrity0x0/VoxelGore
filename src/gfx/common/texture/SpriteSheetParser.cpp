@@ -3,47 +3,18 @@
 #include <fstream>
 #include <sstream>
 
-#include "../../../util/pathUtils.h"
-
 #if defined(__ANDROID__)
 #include <android/asset_manager.h>
 extern AAssetManager* g_AAssetManager;
 #endif
 
+#include "../../../util/pathUtils.h"
+#include "../../../util/files.h"
+
 namespace gfx {
 namespace {
 
-nlohmann::json loadJson(std::string_view path) {
-#ifdef __ANDROID__
-  AAsset* asset = AAssetManager_open(g_AAssetManager, path.data(), AASSET_MODE_BUFFER);
-  if (!asset) {
-    throw std::runtime_error("SpriteSheetParser: failed to open asset: " + std::string(path));
-  }
-
-  off_t length = AAsset_getLength(asset);
-  std::vector<char> buffer(static_cast<size_t>(length));
-
-  int readBytes = AAsset_read(asset, buffer.data(), length);
-  AAsset_close(asset);
-
-  if (readBytes != length) {
-    throw std::runtime_error("SpriteSheetParser: failed to read full asset: " + std::string(path));
-  }
-
-  return nlohmann::json::parse(buffer.begin(), buffer.end());
-#else
-  std::ifstream f{std::string(path), std::ios::binary};
-  if (!f) {
-    throw std::runtime_error("SpriteSheetParser: failed to open file: " + std::string(path));
-  }
-
-  std::stringstream ss;
-  ss << f.rdbuf();
-  return nlohmann::json::parse(ss.str());
-#endif
-}
-
-SpriteSheet::Orientation parseOrientation(const std::string& value) {
+SpriteSheet::Orientation ParseOrientation(const std::string& value) {
   if (value == "horizontal") return SpriteSheet::Orientation::Horizontal;
   if (value == "vertical") return SpriteSheet::Orientation::Vertical;
   throw std::runtime_error("SpriteSheetParser: unknown orientation: " + value);
@@ -51,7 +22,7 @@ SpriteSheet::Orientation parseOrientation(const std::string& value) {
 
 }  // namespace
 
-std::optional<SpriteSheetParser::CommonData> SpriteSheetParser::loadCommon(
+std::optional<SpriteSheetParser::CommonData> SpriteSheetParser::LoadCommon(
     const nlohmann::json& j, const std::string& jsonPath, Atlas& atlas) {
   const std::string pathStr(jsonPath);
   const size_t slash = pathStr.find_last_of("/\\");
@@ -69,16 +40,16 @@ std::optional<SpriteSheetParser::CommonData> SpriteSheetParser::loadCommon(
   const auto& frameSizeJson = j.at("frameSize");
   glm::ivec2 frameSize(frameSizeJson.at(0).get<int>(), frameSizeJson.at(1).get<int>());
 
-  auto orientation = parseOrientation(j.at("orientation").get<std::string>());
+  auto orientation = ParseOrientation(j.at("orientation").get<std::string>());
   uint32_t rows = j.value("rows", 1u);
 
   return CommonData{region, frameSize, orientation, rows};
 }
 
-std::vector<SpriteSheet> SpriteSheetParser::parseVariants(const nlohmann::json& j,
+std::vector<SpriteSheet> SpriteSheetParser::ParseVariants(const nlohmann::json& j,
                                                           const std::string& jsonPath,
                                                           Atlas& atlas) {
-  auto common = loadCommon(j, jsonPath, atlas);
+  auto common = LoadCommon(j, jsonPath, atlas);
   if (!common) return {};
 
   std::vector<SpriteSheet> result;
@@ -91,20 +62,20 @@ std::vector<SpriteSheet> SpriteSheetParser::parseVariants(const nlohmann::json& 
   return result;
 }
 
-std::vector<SpriteSheet> SpriteSheetParser::parseVariants(std::string_view jsonPath, Atlas& atlas) {
-  return parseVariants(loadJson(jsonPath), std::string(jsonPath), atlas);
+std::vector<SpriteSheet> SpriteSheetParser::ParseVariants(std::string_view jsonPath, Atlas& atlas) {
+  return ParseVariants(nlohmann::json::parse(util::ReadFile(jsonPath)), std::string(jsonPath), atlas);
 }
 
-std::optional<SpriteSheet> SpriteSheetParser::parse(const nlohmann::json& j,
+std::optional<SpriteSheet> SpriteSheetParser::Parse(const nlohmann::json& j,
                                                     const std::string& jsonPath, Atlas& atlas) {
-  auto common = loadCommon(j, jsonPath, atlas);
+  auto common = LoadCommon(j, jsonPath, atlas);
   if (!common) return std::nullopt;
 
   return SpriteSheet(*common->region, common->frameSize, common->orientation, 0);
 }
 
-std::optional<SpriteSheet> SpriteSheetParser::parse(std::string_view jsonPath, Atlas& atlas) {
-  return parse(loadJson(jsonPath), std::string(jsonPath), atlas);
+std::optional<SpriteSheet> SpriteSheetParser::Parse(std::string_view jsonPath, Atlas& atlas) {
+  return Parse(nlohmann::json::parse(util::ReadFile(jsonPath)), std::string(jsonPath), atlas);
 }
 
 }  // namespace gfx

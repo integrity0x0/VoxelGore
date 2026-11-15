@@ -84,7 +84,7 @@ class RenderWorld {
   std::unique_ptr<ModelRenderer> modelRenderer_;
   std::unique_ptr<EntityRenderSystem> entityRenderSystem_;
   std::unique_ptr<SkyboxRenderer> skyboxRenderer_;
-  std::unique_ptr<Skybox> nightSkybox_;
+  std::unique_ptr<Sky> sky_; 
   std::unique_ptr<MaterialManager> materialManager_;
   FreeTypeLibrary ftLib_;
   std::unique_ptr<FontManager> fontManager_;

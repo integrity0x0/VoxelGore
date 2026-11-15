@@ -21,6 +21,23 @@ Game::Game(android_app* app) {
   cursorLocked_ = false;
   frameTime_ = 1.0f / 120.0f;
   Init();
+
+  if (auto* bar = render_->GetHpBar()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      bar->SetValue(hp->current);
+
+      bar->SetMax(hp->max);
+    }
+  }
+  if (auto* text = render_->GetHpText()) {
+    if (auto* hp =
+            session_->components().Storage<gm::HealthComponent>().Get(player_->GetPlayer().id)) {
+      const std::string s = std::to_string(static_cast<int>(std::lround(hp->current))) + "/" +
+                            std::to_string(static_cast<int>(std::lround(hp->max)));
+      text->SetText(s);
+    }
+  }
 }
 
 #else
@@ -158,15 +175,33 @@ void Game::UpdateInput() {
     player_->GetCamera().Rotate(state.GetCursorDeltaX(), state.GetCursorDeltaY());
   }
 
+  if (const auto* hb = render_->GetHotbar()) {
+    for (size_t i = 0; i < hb->GetChildren().size(); ++i) {
+      if (window_->GetInput().GetState().Pressed(static_cast<uint32_t>(i + GLFW_KEY_1))) {
+        hotbar_.Select(i);
+        render_->GetHotbar()->GetChildren()[i]->SetChecked(true);
+      }
+    }
+  }
+
 #endif
 }
 
 #ifdef __ANDROID__
 
-void Game::UpdateInput(const std::unordered_map<int32_t, core::Pointer>& touches) {
-  if (!cursorLocked_ && ui_) {
-    auto swipe = ui_->routeTouches(touches);
-    player_->camera().Rotate(swipe.deltaX, swipe.deltaY);
+void Game::UpdateInput(const core::InputState& inputState) {
+  auto& ui = render_->GetUi();
+
+  gfx::UiCameraSwipe swipe = ui.RouteInput(inputState);
+
+  bool captured = ui.IsInputCaptured();
+
+  if (captured) controlState_.clear();
+
+  if (inputState.GetPointers().empty()) controlState_.clear();
+
+  if (!captured) {
+    player_->GetCamera().Rotate(swipe.deltaPx.x, swipe.deltaPx.y);
   }
 }
 
@@ -214,7 +249,7 @@ bool Game::Frame() {
 #else
 
 bool Game::Frame(const core::InputState& inputState) {
-  UpdateInput(touches);
+  UpdateInput(inputState);
 
   if (!HandleResize()) {
     controlState_.Update();
@@ -222,8 +257,12 @@ bool Game::Frame(const core::InputState& inputState) {
   }
 
 #endif
+  static constexpr float kMaxFrameDt = 0.1f;
+
   const auto now = std::chrono::steady_clock::now();
-  dt_ = frameCount_ == 0 ? 0.0f : std::chrono::duration<float>(now - lastFrameTime_).count();
+  dt_ = frameCount_ == 0
+            ? 0.0f
+            : std::min(std::chrono::duration<float>(now - lastFrameTime_).count(), kMaxFrameDt);
   lastFrameTime_ = now;
 
   uint32_t imageIndex = 0;
@@ -269,14 +308,6 @@ bool Game::Frame(const core::InputState& inputState) {
   player_->UpdateCamera(dt_);
   player_->UpdateDamage(dt_);
   
-  if (const auto* hb = render_->GetHotbar()) {
-    for (size_t i = 0; i < hb->GetChildren().size(); ++i) {
-      if (window_->GetInput().GetState().Pressed(static_cast<uint32_t>(i + GLFW_KEY_1))) {
-        hotbar_.Select(i);
-        render_->GetHotbar()->GetChildren()[i]->SetChecked(true);
-      }
-    }
-  }
   const float screenW = static_cast<float>(engine_->extent().width);
   const float screenH = static_cast<float>(engine_->extent().height);
   
