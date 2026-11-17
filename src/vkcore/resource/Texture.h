@@ -20,13 +20,13 @@ class Texture {
   Texture(const Device& device, VkMemoryPropertyFlags memoryProperties,
           const VkImageCreateInfo& imageCI, const VkImageViewCreateInfo& viewCI);
 
-  const Image& getImage() const { return image_; }
-  const ImageView& GetImageView() const { return imageView_; }
+  [[nodiscard]] const Image& GetImage() const { return image_; }
+  [[nodiscard]] const ImageView& GetImageView() const { return imageView_; }
 
-  VkExtent3D extent() const { return image_.extent(); }
-  uint32_t width() const { return image_.extent().width; }
-  uint32_t height() const { return image_.extent().height; }
-  uint32_t mipLevels() const { return image_.mipLevels(); }
+  [[nodiscard]] VkExtent3D GetExtent() const { return image_.GetExtent(); }
+  [[nodiscard]] uint32_t GetWidth() const { return image_.GetExtent().width; }
+  [[nodiscard]] uint32_t GetHeight() const { return image_.GetExtent().height; }
+  [[nodiscard]] uint32_t GetMipLevels() const { return image_.GetMipLevels(); }
 
  private:
   Image image_;

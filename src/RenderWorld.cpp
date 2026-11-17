@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "core/PathPrefixes.h"
 #include "WorldSession.h"
+#include "FrameProfiler.h"
 
 namespace gfx {
 
@@ -203,23 +204,29 @@ void RenderWorld::UpdateGameData(uint32_t frameIndex, const core::Camera& camera
 
 void RenderWorld::Render(VkCommandBuffer cmd, float dt, uint32_t frameIndex,
                          const core::Camera& camera) {
-  gameDataBinding_->Bind(cmd, frameIndex);
+    gameDataBinding_->Bind(cmd, frameIndex);
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Solid);
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Cutout);
+    { VG_PROF_SCOPE("  chunks.solid+cutout");
+        chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Solid);
+        chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Cutout); }
 
-  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Solid, frameIndex);
-  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Cutout, frameIndex);
+    { VG_PROF_SCOPE("  billboards.solid+cutout");
+        billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Solid, frameIndex);
+        billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Cutout, frameIndex); }
 
-  modelRenderer_->Render(cmd, frameIndex);
+    { VG_PROF_SCOPE("  models");
+        modelRenderer_->Render(cmd, frameIndex); }
 
-  skyboxRenderer_->BindPipeline(cmd);
-  skyboxRenderer_->Draw(cmd, *sky_);
+    { VG_PROF_SCOPE("  skybox");
+        skyboxRenderer_->BindPipeline(cmd);
+        skyboxRenderer_->Draw(cmd, *sky_); }
 
-  chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Translucent);
-  billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Translucent, frameIndex);
+    { VG_PROF_SCOPE("  translucent");
+        chunkRenderer_->Render(cmd, dt, frameIndex, camera.GetPos(), RenderLayer::Translucent);
+        billboardRenderer_->Render(cmd, camera.GetPos(), RenderLayer::Translucent, frameIndex); }
 
-  ui_->Render(cmd, frameIndex);
+    { VG_PROF_SCOPE("  ui.Render");
+        ui_->Render(cmd, frameIndex); }
 }
 
 void RenderWorld::RenderShadowPass(VkCommandBuffer cmd, uint32_t frameIndex) {

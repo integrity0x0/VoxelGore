@@ -24,7 +24,8 @@ void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, c
 void TransitionImage(const Device& device, const CommandBuffer& commandBuffer, const Image& image,
                      ImageTransitionInfo src, ImageTransitionInfo dst,
                      VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage) {
-  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0, image.mipLevels(), 0, image.layers());
+  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0, image.GetMipLevels(), 0,
+                              image.GetLayers());
   TransitionImage(device, commandBuffer, image, src, dst, range, srcStage, dstStage);
 }
 
@@ -56,7 +57,7 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
   const auto& dt = device.GetDispatchTable();
   VkCommandBuffer cmd = commandBuffer.GetHandle();
 
-  VkExtent3D mipExtent = dstImage.extent();
+  VkExtent3D mipExtent = dstImage.GetExtent();
 
   mipExtent.width = std::max(1u, mipExtent.width / (1 << range.baseMipLevel));
   mipExtent.height = std::max(1u, mipExtent.height / (1 << range.baseMipLevel));
@@ -150,8 +151,8 @@ void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer,
 
 void GenMipMaps(const Device& device, const CommandBuffer& commandBuffer, const Image& dstImage,
                 ImageTransitionInfo dstTransition, VkPipelineStageFlags dstStage) {
-  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0, dstImage.mipLevels(), 0,
-                              dstImage.layers());
+  ImageSubresourceRange range(VK_IMAGE_ASPECT_COLOR_BIT, 0, dstImage.GetMipLevels(), 0,
+                              dstImage.GetLayers());
 
   GenMipMaps(device, commandBuffer, dstImage, range, dstTransition, dstStage);
 }

@@ -13,18 +13,21 @@ class Image {
   Image(const Device& device, const VkImageCreateInfo& imageCI, MemoryAllocator& allocator,
         VkMemoryPropertyFlags flags);
 
-  VkImage GetHandle() const { return image_.get(); }
-  const VkMemoryRequirements& memoryRequirements() const { return memoryRequirements_; }
+  [[nodiscard]] VkImage GetHandle() const { return image_.get(); }
+  [[nodiscard]] const VkMemoryRequirements& memoryRequirements() const { return memoryRequirements_; }
 
-  VkExtent3D extent() const { return extent_; }
-  const MemorySlice& memorySlice() const { return memorySlice_; }
+  [[nodiscard]] VkExtent3D GetExtent() const { return extent_; }
+  [[nodiscard]] const MemorySlice& GetMemorySlice() const { return memorySlice_; }
 
-  uint32_t mipLevels() const { return mipLevels_; }
-  uint32_t layers() const { return layers_; }
+  [[nodiscard]] uint32_t GetMipLevels() const { return mipLevels_; }
+  [[nodiscard]] uint32_t GetLayers() const { return layers_; }
 
  private:
-  static UniqueImage CreateImage(const Device& device, const VkImageCreateInfo& imageCI);
-  static VkMemoryRequirements GetImageMemoryRequirements(const Device& device, VkImage image);
+  [[nodiscard]] static UniqueImage CreateImage(const Device& device,
+                                               const VkImageCreateInfo& imageCI);
+  [[nodiscard]] static VkMemoryRequirements GetImageMemoryRequirements(const Device& device,
+                                                                       VkImage image);
+
   static void BindImageMemory(const Device& device, VkImage image, const MemorySlice& memorySlice);
 
  private:

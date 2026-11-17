@@ -220,7 +220,7 @@ bool Game::HandleResize() {
   if (!engine_->IsRenderable()) return false;
 #endif
 
-  const VkExtent2D extent = engine_->extent();
+  VkExtent2D extent = engine_->extent();
   if (extent.width != uiExtent_.width || extent.height != uiExtent_.height) {
     uiExtent_ = extent;
     render_->GetUi().Resize(extent);

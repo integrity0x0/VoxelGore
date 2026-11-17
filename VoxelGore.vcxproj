@@ -206,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\shaders\UniformGameData.glsl" />
+    <ClInclude Include="src\FrameProfiler.h" />
     <ClInclude Include="src\game\entity\BleedComponent.h" />
     <ClInclude Include="src\game\entity\PlayerComponent.h" />
     <ClInclude Include="src\game\Environment.h" />

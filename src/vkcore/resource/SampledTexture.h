@@ -15,17 +15,18 @@ class SampledTexture {
   SampledTexture(const Device& device, MemoryAllocator& memoryAllocator,
                  VkMemoryPropertyFlags memoryProperties, const VkImageCreateInfo& imageCI,
                  const VkImageViewCreateInfo& viewCI, const VkSamplerCreateInfo& samplerCI);
+
   SampledTexture(const Device& device, VkMemoryPropertyFlags memoryProperties,
                  const VkImageCreateInfo& imageCI, const VkImageViewCreateInfo& viewCI,
                  const VkSamplerCreateInfo& samplerCI);
 
   const Texture& getTexture() const { return texture_; }
   const Sampler& GetSampler() const { return sampler_; }
-  const Image& GetImage() const { return texture_.getImage(); }
+  const Image& GetImage() const { return texture_.GetImage(); }
   const ImageView& GetImageView() const { return texture_.GetImageView(); }
-  uint32_t GetWidth() const { return texture_.width(); }
-  uint32_t GetHeight() const { return texture_.height(); }
-  uint32_t mipLevels() const { return texture_.mipLevels(); }
+  uint32_t GetWidth() const { return texture_.GetWidth(); }
+  uint32_t GetHeight() const { return texture_.GetHeight(); }
+  uint32_t GetMipLevels() const { return texture_.GetMipLevels(); }
 
  private:
   Texture texture_;

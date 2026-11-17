@@ -49,7 +49,6 @@ class Game {
 #ifdef __ANDROID__
   void UpdateInput(const core::InputState& inputState);
 #endif
-  void UpdateUiSize();
   bool HandleResize();
   void UpdatePlatform();
 
