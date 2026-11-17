@@ -1,77 +1,14 @@
 #include "Texture.h"
 
-#include <stb_image.h>
-
 #include <stdexcept>
-#include <vector>
-
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-#include <android/asset_manager.h>
-
-extern AAssetManager* g_AAssetManager;
-#endif
 
 namespace vkcore {
 
 namespace {
 
-struct LoadedImage {
-  int32_t width = 0;
-  int32_t height = 0;
-  std::vector<std::byte> pixels;
-};
-
 ImageView CreateImageView(const Device& device, const Image& image, VkImageViewCreateInfo viewCI) {
   viewCI.image = image.GetHandle();
   return ImageView(device, viewCI);
-}
-
-LoadedImage LoadImagePixels(std::string_view path) {
-  LoadedImage result;
-
-  int32_t nrChannels = 0;
-  stbi_uc* loadedImage = nullptr;
-
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-
-  AAsset* asset = AAssetManager_open(g_AAssetManager, path.data(), AASSET_MODE_BUFFER);
-  if (!asset) {
-    throw std::runtime_error("failed to open asset: " + std::string(path));
-  }
-
-  const off_t assetLength = AAsset_getLength(asset);
-  std::vector<std::byte> fileBuffer(static_cast<size_t>(assetLength));
-
-  const int readResult = AAsset_read(asset, fileBuffer.data(), assetLength);
-  AAsset_close(asset);
-
-  if (readResult < 0) {
-    throw std::runtime_error("failed to read asset: " + std::string(path));
-  }
-
-  loadedImage = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(fileBuffer.data()),
-                                      static_cast<int>(fileBuffer.size()), &result.width,
-                                      &result.height, &nrChannels, STBI_rgb_alpha);
-
-#else
-
-  loadedImage = stbi_load(path.data(), &result.width, &result.height, &nrChannels, STBI_rgb_alpha);
-
-#endif
-
-  if (!loadedImage) {
-    throw std::runtime_error("failed to load texture: " + std::string(path));
-  }
-
-  const size_t pixelCount = static_cast<size_t>(result.width) * static_cast<size_t>(result.height);
-  const size_t dataSize = pixelCount * 4u;
-
-  result.pixels.resize(dataSize);
-  std::memcpy(result.pixels.data(), loadedImage, dataSize);
-
-  stbi_image_free(loadedImage);
-
-  return result;
 }
 
 VkImageCreateInfo MakeTextureImageCI(uint32_t width, uint32_t height, uint32_t mipLevels,
@@ -97,60 +34,52 @@ Texture FinishTexture(const Device& device, TransferContext& transferCtxt, Image
   transferCtxt.Begin();
 
   ImageTransitionInfo src(VK_IMAGE_LAYOUT_UNDEFINED, 0);
-
   ImageTransitionInfo dst(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT);
 
   ImageCopyRegion region({}, imageCI.extent, ImageSubresourceLayers(VK_IMAGE_ASPECT_COLOR_BIT));
 
-  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                  VK_PIPELINE_STAGE_TRANSFER_BIT);
+  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst,
+                  VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
   LoadDataToImage(device, transferCtxt, data, image, region);
 
   dst = ImageTransitionInfo(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_SHADER_READ_BIT);
-
   GenMipMaps(device, transferCtxt.GetCmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
   transferCtxt.Flush();
 
   VkImageViewCreateInfo imageViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-
   imageViewCI.image = image.GetHandle();
   imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
   imageViewCI.format = imageCI.format;
-
   imageViewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
   imageViewCI.subresourceRange.baseMipLevel = 0;
   imageViewCI.subresourceRange.levelCount = imageCI.mipLevels;
-
   imageViewCI.subresourceRange.baseArrayLayer = 0;
   imageViewCI.subresourceRange.layerCount = 1u;
 
   ImageView imageView(device, imageViewCI);
-
   return Texture(device, std::move(image), std::move(imageView));
 }
 
 Texture FinishCubemap(const Device& device, TransferContext& transferCtxt, Image&& image,
-                      const VkImageCreateInfo& imageCI, std::span<const LoadedImage, 6> faces) {
+                      const VkImageCreateInfo& imageCI,
+                      const std::array<std::span<const std::byte>, 6>& faces) {
   transferCtxt.Begin();
 
   ImageTransitionInfo src(VK_IMAGE_LAYOUT_UNDEFINED, 0);
-
   ImageTransitionInfo dst(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT);
 
-  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                  VK_PIPELINE_STAGE_TRANSFER_BIT);
+  TransitionImage(device, transferCtxt.GetCmd(), image, src, dst,
+                  VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
   for (uint32_t face = 0; face < 6u; ++face) {
     ImageCopyRegion region({}, imageCI.extent,
                            ImageSubresourceLayers(VK_IMAGE_ASPECT_COLOR_BIT, 0, face, 1u));
-    LoadDataToImage(device, transferCtxt, faces[face].pixels, image, region);
+    LoadDataToImage(device, transferCtxt, faces[face], image, region);
   }
 
   dst = ImageTransitionInfo(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_SHADER_READ_BIT);
-
   GenMipMaps(device, transferCtxt.GetCmd(), image, dst, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
   transferCtxt.Flush();
@@ -166,7 +95,6 @@ Texture FinishCubemap(const Device& device, TransferContext& transferCtxt, Image
   imageViewCI.subresourceRange.layerCount = 6u;
 
   ImageView imageView(device, imageViewCI);
-
   return Texture(device, std::move(image), std::move(imageView));
 }
 
@@ -186,47 +114,32 @@ Texture::Texture(const Device& device, VkMemoryPropertyFlags memoryProperties,
     : image_(Image(device, imageCI, memoryProperties)),
       imageView_(CreateImageView(device, image_, viewCI)) {}
 
-Texture ImportTexture(const Device& device, TransferContext& transferCtxt,
-                      MemoryAllocator& allocator, std::string_view path, uint32_t mipLevels) {
-  const LoadedImage loadedImage = LoadImagePixels(path);
-
-  const VkImageCreateInfo imageCI =
-      MakeTextureImageCI(static_cast<uint32_t>(loadedImage.width),
-                         static_cast<uint32_t>(loadedImage.height), mipLevels);
-
-  Image image(device, imageCI, allocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-  return FinishTexture(device, transferCtxt, std::move(image), imageCI, loadedImage.pixels);
-}
-
-Texture ImportCubemap(const Device& device, TransferContext& transferCtxt,
-                      MemoryAllocator& allocator, const std::array<std::string, 6>& paths,
-                      uint32_t mipLevels) {
-  std::array<LoadedImage, 6> faces;
-
-  for (uint32_t i = 0; i < 6u; ++i) {
-    faces[i] = LoadImagePixels(paths[i]);
+Texture MakeTexture(const Device& device, TransferContext& transferCtxt, MemoryAllocator& allocator,
+                    std::span<const std::byte> pixels, uint32_t width, uint32_t height,
+                    uint32_t mipLevels) {
+  const size_t expectedSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4u;
+  if (pixels.size() < expectedSize) {
+    throw std::runtime_error("MakeTexture: pixel data too small");
   }
 
-  const uint32_t width = static_cast<uint32_t>(faces[0].width);
+  const VkImageCreateInfo imageCI = MakeTextureImageCI(width, height, mipLevels);
+  Image image(device, imageCI, allocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+  return FinishTexture(device, transferCtxt, std::move(image), imageCI, pixels);
+}
 
-  const uint32_t height = static_cast<uint32_t>(faces[0].height);
-
-  for (uint32_t i = 1u; i < 6u; ++i) {
-    if (faces[i].width != faces[0].width || faces[i].height != faces[0].height) {
-      throw std::runtime_error("cubemap faces have different dimensions");
+Texture MakeCubemap(const Device& device, TransferContext& transferCtxt, MemoryAllocator& allocator,
+                    const std::array<std::span<const std::byte>, 6>& faces, uint32_t size,
+                    uint32_t mipLevels) {
+  const size_t expectedSize = static_cast<size_t>(size) * static_cast<size_t>(size) * 4u;
+  for (uint32_t i = 0; i < 6u; ++i) {
+    if (faces[i].size() < expectedSize) {
+      throw std::runtime_error("MakeCubemap: face pixel data too small");
     }
   }
 
-  if (width != height) {
-    throw std::runtime_error("cubemap faces must be square");
-  }
-
   const VkImageCreateInfo imageCI =
-      MakeTextureImageCI(width, height, mipLevels, 6u, VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT);
-
+      MakeTextureImageCI(size, size, mipLevels, 6u, VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT);
   Image image(device, imageCI, allocator, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
   return FinishCubemap(device, transferCtxt, std::move(image), imageCI, faces);
 }
 

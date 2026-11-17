@@ -1,9 +1,13 @@
 #pragma once
 
+#include <array>
+#include <span>
+
 #include "Sampler.h"
 #include "Texture.h"
 
 namespace vkcore {
+
 class SampledTexture {
  public:
   SampledTexture(Texture&& texture, Sampler&& sampler)
@@ -28,12 +32,13 @@ class SampledTexture {
   Sampler sampler_;
 };
 
-extern SampledTexture ImportTextureSampled(const Device& device, TransferContext& transferCtxt,
-                                           MemoryAllocator& allocator, std::string_view path,
-                                           uint32_t mipLevels = 1u);
+SampledTexture MakeTextureSampled(const Device& device, TransferContext& transferCtxt,
+                                  MemoryAllocator& allocator, std::span<const std::byte> pixels,
+                                  uint32_t width, uint32_t height, uint32_t mipLevels = 1u);
 
-extern SampledTexture ImportCubemapSampled(const Device& device, TransferContext& transferCtxt,
-                                           MemoryAllocator& allocator,
-                                           const std::array<std::string, 6>& paths,
-                                           uint32_t mipLevels = 1u);
+SampledTexture MakeCubemapSampled(const Device& device, TransferContext& transferCtxt,
+                                  MemoryAllocator& allocator,
+                                  const std::array<std::span<const std::byte>, 6>& faces,
+                                  uint32_t size, uint32_t mipLevels = 1u);
+
 }  // namespace vkcore

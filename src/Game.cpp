@@ -216,17 +216,16 @@ bool Game::HandleResize() {
   if (window_->IsResized()) {
     engine_->recreateSwapchain();
   }
-  
 #else
   if (!engine_->IsRenderable()) return false;
-  engine_->restoreSurface();
 #endif
-  render_->GetUi().Resize(engine_->extent());
+
+  const VkExtent2D extent = engine_->extent();
+  if (extent.width != uiExtent_.width || extent.height != uiExtent_.height) {
+    uiExtent_ = extent;
+    render_->GetUi().Resize(extent);
+  }
   return true;
-}
-
-void Game::UpdateUiSize() {
-
 }
 
 void Game::UpdatePlatform() {
