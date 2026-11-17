@@ -1,7 +1,7 @@
 {
   "id": "luckyblock",
   "textures": {
-    "all": "materials/luckyblock.json"
+    "all": "blocks/materials/luckyblock.json"
   },
   "debris": {}
 }

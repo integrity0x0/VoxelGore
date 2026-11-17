@@ -1,7 +1,7 @@
 {
   "id": "glowstone",
   "textures": {
-    "all": "materials/glowstone.png"
+    "all": "blocks/materials/glowstone.png"
   },
   "light": {
     "channel": "fire",

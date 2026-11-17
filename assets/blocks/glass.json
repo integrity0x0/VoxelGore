@@ -2,7 +2,7 @@
   "id": "glass",
   "passingLight": true,
   "opaque": false,
-  "textures": "materials/glass.png",
+  "textures": "blocks/materials/glass.png",
   "renderGroup": "glass",
   "renderLayer": "cutout",
   "debris": {}

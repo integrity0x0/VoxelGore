@@ -69,7 +69,8 @@ class UiPageParser {
 
   UiPageParser() = delete;
 
-  [[nodiscard]] static UiPageParseResult Parse(std::string_view xmlPath, const Context& ctxt);
+  [[nodiscard]] static UiPageParseResult Parse(std::string_view xmlPath, std::string_view id,
+                                               const Context& ctxt);
 
  private:
 

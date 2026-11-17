@@ -1,9 +1,14 @@
+// BlockManager.h
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <vector>
 
-#include <deque>
-
+#include "../../util/hashers.h"
 #include "Block.h"
 #include "BlockParser.h"
 
@@ -13,24 +18,32 @@ class BlockManager {
  public:
   BlockManager() = default;
 
-  void Load(std::string_view path) {
-    const uint32_t id = static_cast<uint32_t>(blocks_.size());
-    blocks_.push_back(BlockParser::Parse(id, path));
-  }
+  void Load(std::string_view path);
 
   void LoadDirectory(std::string_view dir);
 
   [[nodiscard]] const Block* GetBlock(uint32_t id) const {
-    if (id >= blocks_.size()) {
-      return nullptr;
-    }
-    return &blocks_[id];
+    if (id >= blocks_.size()) return nullptr;
+    return blocks_[id].get();
+  }
+
+  [[nodiscard]] const Block* GetBlock(std::string_view name) const {
+    const auto it = ids_.find(name);
+    if (it == ids_.end()) return nullptr;
+    return GetBlock(it->second);
+  }
+
+  [[nodiscard]] std::optional<uint32_t> FindId(std::string_view name) const {
+    const auto it = ids_.find(name);
+    if (it == ids_.end()) return std::nullopt;
+    return it->second;
   }
 
   [[nodiscard]] size_t GetBlockCount() const { return blocks_.size(); }
 
  private:
-  std::deque<Block> blocks_;
+  std::vector<std::unique_ptr<Block>> blocks_;
+  std::unordered_map<std::string, uint32_t, util::StringHash, std::equal_to<>> ids_;
 };
 
 }  // namespace gm

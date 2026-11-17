@@ -18,7 +18,7 @@ class Ui {
      script::LuaState& luaState, MaterialManager& materialManager, FontManager& fontManager,
      uint32_t framesCount);
 
-  void Push(std::string_view path);
+  void Push(std::string_view id);
 
   void Pop();
 
@@ -33,7 +33,7 @@ class Ui {
 
   [[nodiscard]] UiCameraSwipe RouteInput(const core::InputState& inputState);
 
-  [[nodiscard]] bool IsPushed(std::string_view path) const;
+  [[nodiscard]] bool IsPushed(std::string_view id) const;
 
   [[nodiscard]] MaterialManager& GetMaterialManager() { return parserCtxt_.materialManager; }
 

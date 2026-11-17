@@ -9,7 +9,7 @@ namespace gm {
 
 class Chunk {
  public:
-  static constexpr size_t kLength = 32ull;
+  static constexpr size_t kLength = 32;
   static constexpr size_t kVolume = kLength * kLength * kLength;
 
   explicit Chunk(const glm::ivec3& pos);
@@ -38,7 +38,7 @@ class Chunk {
 
   [[nodiscard]] glm::ivec3 pos() const { return pos_; }
 
-  [[nodiscard]] bool IsEmpty() const { return nonEmptyCount_ == 0ll; }
+  [[nodiscard]] bool IsEmpty() const { return nonEmptyCount_ == 0; }
 
  private:
   size_t ArrayIndex(const glm::ivec3& localPos) const {
@@ -46,7 +46,7 @@ class Chunk {
   }
   std::unique_ptr<Voxel[]> voxels_;
   glm::ivec3 pos_;
-  size_t nonEmptyCount_ = 0ll;
+  size_t nonEmptyCount_ = 0;
 };
 
 }  // namespace gm

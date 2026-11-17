@@ -1,4 +1,4 @@
-<page id="inventory" input-mode="capture" script="ui/inventory.xml.lua" on-open="OnOpen" on-close="OnClose">
+<page input-mode="capture" script="pages/inventory.xml.lua" on-open="OnOpen" on-close="OnClose">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 		<style name="btn" extends="panel" pivot="center">

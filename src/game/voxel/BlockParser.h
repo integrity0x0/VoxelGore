@@ -16,8 +16,7 @@ class BlockParser {
   [[nodiscard]] static Block Parse(uint32_t id, std::string_view path);
 
  private:
-  [[nodiscard]] static nlohmann::json loadJson(std::string_view path);
-  [[nodiscard]] static Block parseBlockJson(uint32_t id, const nlohmann::json& j,
+  [[nodiscard]] static Block ParseBlockJson(uint32_t id, const nlohmann::json& j,
                                             const std::string& jsonPath);
   static std::unordered_map<std::string, Block::RenderLayer> kNameByRenderLayer;
 };

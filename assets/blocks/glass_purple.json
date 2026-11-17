@@ -1,6 +1,6 @@
 {
   "id": "glass_purple",
-  "textures": "materials/glass_purple.png",
+  "textures": "blocks/materials/glass_purple.png",
   "renderLayer": "translucent",
   "renderGroup": "glass_purple",
   "passingLight": true,

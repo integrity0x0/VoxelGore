@@ -8,51 +8,58 @@ namespace gfx {
 namespace {
 static const std::string kBlankPath = core::kAssetsPrefix + "images/blank.png";
 static constexpr std::string_view kBlankName = "blank";
+
+std::string MakePagePath(std::string_view assetRoot, std::string_view id) {
+  return std::string(assetRoot) + "pages/" + std::string(id) + ".xml";
+}
 }  // namespace
 
-UiRenderer Ui::CreateRenderer(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
-                          const vkcore::RenderPass& renderPass,
-                          const ShaderCompiler& shaderCompiler, MaterialManager& materialManager,
-                          uint32_t framesCount) {
+UiRenderer Ui::CreateRenderer(const vkcore::Device& device,
+                              vkcore::BufferAllocator& bufferAllocator,
+                              const vkcore::RenderPass& renderPass,
+                              const ShaderCompiler& shaderCompiler,
+                              MaterialManager& materialManager, uint32_t framesCount) {
   auto* material = materialManager.TryGet(materialManager.Load(kBlankPath, kBlankName));
   if (!material) throw std::runtime_error("Unable to load blank image:" + kBlankPath);
   UiTextureRegion reg(material->id);
-  return UiRenderer(device, bufferAllocator, materialManager, renderPass,
-                    shaderCompiler, reg, framesCount);
+  return UiRenderer(device, bufferAllocator, materialManager, renderPass, shaderCompiler, reg,
+                    framesCount);
 }
 
 Ui::Ui(const vkcore::Device& device, vkcore::BufferAllocator& bufferAllocator,
        const vkcore::RenderPass& renderPass, const ShaderCompiler& shaderCompiler,
-       script::LuaState& luaState, MaterialManager& materialManager, FontManager& fontManager, uint32_t framesCount)
+       script::LuaState& luaState, MaterialManager& materialManager, FontManager& fontManager,
+       uint32_t framesCount)
     : parserCtxt_(luaState, materialManager, fontManager, core::kAssetsPrefix),
       renderer_(CreateRenderer(device, bufferAllocator, renderPass, shaderCompiler, materialManager,
                                framesCount)),
       triggerDispatcher_(luaState) {}
 
-void Ui::Push(std::string_view path) {
-  const auto& it = cached_.find(path);
-
+void Ui::Push(std::string_view id) {
+  const auto it = cached_.find(id);
   UiPage* page = nullptr;
+
   if (it != cached_.end()) {
     page = it->second.get();
   } else {
-    UiPageParseResult result = UiPageParser::Parse(path, parserCtxt_);
-    for (const auto& d : result.diagnostics) { 
-      /* TODO: logger */
-#ifndef __ANDROID_
+    const std::string xmlPath = MakePagePath(parserCtxt_.assetRoot, id);
+
+    UiPageParseResult result = UiPageParser::Parse(xmlPath, id, parserCtxt_);
+    for (const auto& d : result.diagnostics) {
+#ifndef __ANDROID__
       std::cout << d.msg << '\n';
 #endif
     }
     if (!result.page) return;
+
     page = result.page.get();
-    cached_[std::string(path)] = std::move(result.page);
+    cached_.emplace(std::string(id), std::move(result.page));
   }
 
   pages_.emplace_back(page);
   stackView_ = BuildStackView();
   triggerDispatcher_.DispatchPageEvent(*page, UiPageEvent::Open);
 }
-
 
 Ui::StackView Ui::BuildStackView() const {
   StackView view = {};
@@ -85,9 +92,7 @@ UiElement* Ui::FindElement(std::string_view id) {
   return nullptr;
 }
 
-void Ui::Clear() {
-  pages_ = {};
-}
+void Ui::Clear() { pages_ = {}; }
 
 void Ui::UpdateLayout() {
   for (size_t i = stackView_.firstRender; i < pages_.size(); ++i) {
@@ -95,10 +100,10 @@ void Ui::UpdateLayout() {
   }
 }
 
-void Ui::Resize(VkExtent2D extent) { 
+void Ui::Resize(VkExtent2D extent) {
   glm::vec2 screenSize(extent.width, extent.height);
   screen_ = {glm::vec2(0.0f), screenSize};
-  ndcScale_ = 2.0f / screenSize; 
+  ndcScale_ = 2.0f / screenSize;
   for (auto& it : cached_) {
     it.second->Relayout(screen_);
   }
@@ -115,8 +120,8 @@ void Ui::Render(VkCommandBuffer cmd, uint32_t currentFrame) {
   }
 }
 
-bool Ui::IsPushed(std::string_view path) const {
-  const auto it = cached_.find(parserCtxt_.assetRoot + path.data());
+bool Ui::IsPushed(std::string_view id) const {
+  const auto it = cached_.find(id);
   if (it == cached_.end()) return false;
   const UiPage* page = it->second.get();
   return std::find(pages_.begin(), pages_.end(), page) != pages_.end();

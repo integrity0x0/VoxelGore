@@ -4,46 +4,27 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "../../core/PathPrefixes.h"
+#include "../../util/files.h"
+#include "../../util/pathUtils.h"
 #include "BlockDebrisParser.h"
 
 namespace gm {
 
-nlohmann::json BlockParser::loadJson(std::string_view path) {
-#ifdef __ANDROID__
-  AAsset* asset = AAssetManager_open(g_AAssetManager, path.data(), AASSET_MODE_BUFFER);
-  if (!asset) {
-    throw std::runtime_error("BlockParser: failed to open asset: " + std::string(path));
-  }
+namespace {
 
-  off_t length = AAsset_getLength(asset);
-  std::vector<char> buffer(length);
-
-  int readBytes = AAsset_read(asset, buffer.data(), length);
-  AAsset_close(asset);
-
-  if (readBytes != length) {
-    throw std::runtime_error("BlockParser: failed to read full asset: " + std::string(path));
-  }
-
-  return nlohmann::json::parse(buffer.begin(), buffer.end());
-#else
-  std::ifstream f{std::string(path), std::ios::binary};
-  if (!f) {
-    throw std::runtime_error("BlockParser: failed to open file: " + std::string(path));
-  }
-
-  std::stringstream ss;
-  ss << f.rdbuf();
-  return nlohmann::json::parse(ss.str());
-#endif
+std::string ResolveFromAssetRoot(const std::string& logical) {
+  return util::NormalizePath(core::kAssetsPrefix + logical);
 }
+
+}  // namespace
 
 std::unordered_map<std::string, Block::RenderLayer> BlockParser::kNameByRenderLayer = {
     {"solid", Block::RenderLayer::Solid},
     {"cutout", Block::RenderLayer::Cutout},
     {"translucent", Block::RenderLayer::Translucent}};
 
-Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
+Block BlockParser::ParseBlockJson(uint32_t id, const nlohmann::json& j,
                                   const std::string& jsonPath) {
   Block block(id);
 
@@ -92,9 +73,6 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
     throw std::runtime_error("BlockParser: block " + jsonPath + " has no 'textures'");
   }
 
-  size_t slashPos = jsonPath.find_last_of('/');
-  std::string jsonDir = (slashPos == std::string::npos) ? "" : jsonPath.substr(0, slashPos + 1);
-
   const auto& texturesJson = j["textures"];
 
   if (texturesJson.is_object()) {
@@ -103,18 +81,17 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
 
     auto setIfExists = [&](const std::string& key, int index) {
       if (texturesJson.contains(key) && texturesJson[key].is_string()) {
-        surfaces[index] = util::NormalizePath(jsonDir + texturesJson[key].get<std::string>());
+        surfaces[index] = ResolveFromAssetRoot(texturesJson[key].get<std::string>());
       }
     };
 
     if (texturesJson.contains("all") && texturesJson["all"].is_string()) {
-      std::string allPath = util::NormalizePath(jsonDir + texturesJson["all"].get<std::string>());
+      const std::string allPath = ResolveFromAssetRoot(texturesJson["all"].get<std::string>());
       for (auto& s : surfaces) s = allPath;
     }
 
     if (texturesJson.contains("sides") && texturesJson["sides"].is_string()) {
-      std::string sidesPath =
-          util::NormalizePath(jsonDir + texturesJson["sides"].get<std::string>());
+      const std::string sidesPath = ResolveFromAssetRoot(texturesJson["sides"].get<std::string>());
       for (int i = 0; i < 4; ++i) surfaces[i] = sidesPath;
     }
 
@@ -137,7 +114,7 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
   }
 
   if (texturesJson.is_string()) {
-    block.setAllSurfaces(util::NormalizePath(jsonDir + texturesJson.get<std::string>()));
+    block.setAllSurfaces(ResolveFromAssetRoot(texturesJson.get<std::string>()));
     return block;
   }
 
@@ -152,12 +129,12 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
   }
 
   if (texturesJson.size() == 1 && texturesJson[0].is_string()) {
-    block.setAllSurfaces(util::NormalizePath(jsonDir + texturesJson[0].get<std::string>()));
+    block.setAllSurfaces(ResolveFromAssetRoot(texturesJson[0].get<std::string>()));
   } else if (texturesJson.size() == 6) {
     std::array<std::string, 6u> surfaces{};
     for (size_t i = 0; i < 6; ++i) {
       if (texturesJson[i].is_string()) {
-        surfaces[i] = util::NormalizePath(jsonDir + texturesJson[i].get<std::string>());
+        surfaces[i] = ResolveFromAssetRoot(texturesJson[i].get<std::string>());
       }
     }
     block.setSurfaces(surfaces);
@@ -171,8 +148,8 @@ Block BlockParser::parseBlockJson(uint32_t id, const nlohmann::json& j,
 }
 
 Block BlockParser::Parse(uint32_t id, std::string_view path) {
-  nlohmann::json j = loadJson(path);
-  return parseBlockJson(id, j, std::string(path));
+  nlohmann::json j = nlohmann::json::parse(util::ReadFile(path));
+  return ParseBlockJson(id, j, std::string(path));
 }
 
 }  // namespace gm

@@ -1,15 +1,10 @@
 #include "SpriteSheetParser.h"
 
-#include <fstream>
-#include <sstream>
+#include <stdexcept>
 
-#if defined(__ANDROID__)
-#include <android/asset_manager.h>
-extern AAssetManager* g_AAssetManager;
-#endif
-
-#include "../../../util/pathUtils.h"
+#include "../../../core/PathPrefixes.h"
 #include "../../../util/files.h"
+#include "../../../util/pathUtils.h"
 
 namespace gfx {
 namespace {
@@ -20,17 +15,15 @@ SpriteSheet::Orientation ParseOrientation(const std::string& value) {
   throw std::runtime_error("SpriteSheetParser: unknown orientation: " + value);
 }
 
+std::string ResolveFromAssetRoot(const std::string& logical) {
+  return util::NormalizePath(core::kAssetsPrefix + logical);
+}
+
 }  // namespace
 
 std::optional<SpriteSheetParser::CommonData> SpriteSheetParser::LoadCommon(
-    const nlohmann::json& j, const std::string& jsonPath, Atlas& atlas) {
-  const std::string pathStr(jsonPath);
-  const size_t slash = pathStr.find_last_of("/\\");
-  const std::string jsonDir =
-      (slash == std::string::npos) ? std::string{} : pathStr.substr(0, slash + 1);
-
-  const std::string textureRel = j.at("texture").get<std::string>();
-  const std::string texturePath = util::NormalizePath(jsonDir + textureRel);
+    const nlohmann::json& j, const std::string& /*jsonPath*/, Atlas& atlas) {
+  const std::string texturePath = ResolveFromAssetRoot(j.at("texture").get<std::string>());
 
   const AtlasRegion* region = atlas.Load(texturePath);
   if (!region) {
@@ -63,7 +56,8 @@ std::vector<SpriteSheet> SpriteSheetParser::ParseVariants(const nlohmann::json& 
 }
 
 std::vector<SpriteSheet> SpriteSheetParser::ParseVariants(std::string_view jsonPath, Atlas& atlas) {
-  return ParseVariants(nlohmann::json::parse(util::ReadFile(jsonPath)), std::string(jsonPath), atlas);
+  return ParseVariants(nlohmann::json::parse(util::ReadFile(jsonPath)), std::string(jsonPath),
+                       atlas);
 }
 
 std::optional<SpriteSheet> SpriteSheetParser::Parse(const nlohmann::json& j,

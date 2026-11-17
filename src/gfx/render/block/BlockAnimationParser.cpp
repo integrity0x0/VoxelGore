@@ -1,40 +1,16 @@
 #include "BlockAnimationParser.h"
 
-#include <filesystem>
-#include <fstream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
-#include "../../../util/pathUtils.h"
-#include "../../common/texture/SpriteSheetParser.h"
 #include "../../../util/files.h"
-
-#ifdef __ANDROID__
-#include <android/asset_manager.h>
-extern AAssetManager* g_AAssetManager;
-#endif
+#include "../../common/texture/SpriteSheetParser.h"
 
 namespace gfx {
 namespace {
 
 [[nodiscard]] nlohmann::json LoadJson(std::string_view path) {
   return nlohmann::json::parse(util::ReadFile(path));
-}
-
-[[nodiscard]] UvRegion ResolveFrame(const std::string& path, Atlas& atlas) {
-  const AtlasRegion* region = atlas.Require(path);
-  if (!region) {
-    if (!atlas.Load(path)) {
-      throw std::runtime_error("AnimationParser: failed to load texture: " + path);
-    }
-    region = atlas.Require(path);
-    if (!region) {
-      throw std::runtime_error("AnimationParser: texture loaded but region missing: " + path);
-    }
-  }
-  return region->toUv();
 }
 
 [[nodiscard]] float ParseDuration(const nlohmann::json& json) {
@@ -45,18 +21,18 @@ namespace {
   return duration;
 }
 
-[[nodiscard]] BlockAnimation ParseFromSpriteSheet(const nlohmann::json& json, const std::string& jsonPath,
-                                                  Atlas& atlas) {
+[[nodiscard]] BlockAnimation ParseFromSpriteSheet(const nlohmann::json& json,
+                                                  const std::string& jsonPath, Atlas& atlas) {
   const float duration = ParseDuration(json);
 
   auto sheetOpt = SpriteSheetParser::Parse(json.at("spriteSheet"), jsonPath, atlas);
   if (!sheetOpt) {
-    throw std::runtime_error("AnimationParser: failed to parse 'spriteSheet'");
+    throw std::runtime_error("AnimationParser: failed to parse 'spriteSheet' in " + jsonPath);
   }
 
   SpriteSheet sheet = std::move(*sheetOpt);
   if (sheet.frameCount() == 0) {
-    throw std::runtime_error("AnimationParser: spriteSheet has no frames");
+    throw std::runtime_error("AnimationParser: spriteSheet has no frames in " + jsonPath);
   }
 
   const float frameDuration = duration / static_cast<float>(sheet.frameCount());

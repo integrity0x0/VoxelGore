@@ -1,7 +1,7 @@
 {
   "id": "dirt",
   "textures": {
-    "all": "materials/dirt.png"
+    "all": "blocks/materials/dirt.png"
   },
   "debris": {}
 }

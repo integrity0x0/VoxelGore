@@ -107,7 +107,7 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
 
   uiLib_ = std::make_unique<UiLibrary>(UiLibrary::Context(luaState, *ui_));
   ui_->Resize(engine.extent());
-  ui_->Push(core::kAssetsPrefix + "ui/hud.xml");
+  ui_->Push("hud");
 
   if (auto* el = ui_->FindElement("hpBar")) {
     if (el->GetNodeType() == UiElementType::Bar) {
@@ -128,10 +128,10 @@ RenderWorld::RenderWorld(Engine& engine, gm::WorldSession& session, script::LuaS
   }
 
 #ifdef __ANDROID__
-  ui_->Push(core::kAssetsPrefix + "ui/control_android.xml");
+  ui_->Push("control_android");
 #endif
 
-  ui_->Push(core::kAssetsPrefix + "ui/msgbox.xml");
+  ui_->Push("msgbox");
 }
 
 void RenderWorld::UpdateDirty(VkCommandBuffer cmd, uint32_t frameIndex) {

@@ -840,10 +840,6 @@ std::unique_ptr<UiElement> UiPageParser::ParseGrid(UiPageParser::ParsingState& s
 std::optional<std::string> UiPageParser::ParsePageAttributes(const tinyxml2::XMLElement* element,
                                                              UiPageProps& props, ParsingState& st) {
   AttrReader a(*element, st.result);
-
-  props.id = a.GetOr("id", ParseString, std::string{});
-  props.input = a.GetOr("input-mode", ParseInputMode, UiInputMode::Passthrough);
-  props.id = a.GetOr("id", ParseString, std::string{});
   props.input = a.GetOr("input-mode", ParseInputMode, UiInputMode::Passthrough);
   props.callbackNames[static_cast<size_t>(UiPageEvent::Open)] =
       a.GetOr("on-open", ParseString, std::string{});
@@ -913,7 +909,7 @@ void UiPageParser::ParseChildrenInto(ParsingState& st, const tinyxml2::XMLElemen
   for (auto& child : children) container.AddChild(std::move(child));
 }
 
-UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& ctxt) {
+UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, std::string_view id, const Context& ctxt) {
   
   ParsingState st(ctxt);
 
@@ -941,6 +937,8 @@ UiPageParseResult UiPageParser::Parse(std::string_view xmlPath, const Context& c
   }
 
   UiPageProps props;
+  props.id = id;
+
   auto scriptPath = ParsePageAttributes(root, props, st);
    
   std::vector<std::unique_ptr<UiElement>> elements;

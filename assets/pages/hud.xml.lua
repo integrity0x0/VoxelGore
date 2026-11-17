@@ -34,9 +34,9 @@ function OnHotbarSlotClick(node)
 end
 
 function OnInventoryOpen(node)
-  if ui.IsPushed("ui/inventory.xml") then
+  if ui.IsPushed("inventory") then
     ui.Pop()
   else
-    ui.Push("ui/inventory.xml")
+    ui.Push("inventory")
   end
 end

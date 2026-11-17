@@ -30,9 +30,12 @@
     <None Include="assets\fonts\rubik.json" />
     <None Include="assets\fonts\NotoSansSymbols2.json" />
     <None Include="assets\fonts\notojp.json" />
-    <None Include="assets\ui\hud.xml.lua" />
-    <None Include="assets\ui\inventory.xml.lua" />
-    <None Include="assets\ui\msgbox.xml.lua" />
+    <None Include="assets\pages\hud.xml.lua" />
+    <None Include="assets\pages\inventory.xml.lua" />
+    <None Include="assets\pages\msgbox.xml.lua" />
+    <None Include="assets\blocks\dirt.json" />
+    <None Include="assets\blocks\grass.json" />
+    <None Include="assets\pages\control_android.xml.lua" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="third_party">
@@ -188,6 +191,7 @@
     <ClCompile Include="src\gfx\render\ui\UiSelection.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiTextureRegionBinding.cpp" />
     <ClCompile Include="src\gfx\render\ui\UiImageResolver.cpp" />
+    <ClCompile Include="src\gfx\render\skybox\Sky.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\entity\EntityManager.h" />
@@ -399,12 +403,16 @@
     <ClInclude Include="src\gfx\render\ui\UiSelection.h" />
     <ClInclude Include="src\gfx\render\ui\UiImageResolver.h" />
     <ClInclude Include="src\gfx\render\ui\UiTextureRegionBinding.h" />
+    <ClInclude Include="src\FrameProfiler.h" />
+    <ClInclude Include="src\gfx\render\skybox\Sky.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="assets\ui\inventory.xml" />
-    <Xml Include="assets\ui\msgbox.xml" />
+    <Xml Include="assets\pages\inventory.xml" />
+    <Xml Include="assets\pages\msgbox.xml" />
+    <Xml Include="assets\pages\control_android.xml" />
+    <Xml Include="assets\pages\hud.xml" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 {
   "id": "sand",
   "textures": {
-    "all": "materials/sand.png"
+    "all": "blocks/materials/sand.png"
   },
   "debris": {
     "count": 256,

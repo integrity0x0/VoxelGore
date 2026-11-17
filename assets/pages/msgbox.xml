@@ -1,4 +1,4 @@
-<page id="msgbox" input-mode="capture" script="ui/msgbox.xml.lua">
+<page input-mode="capture" script="pages/msgbox.xml.lua">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 		<style name="btn" extends="panel" pivot="center">

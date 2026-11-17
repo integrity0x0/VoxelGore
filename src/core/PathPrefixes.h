@@ -9,4 +9,6 @@ static const std::string kAssetsPrefix = "";
 static const std::string kAssetsPrefix = "assets/";
 #endif
 static const std::string kShadersPrefix = kAssetsPrefix + "shaders/";
+static const std::string kPagesPrefix = kAssetsPrefix + "pages/";
+static const std::string kBlocksPrefix = kAssetsPrefix + "blocks/";
 }  // namespace core

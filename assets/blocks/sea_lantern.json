@@ -1,7 +1,7 @@
 {
   "id": "sea_lantern",
   "textures": {
-    "all": "materials/sea_lantern.png"
+    "all": "blocks/materials/sea_lantern.png"
   },
   "light": {
     "channel": "sea",

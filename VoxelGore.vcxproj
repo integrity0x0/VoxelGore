@@ -47,10 +47,10 @@
     <None Include="assets\shaders\model.vert" />
     <None Include="assets\shaders\ui.frag" />
     <None Include="assets\shaders\ui.vert" />
-    <None Include="assets\ui\control_android.xml.lua" />
-    <None Include="assets\ui\hud.xml.lua" />
-    <None Include="assets\ui\inventory.xml.lua" />
-    <None Include="assets\ui\msgbox.xml.lua" />
+    <None Include="assets\pages\control_android.xml.lua" />
+    <None Include="assets\pages\hud.xml.lua" />
+    <None Include="assets\pages\inventory.xml.lua" />
+    <None Include="assets\pages\msgbox.xml.lua" />
     <None Include="src\gfx\render\block\faceVertices.inl" />
     <None Include="src\gfx\render\chunk\facePositions.inl" />
     <None Include="src\gfx\render\skybox\skyboxCubeVertices.inl" />
@@ -421,9 +421,10 @@
     <Text Include="changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="assets\ui\control_android.xml" />
-    <Xml Include="assets\ui\inventory.xml" />
-    <Xml Include="assets\ui\msgbox.xml" />
+    <Xml Include="assets\pages\control_android.xml" />
+    <Xml Include="assets\pages\hud.xml" />
+    <Xml Include="assets\pages\inventory.xml" />
+    <Xml Include="assets\pages\msgbox.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

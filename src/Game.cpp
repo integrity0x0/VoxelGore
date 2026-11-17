@@ -164,7 +164,7 @@ void Game::UpdateInput() {
     if (ui.IsInputCaptured())
       ui.Pop();
     else
-      ui.Push(core::kAssetsPrefix + "ui/inventory.xml");
+      ui.Push("inventory");
   }
 
   if (state.Pressed(GLFW_KEY_P)) {

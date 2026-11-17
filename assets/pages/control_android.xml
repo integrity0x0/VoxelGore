@@ -1,4 +1,4 @@
-<page id="controls" input-mode="passthrough" script="ui/control_android.xml.lua">
+<page input-mode="passthrough" script="pages/control_android.xml.lua">
 	<styles>
 		<style name="panel" color="#01020474" border="1" border-color="#6291A928"/>
 		<style name="btn" extends="panel" pivot="center">
