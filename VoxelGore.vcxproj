@@ -84,6 +84,7 @@
     <ClCompile Include="src\game\voxel\BlockParser.cpp" />
     <ClCompile Include="src\game\voxel\Chunk.cpp" />
     <ClCompile Include="src\game\voxel\ChunkManager.cpp" />
+    <ClCompile Include="src\game\voxel\WorldGenerator.cpp" />
     <ClCompile Include="src\gfx\common\font\Font.cpp" />
     <ClCompile Include="src\gfx\common\font\FontFace.cpp" />
     <ClCompile Include="src\gfx\common\font\FontFamily.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\util\files.cpp" />
+    <ClCompile Include="src\util\RingStorage.cpp" />
     <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
     <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
     <ClCompile Include="src\vkcore\debug\DebugMessenger.cpp" />
@@ -228,6 +230,7 @@
     <ClInclude Include="src\game\entity\HealthSystem.h" />
     <ClInclude Include="src\game\entity\ModelComponent.h" />
     <ClInclude Include="src\game\entity\RenderComponent.h" />
+    <ClInclude Include="src\game\voxel\WorldGenerator.h" />
     <ClInclude Include="src\game\World.h" />
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\CameraShake.h" />
@@ -369,6 +372,7 @@
     <ClInclude Include="src\util\files.h" />
     <ClInclude Include="src\util\hashers.h" />
     <ClInclude Include="src\util\pathUtils.h" />
+    <ClInclude Include="src\util\RingStorage.h" />
     <ClInclude Include="src\util\StringUtils.h" />
     <ClInclude Include="src\vkcore\commands\CommandBuffer.h" />
     <ClInclude Include="src\vkcore\commands\CommandPool.h" />

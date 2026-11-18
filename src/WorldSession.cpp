@@ -17,6 +17,12 @@ WorldSession::WorldSession(uint32_t width, uint32_t height, uint32_t depth,
   blockManager_ = std::make_unique<BlockManager>();
   blockManager_->LoadDirectory(assetsPrefix + "blocks");
 
+  worldGenerator_ = std::make_unique<WorldGenerator>(*blockManager_);
+
+  for (auto& it : world_->GetChunks().getChunks()) {
+    worldGenerator_->GenerateChunk(*it.second.get());
+  }
+
   lighting_ = std::make_unique<Lighting>(world_->GetChunks(), *blockManager_);
   lighting_->LightUp();
 

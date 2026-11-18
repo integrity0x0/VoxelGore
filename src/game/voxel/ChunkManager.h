@@ -11,6 +11,7 @@
 #include "Chunk.h"
 
 namespace gm {
+
 using ChunksMap = std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, util::IVec3Hash>;
 using DirtyChunkSet = std::unordered_set<glm::ivec3, util::IVec3Hash>;
 

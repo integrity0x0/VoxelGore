@@ -1,4 +1,3 @@
-// WorldGenerator.cpp
 #include "WorldGenerator.h"
 
 #include <algorithm>
@@ -72,7 +71,6 @@ WorldGenerator::WorldGenerator(BlockManager& blocks)
       } {}
 
 float WorldGenerator::HeightNoise(int worldX, int worldZ) {
-  // крупные холмы + средние детали
   const float continental = Fbm2D(worldX * 0.01f, worldZ * 0.01f, 4);
   const float hills = Fbm2D(worldX * 0.04f + 20.0f, worldZ * 0.04f + 20.0f, 3);
   return continental * 0.7f + hills * 0.3f;
@@ -100,7 +98,6 @@ void WorldGenerator::GenerateChunk(Chunk& chunk) const {
       const float h01 = HeightNoise(wx, wz);
       const float detail = DetailNoise(wx, wz);
 
-      // высота поверхности в world Y
       int surfaceY = seaLevel_ + static_cast<int>(h01 * 18.0f + detail * 3.0f);
       surfaceY = std::clamp(surfaceY, 4, 40);
 
@@ -112,7 +109,6 @@ void WorldGenerator::GenerateChunk(Chunk& chunk) const {
         Voxel v{ids_.air};
 
         if (wy > surfaceY) {
-          // воздух / мелкие «сюрпризы» над землёй
           if (wy == surfaceY + 1 && (Hash(wx, wy, wz) % 2000u) == 0u) {
             v.id = ids_.luckyblock;
           }
@@ -128,7 +124,6 @@ void WorldGenerator::GenerateChunk(Chunk& chunk) const {
         } else {
           v.id = ids_.stone;
 
-          // редкие вкрапления в камне
           const uint32_t h = Hash(wx, wy, wz);
           if (h % 900u == 0u)
             v.id = ids_.seaLantern;
@@ -140,9 +135,7 @@ void WorldGenerator::GenerateChunk(Chunk& chunk) const {
             v.id = ids_.glass;
         }
 
-        // плоское «море» ниже sea level, если дырка в рельефе
         if (v.id == ids_.air && wy <= seaLevel_ && wy > surfaceY) {
-          // оставляем воздух — без воды в списке блоков
         }
 
         chunk.SetVoxel({lx, ly, lz}, v);

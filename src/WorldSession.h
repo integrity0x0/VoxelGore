@@ -12,6 +12,7 @@
 #include "game/physics/PhysicsSystem.h"
 #include "game/voxel/BlockManager.h"
 #include "game/Environment.h"
+#include "game/voxel/WorldGenerator.h"
 
 namespace gm {
 
@@ -40,6 +41,7 @@ class WorldSession {
  private:
   std::unique_ptr<World> world_;
   std::unique_ptr<BlockManager> blockManager_;
+  std::unique_ptr<WorldGenerator> worldGenerator_;
   std::unique_ptr<Lighting> lighting_;
   std::unique_ptr<EntityDefinitionRegistry> entityDefs_;
   std::unique_ptr<EntityFactory> entityFactory_;
