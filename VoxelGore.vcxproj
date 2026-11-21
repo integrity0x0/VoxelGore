@@ -167,7 +167,7 @@
     <ClCompile Include="src\script\LuaScript.cpp" />
     <ClCompile Include="src\script\LuaState.cpp" />
     <ClCompile Include="src\util\files.cpp" />
-    <ClCompile Include="src\util\RingStorage.cpp" />
+    <ClCompile Include="src\util\RingIndexer.cpp" />
     <ClCompile Include="src\vkcore\commands\CommandBuffer.cpp" />
     <ClCompile Include="src\vkcore\common\vulkanFunctions.cpp" />
     <ClCompile Include="src\vkcore\debug\DebugMessenger.cpp" />
@@ -372,7 +372,7 @@
     <ClInclude Include="src\util\files.h" />
     <ClInclude Include="src\util\hashers.h" />
     <ClInclude Include="src\util\pathUtils.h" />
-    <ClInclude Include="src\util\RingStorage.h" />
+    <ClInclude Include="src\util\RingIndexer.h" />
     <ClInclude Include="src\util\StringUtils.h" />
     <ClInclude Include="src\vkcore\commands\CommandBuffer.h" />
     <ClInclude Include="src\vkcore\commands\CommandPool.h" />
